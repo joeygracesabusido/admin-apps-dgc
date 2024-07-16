@@ -20,6 +20,12 @@ const login = async () => {
         } else if (response.status === 400) {
             // Incorrect password or username
             document.querySelector('#alert').innerHTML = 'Incorrect Password or Username';
+        
+        } else if (response.status === 401) {
+            // Incorrect password or username
+            document.querySelector('#alert').innerHTML = 'Unauthorized';
+
+
         } else if (response.status === 500) {
             // Incorrect password
             document.querySelector('#alert').innerHTML = 'Incorrect Password';

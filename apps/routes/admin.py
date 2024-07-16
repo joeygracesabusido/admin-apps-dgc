@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, HTTPException, Depends, Request, Response, status
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from typing import Union, List
+from typing import Union, List, Optional
 
 
 from datetime import datetime, timedelta
@@ -47,9 +47,12 @@ def get_password_hash(password):
 password1 = ""
 def authenticate_user(username, password):
     
-    user = mydb.login.find({'$and':[{"username":username}]})
+    user = mydb.login.find({
+                            '$and':
+                            [{"username":username}
+                            ]})
     
-
+    
     for i in user:
        
         username = i['username']
@@ -104,14 +107,21 @@ def login(response:Response,form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 @api.post('/sign-up')
-def sign_up(fullname: str, username: str, password: str,created: Union[datetime, None] = Body(default=None)):
+def sign_up(fullname: str, username: str, password: str,created: Union[datetime, None] = Body(default=None),status:Optional[str] = None,):
     """This function is for inserting """
     #,token: str = Depends(oauth_scheme)
+
+    login_collection = mydb['login']
+    login_collection.create_index("username", unique=True)
+    login_collection.create_index("fullname", unique=True)
+
+
     dataInsert = dict()
     dataInsert = {
         "fullname": fullname,
         "username": username,
         "password": get_password_hash(password),
+        "status": status,
         "created": created
         }
     mydb.login.insert_one(dataInsert)

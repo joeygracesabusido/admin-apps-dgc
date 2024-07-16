@@ -45,7 +45,9 @@ def get_password_hash(password):
 password1 = ""
 def authenticate_user(username, password):
     
-    user = mydb.login.find({'$and':[{"username":username}]})
+    user = mydb.login.find({
+        '$and':
+            [{"username":username},{'status':'true'}]})
     
 
     for i in user:
@@ -91,9 +93,32 @@ def login(username1: Optional[str],password1:Optional[str],response:Response):
 
     user = authenticate_user(username,password)
 
-    if user == []:
 
-        return {"error": "No Username is register"}
+    print (user)
+
+    
+
+    if user is not None:
+        access_token = create_access_token(
+                data = {"sub": username,"exp":datetime.utcnow() + timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)}, 
+                expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+                                    )
+
+        data = {"sub": username,"exp":datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)}
+        jwt_token = jwt.encode(data,JWT_SECRET,algorithm=ALGORITHM)
+        response.set_cookie(key="access_token", value=f'Bearer {jwt_token}',httponly=True)
+        # return response
+        
+        return {"access_token": jwt_token, "token_type": "bearer"}
+
+        # raise HTTPException(
+        #     status_code=400,
+        #     detail= "Username & Password does not Match",
+        #     # headers={"WWW-Authenticate": "Basic"},
+        # )
+
+    
+
   
     elif not user:
         # raise HTTPException(status_code=400, detail="Incorrect username or password")
@@ -102,22 +127,16 @@ def login(username1: Optional[str],password1:Optional[str],response:Response):
         
         raise HTTPException(
             status_code=400,
-            detail= "Incorrect username or password",
+            detail= "Unauthorized",
             # headers={"WWW-Authenticate": "Basic"},
         )
-    
+        # raise HTTPException(
+        #     status_code=status.HTTP_401_UNAUTHORIZED,
+        #     detail= "Your not Enrolled",
+        #     # headers={"WWW-Authenticate": "Basic"},
+        # )
 
-    access_token = create_access_token(
-                data = {"sub": username,"exp":datetime.utcnow() + timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)}, 
-                expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-                                    )
-
-    data = {"sub": username,"exp":datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)}
-    jwt_token = jwt.encode(data,JWT_SECRET,algorithm=ALGORITHM)
-    response.set_cookie(key="access_token", value=f'Bearer {jwt_token}',httponly=True)
-    # return response
-    
-    return {"access_token": jwt_token, "token_type": "bearer"}
+   
 
 
 @login_router.get("/dashboard/", response_class=HTMLResponse)
