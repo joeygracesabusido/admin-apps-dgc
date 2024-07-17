@@ -93,12 +93,9 @@ def login(username1: Optional[str],password1:Optional[str],response:Response):
 
     user = authenticate_user(username,password)
 
+    print(user)
 
-    print (user)
-
-    
-
-    if user is not None:
+    if user :
         access_token = create_access_token(
                 data = {"sub": username,"exp":datetime.utcnow() + timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)}, 
                 expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -109,32 +106,34 @@ def login(username1: Optional[str],password1:Optional[str],response:Response):
         response.set_cookie(key="access_token", value=f'Bearer {jwt_token}',httponly=True)
         # return response
         
-        return {"access_token": jwt_token, "token_type": "bearer"}
-
-        # raise HTTPException(
-        #     status_code=400,
-        #     detail= "Username & Password does not Match",
-        #     # headers={"WWW-Authenticate": "Basic"},
-        # )
-
-    
-
-  
-    elif not user:
-        # raise HTTPException(status_code=400, detail="Incorrect username or password")
-        
-       
-        
+    elif user == False:
         raise HTTPException(
-            status_code=400,
-            detail= "Unauthorized",
+            status_code=401,
+            detail= "Username and Password Did not Match",
             # headers={"WWW-Authenticate": "Basic"},
         )
-        # raise HTTPException(
-        #     status_code=status.HTTP_401_UNAUTHORIZED,
-        #     detail= "Your not Enrolled",
-        #     # headers={"WWW-Authenticate": "Basic"},
-        # )
+
+    elif user == None:
+             raise HTTPException(
+            status_code=400,
+            detail= "UnAthorized",
+            # headers={"WWW-Authenticate": "Basic"},
+        )
+
+  
+    # if user is None:
+       
+        
+    #     raise HTTPException(
+    #         status_code=400,
+    #         detail= "UnAthorized",
+    #         # headers={"WWW-Authenticate": "Basic"},
+    #     )
+    # raise HTTPException(
+    #     status_code=status.HTTP_401_UNAUTHORIZED,
+    #     detail= "Your not Enrolled",
+    #     # headers={"WWW-Authenticate": "Basic"},
+    # )
 
    
 

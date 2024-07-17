@@ -2,25 +2,61 @@ from fastapi import APIRouter, Body, HTTPException, Depends, Request, Response, 
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from typing import Union, List, Optional
-from datetime import datetime, date , timedelta
-from fastapi.responses import JSONResponse
 
-from pydantic import BaseModel
 
-from  ..authentication.authenticate_user import get_current_user
+from datetime import datetime, timedelta
 
-api_inventory= APIRouter()
+
+from  ..database.mongodb import create_mongo_client
+mydb = create_mongo_client()
+
+
+from ..authentication.utils import OAuth2PasswordBearerWithCookie
+
+from jose import jwt
+
+JWT_SECRET = 'myjwtsecret'
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+api_invt = APIRouter()
 templates = Jinja2Templates(directory="apps/templates")
 
 
-@api_inventory.get("/employee-list/", response_class=HTMLResponse)
-async def api_login(request: Request,username: str = Depends(get_current_user)):
-    return templates.TemplateResponse("inventory/employee.html", {"request": request})
+
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+oauth_scheme = OAuth2PasswordBearerWithCookie(tokenUrl="token")
+
+# oauth_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@api_inventory.get("/api-update-employee-list/{id}", response_class=HTMLResponse)
-async def api_update_employee_html(request: Request,username: str = Depends(get_current_user)):
-    return templates.TemplateResponse("inventory/update_employee.html", {"request": request})
-        
-    
-    
+
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+
+@api_invt.get('/get-user')
+async def find_all_user(token: str = Depends(oauth_scheme)):
+    """This function is querying all user account"""
+    result = mydb.login.find()
+
+    user_data = [
+        {
+             "fullname": i["fullname"],
+            "username": i["username"],
+            "password": i['password'],
+            "created": i["created"]
+
+        }
+        for i in result
+    ]
+
+    return user_data
+  
+
+
+
+

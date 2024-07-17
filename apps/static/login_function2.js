@@ -17,11 +17,11 @@ const login = async () => {
             // document.querySelector('#alert').innerHTML = 'Login successful';
             window.location.assign("/dashboard/")
             // Redirect or perform any other actions on successful login
-        } else if (response.status === 400) {
+        } else if (response.status === 401) {
             // Incorrect password or username
             document.querySelector('#alert').innerHTML = 'Incorrect Password or Username';
         
-        } else if (response.status === 401) {
+        } else if (response.status === 400) {
             // Incorrect password or username
             document.querySelector('#alert').innerHTML = 'Unauthorized';
 

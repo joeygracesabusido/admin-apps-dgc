@@ -7,10 +7,11 @@ from starlette.responses import PlainTextResponse
 # from .routes.login import login_router
 from apps.routes.admin import api
 from apps.routes.login import login_router
+from apps.routes.inventory import api_invt
 
 from apps.routes.graphql import graphql_app
 
-from apps.routes.inventory import api_inventory
+from apps.routes.inventory_temp import api_inventory
 
 from fastapi.staticfiles import StaticFiles
 
@@ -29,6 +30,7 @@ app.add_middleware(
 app.include_router(api, tags=["admin"])
 app.include_router(login_router)
 app.include_router(api_inventory)
+app.include_router(api_invt, tags=['inventory'])
 
 # Mount Strawberry's GraphQL app onto FastAPI
 app.mount("/graphql", graphql_app)
