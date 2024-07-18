@@ -17,13 +17,18 @@
 
 <div id="container" class="container mt-4">
 
+
+ 
+
+ 
+
         
 <!-- =================================this is for modal update cash advance============================= -->
-              <!-- <div class="modal" id="update_hdmf_loan_modal" tabindex="-1">
+              <div class="modal" id="insert_invt_items_modal" tabindex="-1">
                 <div class="modal-dialog modal-lg">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title">Update HDMF Loan Deduction</h5>
+                      <h5 class="modal-title">Add Inventory Items</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -32,15 +37,29 @@
                       <div class="row g-2">
                         <div class="col-md">
                           <div class="form-floating">
-                            <input type="text" class="form-control" id="update_id" >
-                            <label for="floatingInputGrid"class="label-large" >Update ID</label>
+                            <select class="form-select" id="inventory_company" aria-label="Floating label select example">
+    
+                              <option selected>----Select Menu----</option>
+                              <option value="AFMI">AFMI</option>
+                              <option value="DBMC">DBMC</option>
+                              <option value="DCLSI">DCLSI</option>
+                              <option value="DCLSI">DCLSI</option>
+                              <option value="DRDC">DRDC</option>
+                              <option value="HFC">HFC</option>
+                              <option value="LPDC">LPDC</option>
+                              <option value="LRCC">LRCC</option>
+                              <option value="NLDC">NLDC</option>
+        
+                             
+                          </select>
+                          <label for="floatingInputGrid" class="label-large">Select Company</label>
                           </div>
                         </div>
     
                         <div class="col-md">
                           <div class="form-floating">
-                            <input type="number" class="form-control" id="update_amount_deduction" >
-                            <label for="floatingInputGrid" class="label-large">Amount Deduction</label>
+                            <input type="text" class="form-control" id="inventory_item" >
+                            <label for="floatingInputGrid" class="label-large">Item</label>
               
                           
                           </div>
@@ -52,223 +71,120 @@
                         
                       </div>
     
-                     
+                      <br>
+
                       <div class="row g-2">
     
-                        
-                      
-                        
+                  
                         <div class="col-md">
                           <div class="form-floating">
-                            <input type="text" class="form-control" id="update_employee_id_id" hidden >
-                            
-              
+                            <input type="text" class="form-control" id="inventory_brand"  >
+                            <label for="floatingInputGrid" class="label-large">Brand</label>
+            
                           
                           </div>
                         </div>
-              
+
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="number" class="form-control" id="inventory_amount"  >
+                            <label for="floatingInputGrid" class="label-large">Amount</label>
+            
+                          
+                          </div>
+                        </div>
+                        
+                        
+                      </div>
+
+                      <br>
+                      <div class="row g-2">
+
+
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="inventory_serial_no"  >
+                            <label for="floatingInputGrid" class="label-large">Serial No.</label>
+            
+                          
+                          </div>
+                        </div>
+    
+                  
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="inventory_user"  >
+                            <label for="floatingInputGrid" class="label-large">User</label>
+            
+                          
+                          </div>
+                        </div>
+
+
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="inventory_department"  >
+                            <label for="floatingInputGrid" class="label-large">Department</label>
+            
+                          
+                          </div>
+                        </div>
+
+                        
+                      </div>
+
+                      <br>
+                      <div class="row g-2">
+    
+                  
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="date" class="form-control" id="inventory_date_issue"  >
+                            <label for="floatingInputGrid" class="label-large">Date Issue</label>
+            
+                          
+                          </div>
+                        </div>
+
+
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="inventory_description"  >
+                            <label for="floatingInputGrid" class="label-large">Description</label>
+            
+                          
+                          </div>
+                        </div>
+
                         
                       </div>
                       
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary" id="btn_save_changes">Save changes</button>
+                      <button type="button" class="btn btn-primary" id="btn_save_inventory">Save changes</button>
                     </div>
                   </div>
                 </div>
               </div>
-     -->
     
-    <!-- ==========================================HDMF  Frame ===================================
     
-            <h2>INSERT EMPLOYEE </h2>
+
     
-            <div class="row g-4">
-                <div class="col-md">
-                  <div class="form-floating">
-                    <input type="text" class="form-control" id="employee_id" >
-                    <label for="floatingInputGrid"class="label-large" >Employee ID</label>
-                  </div>
-                </div>
-                
-              
-
-                <div class="col-md">
-                  <div class="form-floating">
-                    <input type="text" class="form-control" id="employee_name" >
-                    <label for="floatingInputGrid" class="label-large">Employee Name</label>
-      
-                  
-                  </div>
-                </div>
-
-
-                <div class="col-md">
-                  <div class="form-floating">
-                    <input type="text" class="form-control" id="nationality" >
-                    <label for="floatingInputGrid" class="label-large">Nationality</label>
-      
-                  
-                  </div>
-                </div>
-
-                <div class="col-md">
-                  <div class="form-floating">
-                    <input type="text" class="form-control" id="sponsor" >
-                    <label for="floatingInputGrid"class="label-large" >Sponsor</label>
-                  </div>
-                </div>
-
-            </div>
-                
-            <br>
-
-            <div class="row g-4">
-             
-              
-            
-
-              <div class="col-md">
-                <div class="form-floating">
-                  <input type="date" class="form-control" id="contract_start_date" >
-                  <label for="floatingInputGrid" class="label-large">Contract Strart Date</label>
-    
-                
-                </div>
-              </div>
-
-
-              <div class="col-md">
-                <div class="form-floating">
-                  <input type="date" class="form-control" id="join_date" >
-                  <label for="floatingInputGrid" class="label-large">Join Date</label>
-    
-                
-                </div>
-              </div>
-
-
-              <div class="col-md">
-                <div class="form-floating">
-                  <input type="date" class="form-control" id="birth_date" >
-                  <label for="floatingInputGrid" class="label-large">Birth Date</label>
-    
-                
-                </div>
-              </div>
-
-
-              <div class="col-md">
-                <div class="form-floating">
-                  <input type="date" class="form-control" id="contract_expire_date" >
-                  <label for="floatingInputGrid" class="label-large">Contract Expiry</label>
-    
-                
-                </div>
-              </div>
-
-
-              <div class="col-md">
-                <div class="form-floating">
-                  <input type="text" class="form-control" id="employee_grade" >
-                  <label for="floatingInputGrid"class="label-large" >Employee Grade</label>
-                </div>
-              </div>
-
-
-              <div class="col-md">
-                <div class="form-floating">
-                  <input type="text" class="form-control" id="job_family" >
-                  <label for="floatingInputGrid"class="label-large" >Job Family</label>
-                </div>
-              </div>
-
-
-              
-    
-              
-          </div>
-          <br>
-            <div class="row g-3">
-
-              <div class="col-md">
-                <div class="form-floating">
-                  <input type="text" class="form-control" id="cost_center" >
-                  <label for="floatingInputGrid" class="label-large">Cost Center</label>
-    
-                
-                </div>
-              </div>
-
-              <div class="col-md">
-                <div class="form-floating">
-                  <input type="text" class="form-control" id="description" >
-                  <label for="floatingInputGrid"class="label-large" >Description</label>
-                </div>
-              </div>
-
-                <div class="col-md">
-                    <div class="form-floating">
-                      <input type="text" class="form-control" id="division" >
-                      <label for="floatingInputGrid"class="label-large" >Division</label>
-                    </div>
-                  </div>
-                  
-                  <div class="col-md">
-                    <div class="form-floating">
-                      <input type="text" class="form-control" id="position" >
-                      <label for="floatingInputGrid" class="label-large">Position</label>
-        
-                    
-                    </div>
-                  </div>
-    
-                <div class="col-md">
-                    <div class="form-floating">
-                        <select class="form-select" id="is_active" aria-label="Floating label select example">
-    
-                            <option selected>----select menu----</option>
-                            <option value="true">True</option>
-                            <option value="false">False</option>
-                           
-                        </select>
-                      <label for="floatingInputGrid" class="label-large">Status Active/In Active</label>
-    
-                    </div>
-                    
-                  </div>
-               
-                
-                
-      
-                
-            </div>
-    
-        
-            <br>
-    
-            
-            <button type="button" id="btn_save_employee" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
-                
-            <br>
-    
-            <br>
-     -->
             <div class="card">
                 <div class="card-header">
     
                     INVENTORY  LIST
-                <!-- ELECTRICITY DATA
+                <!--ELECTRICITY DATA
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" id="btn_insert_electric_data"
                     >
                     Add Electricty Consumption
-                </button>
-        
-                <button type="button" class="btn btn-primary"  id="btn_meralco_info"
-                    style="width: 190px;">
-                    Add Meralco Details
                 </button> -->
+        
+                <button type="button" class="btn btn-primary btn-right"  id="insert_invt_items_btn"
+                    data-bs-toggle="modal" data-bs-target="#insert_invt_items_modal" >
+                    Add Inventory Item 
+                </button>
                 
                 <!-- <button type="button" class="btn btn-primary btn-right"  id="btn_update_hdmf_loan"
                       data-bs-toggle="modal" >
@@ -280,7 +196,7 @@
                 <div class="container">
                     <div class="container mt-3">
 
-                        <table id="table_employee_list" class="table table-bordered"  style="text-align: center;">
+                        <table id="table_inventory" class="table table-bordered"  style="text-align: center;">
                             <thead class="table-dark">
                                 <tr>
                                     
@@ -291,14 +207,15 @@
                                     <td>Date Release</td>
                                     <td>User</td>
                                     <td>Department</td>
-                                    
+                                    <td>Action</td>
                                     
                                 </tr>
                             </thead>
-                            <tbody id="table_employee_list">
+                            <tbody id="table_inventory_list">
                             
                                     
                                     <tr>
+                                        <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -337,9 +254,9 @@
     <!-- Add Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     
-    <script src="/static/employee_function.js"></script>
     
-    <!-- <script src="/apps/static/employee_function.js"></script> -->
+    
+    <script src="/static/inventory/inventory.js"></script>
     
     
     
@@ -349,10 +266,8 @@
 
 
     <script>
-      //  let table = new DataTable('#table_employee_list');
-    //   $(document).ready(function() {
-    //     $('#table_employee_list').DataTable();
-    // });
+      
+     
     </script>
     
     

@@ -1,0 +1,121 @@
+{% extends 'dashboard.html' %}
+
+{% block content %}
+
+<div id="container" class="container mt-4">
+
+    <h1>UPDATE INVENTORY</h1>
+
+    <div class="row g-2">
+       
+        <div class="col-md">
+            <div class="form-floating">
+                <select class="form-select" id="inventory_company" aria-label="Floating label select example">
+                    <option value="{{ inventory_data.inventory_company }}" selected>{{ inventory_data.inventory_company }}</option>
+                    <option value="AFMI">AFMI</option>
+                    <option value="DBMC">DBMC</option>
+                    <option value="DCLSI">DCLSI</option>
+                    <option value="DCLSI">DCLSI</option>
+                    <option value="DRDC">DRDC</option>
+                    <option value="HFC">HFC</option>
+                    <option value="LPDC">LPDC</option>
+                    <option value="LRCC">LRCC</option>
+                    <option value="NLDC">NLDC</option>
+                </select>
+                <label for="inventory_company" class="label-large">Select Company</label>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="inventory_id" value="{{ inventory_data.id }}" hidden>
+                
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="inventory_item" value="{{ inventory_data.inventory_item }}">
+                <label for="invetntory_item" class="label-large">Item</label>
+            </div>
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="row g-2">
+        <div class="col-md">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="inventory_brand" value="{{ inventory_data.inventory_brand }}">
+                <label for="ineventory_brand" class="label-large">Brand</label>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="form-floating">
+                <input type="number" class="form-control" id="inventory_amount" value="{{ inventory_data.inventory_amount }}">
+                <label for="ineventory_amount" class="label-large">Amount</label>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row g-2">
+        <div class="col-md">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="inventory_serial_no" value="{{ inventory_data.inventory_serial_no }}">
+                <label for="ineventory_serial_no" class="label-large">Serial No.</label>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="inventory_user" value="{{ inventory_data.inventory_user }}">
+                <label for="ineventory_user" class="label-large">User</label>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="inventory_department" value="{{ inventory_data.inventory_department }}">
+                <label for="ineventory_department" class="label-large">Department</label>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row g-2">
+        <div class="col-md">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="inventory_date_issue" value="{{ inventory_data.inventory_date_issue }}">
+                <label for="ineventory_date_issue" class="label-large">Date Issue</label>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="inventory_description" value="{{ inventory_data.inventory_description }}">
+                <label for="ineventory_description" class="label-large">Description</label>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <button type="button" class="btn btn-primary" id="update_inventory_btn">Update</button>
+
+</div>
+
+<!-- Add Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+<!-- DataTables and other scripts -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/v/dt/dt-2.0.7/b-3.0.2/b-html5-3.0.2/date-1.5.2/datatables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.min.js"></script>
+
+<script src="/static/inventory/update_inventory.js"></script>
+
+{% endblock %}
