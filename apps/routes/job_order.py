@@ -40,9 +40,9 @@ from passlib.context import CryptContext
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-class Inventory(BaseModel):
-    inventory_company: str
-    inventory_item: str
+class JobOrder(BaseModel):
+    jo_offices: str
+    jo_date: Optional[datetime] = None
     inventory_brand: Optional[str] = None
     inventory_amount: Optional[float] = None
     inventory_serial_no: Optional[str] = None

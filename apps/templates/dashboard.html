@@ -27,7 +27,15 @@
 
 
 <body>
+
+    <!-- <div class="container-fluid">
+        <a class="navbar-brand" href="#">Dashboard</a>
+        <button class="btn btn-outline-light" onclick="window.location.href='/profile/'">Profile</button>
+        <button class="btn btn-outline-light" onclick="window.location.href='/settings/'">Settings</button>
+        <a class="btn btn-outline-light" href="/">Logout</a>
+    </div> -->
     <nav class="navbar navbar-dark bg-primary" >
+        
         <span class="open-slide">
             <a href="#" onclick="openSlideMenu()">
                 <svg width="25" height="50">
@@ -36,10 +44,18 @@
                     <path d="M0,23 30,23" stroke="#000" stroke-width="8"/>
 
                 </svg>
+                
+                <a class="navbar-brand" href="/inventory-list/">Inventory</a>
 
             </a>
 
         </span>
+        <!-- <a class="navbar-brand" href="/employee-list/">Employee</a>
+        <a class="navbar-brand" href="/inventory-list/">Inventory</a> -->
+        <a class="navbar-brand" href="/">Logout</a>
+       
+
+        
 
         
     </nav>
@@ -96,7 +112,7 @@
 
     <script>
         function openSlideMenu(){
-            document.getElementById('side-menu').style.width = '270px';
+            document.getElementById('side-menu').style.width = '175px';
             document.getElementById('main').style.marginLeft = '150px';
             
         }
