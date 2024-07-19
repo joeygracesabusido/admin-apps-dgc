@@ -24,11 +24,11 @@
 
         
 <!-- =================================this is for modal update cash advance============================= -->
-              <div class="modal" id="insert_invt_items_modal" tabindex="-1">
+              <div class="modal" id="insert_jo_ticketing_modal" tabindex="-1">
                 <div class="modal-dialog modal-lg">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title">Add Job Order</h5>
+                      <h5 class="modal-title">Add Ticket No</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -39,26 +39,24 @@
                           <div class="form-floating">
                             <select class="form-select" id="jo_offices" aria-label="Floating label select example">
     
-                              <option selected>----Select Menu----</option>
-                              <option value="AFMI">AFMI</option>
-                              <option value="DBMC">DBMC</option>
-                              <option value="DCLSI">DCLSI</option>
-                              <option value="DRDC">DRDC</option>
-                              <option value="HFC">HFC</option>
-                              <option value="LPDC">LPDC</option>
-                              <option value="LRCC">LRCC</option>
-                              <option value="NLDC">NLDC</option>
-        
-                             
-                          </select>
-                          <label for="floatingInputGrid" class="label-large">Select Company</label>
+                                <option selected>----Select Menu----</option>
+                                <option value="HEAD OFFICE">HEAD OFFICE</option>
+                                <option value="ANTIPOLO">ANTIPOLO</option>
+                                <option value="MRT/MEADOW WOOD">MRT/MEADOW WOOD</option>
+                                <option value="PARAÑAQUE">PARAÑAQUE</option>
+                                <option value="CAVITE">CAVITE</option>
+                               
+          
+                               
+                            </select>
+                          <label for="floatingInputGrid" class="label-large">Select / Offices</label>
                           </div>
                         </div>
     
                         <div class="col-md">
                           <div class="form-floating">
-                            <input type="text" class="form-control" id="inventory_item" >
-                            <label for="floatingInputGrid" class="label-large">Item</label>
+                            <input type="date" class="form-control" id="jo_date" >
+                            <label for="floatingInputGrid" class="label-large">Date</label>
               
                           
                           </div>
@@ -75,23 +73,26 @@
                       <div class="row g-2">
     
                   
+                        
+
                         <div class="col-md">
                           <div class="form-floating">
-                            <input type="text" class="form-control" id="inventory_brand"  >
-                            <label for="floatingInputGrid" class="label-large">Brand</label>
+                            <input type="number" class="form-control" id="jo_requested_by"  >
+                            <label for="floatingInputGrid" class="label-large">Requested by:</label>
             
                           
                           </div>
                         </div>
 
+
                         <div class="col-md">
-                          <div class="form-floating">
-                            <input type="number" class="form-control" id="inventory_amount"  >
-                            <label for="floatingInputGrid" class="label-large">Amount</label>
-            
-                          
+                            <div class="form-floating">
+                              <textarea class="form-control" id="jo_particular" style="height: 100px;"  ></textarea>
+                              <label for="floatingInputGrid" class="label-large">Particular</label>
+              
+                            
+                            </div>
                           </div>
-                        </div>
                         
                         
                       </div>
@@ -99,35 +100,24 @@
                       <br>
                       <div class="row g-2">
 
-
                         <div class="col-md">
                           <div class="form-floating">
-                            <input type="text" class="form-control" id="inventory_serial_no"  >
-                            <label for="floatingInputGrid" class="label-large">Serial No.</label>
-            
-                          
-                          </div>
-                        </div>
-    
-                  
-                        <div class="col-md">
-                          <div class="form-floating">
-                            <input type="text" class="form-control" id="inventory_user"  >
-                            <label for="floatingInputGrid" class="label-large">User</label>
+                            <input type="text" class="form-control" id="jo_status"  >
+                            <label for="floatingInputGrid" class="label-large">Status</label>
             
                           
                           </div>
                         </div>
 
 
-                        <div class="col-md">
-                          <div class="form-floating">
-                            <input type="text" class="form-control" id="inventory_department"  >
-                            <label for="floatingInputGrid" class="label-large">Department</label>
-            
-                          
-                          </div>
-                        </div>
+                        <!-- <div class="col-md">
+                            <div class="form-floating">
+                              <input type="datetime-local" class="form-control" id="jo_turn_over_time"  >
+                              <label for="floatingInputGrid" class="label-large">Turn Over Time</label>
+              
+                            
+                            </div>
+                          </div> -->
 
                         
                       </div>
@@ -136,20 +126,13 @@
                       <div class="row g-2">
     
                   
-                        <div class="col-md">
-                          <div class="form-floating">
-                            <input type="date" class="form-control" id="inventory_date_issue"  >
-                            <label for="floatingInputGrid" class="label-large">Date Issue</label>
-            
-                          
-                          </div>
-                        </div>
+                        
 
 
                         <div class="col-md">
                           <div class="form-floating">
-                            <input type="text" class="form-control" id="inventory_description"  >
-                            <label for="floatingInputGrid" class="label-large">Description</label>
+                            <textarea class="form-control" id="jo_remarks" style="height: 100px;"  ></textarea>
+                            <label for="floatingInputGrid" class="label-large">Remarks</label>
             
                           
                           </div>
@@ -173,16 +156,16 @@
             <div class="card">
                 <div class="card-header">
     
-                    INVENTORY  LIST
+                    JOB ORDER LIST
                 <!--ELECTRICITY DATA
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" id="btn_insert_electric_data"
                     >
                     Add Electricty Consumption
                 </button> -->
         
-                <button type="button" class="btn btn-primary btn-right"  id="insert_invt_items_btn"
-                    data-bs-toggle="modal" data-bs-target="#insert_invt_items_modal" >
-                    Add Inventory Item 
+                <button type="button" class="btn btn-primary btn-right"  id="insert_jo_btn"
+                    data-bs-toggle="modal" data-bs-target="#insert_jo_ticketing_modal" >
+                    Add Job Ticketing
                 </button>
                 
                 <!-- <button type="button" class="btn btn-primary btn-right"  id="btn_update_hdmf_loan"
@@ -195,25 +178,27 @@
                 <div class="container">
                     <div class="container mt-3">
 
-                        <table id="table_inventory" class="table table-bordered"  style="text-align: center;">
+                        <table id="table_job_order" class="table table-bordered"  style="text-align: center;">
                             <thead class="table-dark">
                                 <tr>
                                     
-                                    <td>Company</td>
-                                    <td>Item</td>
-                                    <td>Brand</td>
-                                    <td>Serial No.</td>
-                                    <td>Date Release</td>
-                                    <td>User</td>
-                                    <td>Department</td>
+                                    <td>Office</td>
+                                    <td>Date</td>
+                                    <td>Ticket No.</td>
+                                    <td>Requested</td>
+                                    <td>Particular</td>
+                                    <td>Status</td>
+                                    <td>Turn Over Time</td>
+                                    <td>Remarks</td>
                                     <td>Action</td>
                                     
                                 </tr>
                             </thead>
-                            <tbody id="table_inventory_list">
+                            <tbody id="table_job_order_list">
                             
                                     
                                     <tr>
+                                        <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
