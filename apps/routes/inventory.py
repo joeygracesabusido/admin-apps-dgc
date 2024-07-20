@@ -110,26 +110,37 @@ async def find_all_user(username: str = Depends(get_current_user)):
 async def api_update_inventory(id: str,
                                items: Inventory,
                                username: str = Depends(get_current_user)):
+    
+    try:
+        if username == 'joeysabusido' or username == 'Dy':
 
-    obj_id = ObjectId(id)
+            obj_id = ObjectId(id)
 
-    update_data = {
-        "inventory_company": items.inventory_company,
-        "inventory_item": items.inventory_item,
-        "inventory_brand": items.inventory_brand,
-        "inventory_amount": items.inventory_amount,
-        "inventory_serial_no": items.inventory_serial_no,
-        "inventory_user": items.inventory_user,
-        "inventory_department": items.inventory_department,
-        "inventory_date_issue": items.inventory_date_issue,
-        "inventory_description": items.inventory_description,
-        "user": username,
-        "date_updated": datetime.now()
-    }
+            update_data = {
+                "inventory_company": items.inventory_company,
+                "inventory_item": items.inventory_item,
+                "inventory_brand": items.inventory_brand,
+                "inventory_amount": items.inventory_amount,
+                "inventory_serial_no": items.inventory_serial_no,
+                "inventory_user": items.inventory_user,
+                "inventory_department": items.inventory_department,
+                "inventory_date_issue": items.inventory_date_issue,
+                "inventory_description": items.inventory_description,
+                "user": username,
+                "date_updated": datetime.now()
+            }
 
-    result = mydb.inventory.update_one({'_id': obj_id}, {'$set': update_data})
+            result = mydb.inventory.update_one({'_id': obj_id}, {'$set': update_data})
 
-    return ('Data has been Update')
+            return ('Data has been Update')
+        
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not Authorized",
+            # headers={"WWW-Authenticate": "Basic"},
+            )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 

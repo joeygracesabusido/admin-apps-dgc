@@ -53,14 +53,23 @@
                           </div>
                         </div>
     
-                        <div class="col-md">
+                        <!-- <div class="col-md">
                           <div class="form-floating">
                             <input type="date" class="form-control" id="jo_date" >
                             <label for="floatingInputGrid" class="label-large">Date</label>
               
                           
                           </div>
-                        </div>
+                        </div> -->
+
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="jo_department" >
+                            <label for="floatingInputGrid" class="label-large">Department</label>
+              
+                          
+                          </div>
+                        </div> 
                         
                         
                        
@@ -77,7 +86,7 @@
 
                         <div class="col-md">
                           <div class="form-floating">
-                            <input type="number" class="form-control" id="jo_requested_by"  >
+                            <input type="text" class="form-control" id="jo_requested_by"  >
                             <label for="floatingInputGrid" class="label-large">Requested by:</label>
             
                           
@@ -144,7 +153,7 @@
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary" id="btn_save_inventory">Save changes</button>
+                      <button type="button" class="btn btn-primary" id="btn_save_job_order">Save changes</button>
                     </div>
                   </div>
                 </div>
@@ -183,6 +192,7 @@
                                 <tr>
                                     
                                     <td>Office</td>
+                                    <td>Department</td>
                                     <td>Date</td>
                                     <td>Ticket No.</td>
                                     <td>Requested</td>
@@ -207,7 +217,7 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        
+                                        <td></td>
                                     </tr>
                                 
                                 
@@ -240,7 +250,7 @@
     
     
     
-    <script src="/static/inventory/inventory.js"></script>
+    <script src="/static/job_order/job_order.js"></script>
     
     
     
