@@ -38,3 +38,5 @@ app.include_router(api_job_order, tags=['Job Order'])
 
 # Mount Strawberry's GraphQL app onto FastAPI
 app.mount("/graphql", graphql_app)
+
+

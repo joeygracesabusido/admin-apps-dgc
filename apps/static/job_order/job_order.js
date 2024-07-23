@@ -54,7 +54,7 @@ $(document).ready(function() {
                         item.jo_remarks,
 
                         `<td>
-                            <a href="/inventory-update/${item.id}">
+                            <a href="/job-order/${item.id}">
                                 <button type="button" class="btn btn-primary">
                                     <i class="fas fa-database"></i> Edit
                                 </button>

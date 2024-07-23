@@ -22,7 +22,7 @@ templates = Jinja2Templates(directory="apps/templates")
 async def api_ticketing(request: Request,username: str = Depends(get_current_user)):
     return templates.TemplateResponse("job_order/ticketing.html", {"request": request})
 
-@api_jo_temp.get("/-job-order/{id}", response_class=HTMLResponse)
+@api_jo_temp.get("/job-order/{id}", response_class=HTMLResponse)
 async def api_update_inventory_html(id: str, request: Request, username: str = Depends(get_current_user)):
 
     try:
@@ -35,7 +35,7 @@ async def api_update_inventory_html(id: str, request: Request, username: str = D
             
             if item:
                 # Convert ObjectId to string and prepare data for template
-                inventory_data = {
+                job_order_data = {
                     "id": str(item['_id']),
                     "jo_offices": item['jo_offices'],
                     "jo_department": item['jo_department'],
@@ -56,8 +56,8 @@ async def api_update_inventory_html(id: str, request: Request, username: str = D
                 #     inventory_data['inventory_date_issue'] = datetime.strptime(
                 #         inventory_data['inventory_date_issue'], '%Y-%m-%dT%H:%M:%S'
                 #     ).strftime('%Y-%m-%d')
-
-                return templates.TemplateResponse("inventory/update_inventory.html", {"request": request, "inventory_data": inventory_data})
+                # print(job_order_data)
+                return templates.TemplateResponse("job_order/update_ticketing_it.html", {"request": request,"job_order_data":job_order_data })
             else:
                 # Handle case where item with given id is not found (optional)
                 return JSONResponse(status_code=404, content={"message": "Inventory item not found"})
