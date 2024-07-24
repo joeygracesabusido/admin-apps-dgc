@@ -2,7 +2,7 @@ from fastapi import APIRouter, Body, HTTPException, Depends, Request, Response, 
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from typing import Union, List, Optional
-
+from pydantic import BaseModel
 
 from datetime import datetime, timedelta
 
@@ -37,7 +37,12 @@ from passlib.context import CryptContext
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-
+class SignUpModel(BaseModel):
+    fullname: str
+    username: str
+    password: str
+    created: Union[datetime, None] = None
+    status: Optional[str] = None
 
 
 
@@ -107,7 +112,7 @@ def login(response:Response,form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 @api.post('/sign-up')
-def sign_up(fullname: str, username: str, password: str,created: Union[datetime, None] = Body(default=None),status:Optional[str] = None,):
+def sign_up(data: SignUpModel):
     """This function is for inserting """
     #,token: str = Depends(oauth_scheme)
 
@@ -116,16 +121,27 @@ def sign_up(fullname: str, username: str, password: str,created: Union[datetime,
     login_collection.create_index("fullname", unique=True)
 
 
-    dataInsert = dict()
     dataInsert = {
-        "fullname": fullname,
-        "username": username,
-        "password": get_password_hash(password),
-        "status": status,
-        "created": created
-        }
+        "fullname": data.fullname,
+        "username": data.username,
+        "password": get_password_hash(data.password),
+        "status": data.status,
+        "created": data.created
+    }
     mydb.login.insert_one(dataInsert)
-    return {"message":"User has been save"} 
+    return {"message": "User has been saved"}
+
+
+    # dataInsert = dict()
+    # dataInsert = {
+    #     "fullname": fullname,
+    #     "username": username,
+    #     "password": get_password_hash(password),
+    #     "status": status,
+    #     "created": created
+    #     }
+    # mydb.login.insert_one(dataInsert)
+    # return {"message":"User has been save"} 
 
 
 @api.get('/get-user')

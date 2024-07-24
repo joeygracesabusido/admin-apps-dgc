@@ -6,6 +6,9 @@ from pydantic import BaseModel
 from bson import ObjectId
 
 
+from pymongo import  DESCENDING
+
+
 from datetime import datetime, timedelta, date
 from  ..authentication.authenticate_user import get_current_user
 
@@ -48,6 +51,17 @@ class JobOrder(BaseModel):
     jo_particular: Optional[str] = None
     jo_status: Optional[str] = None
     jo_turn_overtime: Optional[datetime] = None
+    jo_remarks: Optional[str] = None
+    jo_user: Optional[str] = None
+    date_updated: Optional[datetime] = None
+    date_created: Optional[datetime] = None
+
+
+class JobOrderUpdate(BaseModel):
+   
+    
+    jo_particular: Optional[str] = None
+    jo_status: Optional[str] = None
     jo_remarks: Optional[str] = None
     jo_user: Optional[str] = None
     date_updated: Optional[datetime] = None
@@ -97,7 +111,28 @@ async def insert_job_order(items:JobOrder, username: str = Depends(get_current_u
 async def find_all_job_order(username: str = Depends(get_current_user)):
     """This function is querying all inventory data"""
 
-    result = mydb.job_order.find().sort("jo_date", -1)
+    # result = mydb.job_order.find().sort("jo_ticket_no", 1)
+
+    pipeline = [
+        {
+            "$addFields": {
+                "date_created": {
+                    "$dateFromString": {
+                        "dateString": "$date_created"
+                    }
+                }
+            }
+        },
+        {
+            "$sort": {
+                "date_created": DESCENDING
+            }
+        }
+    ]
+
+    # Fetch sorted job orders
+    result = mydb.job_order.aggregate(pipeline)
+
     
     job_order_data = [
         {
@@ -120,10 +155,23 @@ async def find_all_job_order(username: str = Depends(get_current_user)):
 
     return job_order_data
 
+# def convert_date_to_iso(date):
+#     """Convert date to ISO 8601 string format"""
+#     if isinstance(date, datetime):
+#         return date.isoformat()
+#     elif isinstance(date, str):
+#         try:
+#             # Attempt to parse string as datetime
+#             return datetime.fromisoformat(date).isoformat()
+#         except ValueError:
+#             # If parsing fails, return the original string
+#             return date
+#     return datetime.now().isoformat()
+
 
 @api_job_order.put("/api-update-job-order/{id}")
 async def api_update_(id: str,
-                               items: JobOrder,
+                               items: JobOrderUpdate,
                                username: str = Depends(get_current_user)):
     
     try:

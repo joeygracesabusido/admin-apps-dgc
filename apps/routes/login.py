@@ -83,6 +83,10 @@ def create_access_token(data: dict, expires_delta: timedelta):
 async def api_login(request: Request):
     return templates.TemplateResponse("login.html", {"request":request}) 
 
+@login_router.get("/-temp-sign-up", response_class=HTMLResponse)
+async def api_login(request: Request):
+    return templates.TemplateResponse("sign_up.html", {"request":request}) 
+
 
 
 @login_router.get('/api-login/')
