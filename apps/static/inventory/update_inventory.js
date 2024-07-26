@@ -6,6 +6,9 @@ $(document).ready(function() {
         var updateData = {
             "inventory_company": $("#inventory_company").val(),
             "inventory_item": $("#inventory_item").val(),
+            "inventory_purchase_date": $("#inventory_purchase_date").val(),
+            "inventory_si_no": $("#inventory_si_no").val(),
+            "inventory_quantity": $("#inventory_quantity").val(),
             "inventory_brand": $("#inventory_brand").val(),
             "inventory_amount": $("#inventory_amount").val(),
             "inventory_serial_no": $("#inventory_serial_no").val(),

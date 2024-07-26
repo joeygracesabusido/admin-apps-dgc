@@ -43,6 +43,9 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class Inventory(BaseModel):
     inventory_company: str
     inventory_item: str
+    inventory_purchase_date: Optional[datetime] = None
+    inventory_si_no: Optional[str] = None
+    inventory_quantity: Optional[float] = None
     inventory_brand: Optional[str] = None
     inventory_amount: Optional[float] = None
     inventory_serial_no: Optional[str] = None
@@ -62,6 +65,9 @@ async def insert_inventory_item(items:Inventory, username: str = Depends(get_cur
     dataInsert = {
         "inventory_company": items.inventory_company,
         "inventory_item": items.inventory_item,
+        "inventory_purchase_date": items.inventory_purchase_date,
+        "inventory_si_no": items.inventory_si_no,
+        "inventory_quantity": items.inventory_quantity,
         "inventory_brand": items.inventory_brand,
         "inventory_amount": items.inventory_amount,
         "inventory_serial_no":items.inventory_serial_no,
@@ -88,6 +94,9 @@ async def find_all_user(username: str = Depends(get_current_user)):
         "id": str(items['_id']),   
         "inventory_company": items['inventory_company'],
         "inventory_item": items['inventory_item'],
+        "inventory_purchase_date": items['inventory_purchase_date'],
+        "inventory_si_no": items['inventory_si_no'],
+        "inventory_quantity": items['inventory_quantity'],
         "inventory_brand": items['inventory_brand'],
         "inventory_amount": items['inventory_amount'],
         "inventory_serial_no":items['inventory_serial_no'],
@@ -119,6 +128,9 @@ async def api_update_inventory(id: str,
             update_data = {
                 "inventory_company": items.inventory_company,
                 "inventory_item": items.inventory_item,
+                "inventory_purchase_date": items.inventory_purchase_date,
+                "inventory_si_no": items.inventory_si_no,
+                "inventory_quantity": items.inventory_quantity,
                 "inventory_brand": items.inventory_brand,
                 "inventory_amount": items.inventory_amount,
                 "inventory_serial_no": items.inventory_serial_no,

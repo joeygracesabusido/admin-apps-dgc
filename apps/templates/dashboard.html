@@ -92,6 +92,15 @@
              
             </ul>
         </li>
+
+
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle">Repair on Service</a>
+            <ul class="dropdown-menu">
+              <li><a href="/ticketing/">Printer Repair</a></li>
+             
+            </ul>
+        </li>
         
         
         <li class="dropdown">
@@ -112,8 +121,12 @@
 
     <script>
         function openSlideMenu(){
-            document.getElementById('side-menu').style.width = '175px';
+            document.getElementById('side-menu').style.width = '220px';
             document.getElementById('main').style.marginLeft = '150px';
+            document.querySelectorAll('.side-nav a').forEach(function(element) {
+                element.style.fontSize = '18px'; // Adjust the font size for sidebar links when opened
+            });
+        
             
         }
 

@@ -46,6 +46,31 @@
     <div class="row g-2">
         <div class="col-md">
             <div class="form-floating">
+                <input type="text" class="form-control" id="inventory_purchase_date" value="{{ inventory_data.inventory_purchase_date }}">
+                <label for="ineventory_serial_no" class="label-large">Purchase Date</label>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="inventory_si_no" value="{{ inventory_data.inventory_si_no }}">
+                <label for="ineventory_user" class="label-large">Sales Inv No.</label>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="form-floating">
+                <input type="number" class="form-control" id="inventory_quantity" value="{{ inventory_data.inventory_quantity }}">
+                <label for="ineventory_department" class="label-large">Quantity</label>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row g-2">
+        <div class="col-md">
+            <div class="form-floating">
                 <input type="text" class="form-control" id="inventory_brand" value="{{ inventory_data.inventory_brand }}">
                 <label for="ineventory_brand" class="label-large">Brand</label>
             </div>

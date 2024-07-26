@@ -80,7 +80,7 @@ $(document).ready(function() {
 $(document).ready(function() {
     // Function to fetch and display job orders
 
-    var table = $('#table_job_order').DataTable();
+    // var table = $('#table_job_order').DataTable();
     function fetchAndDisplayJobOrders() {
         $.ajax({
             url: '/api-get-job-order-list',  // API endpoint
@@ -89,7 +89,7 @@ $(document).ready(function() {
             success: function(data) {
                 var tableBody = $('#table_job_order_list');
                 tableBody.empty();  // Clear existing table rows
-
+                
                 // Iterate over each item in the data
                 data.forEach(function(item) {
                     // Create a new row
@@ -111,12 +111,15 @@ $(document).ready(function() {
 
                     // Append the new row to the table body
                     tableBody.append(newRow);
-
+                    
                     // Apply red color if jo_turn_overtime is empty
                     if (!item.jo_turn_overtime) {
                         newRow.css('background-color', 'green');
                     }
+
+                   
                 });
+                initializeDataTable()
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching job orders:', error);
@@ -128,6 +131,14 @@ $(document).ready(function() {
     // Fetch job orders on page load
     fetchAndDisplayJobOrders();
 });
+
+
+const initializeDataTable = () => {
+    $('#table_job_order').DataTable();
+};
+
+// let table = $('#table_job_order').DataTable();
+
 
 
 
