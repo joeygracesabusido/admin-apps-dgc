@@ -18,21 +18,21 @@ $(document).ready(function() {
         console.log(data)
 
         // Send the data to the FastAPI endpoint
-        // $.ajax({
-        //     url: '/api-insert-employee/',
-        //     type: 'POST',
-        //     contentType: 'application/json',
-        //     data: JSON.stringify(data),
-        //     success: function(response) {
-        //         alert('Employee saved successfully');
-        //         window.location.href = "/ticketing/"; // Redirect to the inventory list page
-        //         // Optionally, close the modal
-        //         // $('#insert_employee_modal').modal('hide');
-        //     },
-        //     error: function(xhr, status, error) {
-        //         alert('Failed to save employee: ' + xhr.responseText);
-        //     }
-        // });
+        $.ajax({
+            url: '/api-insert-employee/',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(response) {
+                alert('Employee saved successfully');
+                window.location.href = "/ticketing/"; // Redirect to the inventory list page
+                // Optionally, close the modal
+                // $('#insert_employee_modal').modal('hide');
+            },
+            error: function(xhr, status, error) {
+                alert('Failed to save employee: ' + xhr.responseText);
+            }
+        });
     });
 });
 
