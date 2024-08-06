@@ -3,6 +3,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from typing import Union, List, Optional
 from pydantic import BaseModel
+from bson import ObjectId
 
 from datetime import datetime, timedelta
 
@@ -37,12 +38,20 @@ from passlib.context import CryptContext
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+from ..authentication.utils import OAuth2PasswordBearerWithCookie
+from  ..authentication.authenticate_user import get_current_user
+
+
 class SignUpModel(BaseModel):
     fullname: str
     username: str
     password: str
     created: Union[datetime, None] = None
     status: Optional[str] = None
+
+
+class UpdateUser(BaseModel):
+    status: str
 
 
 
@@ -144,16 +153,18 @@ def sign_up(data: SignUpModel):
     # return {"message":"User has been save"} 
 
 
-@api.get('/get-user')
-async def find_all_user(token: str = Depends(oauth_scheme)):
+@api.get('/api-get-user')
+async def find_all_user(username: str = Depends(get_current_user)):
     """This function is querying all user account"""
     result = mydb.login.find()
 
     user_data = [
         {
-             "fullname": i["fullname"],
+            "id": str(i['_id']), 
+            "fullname": i["fullname"],
             "username": i["username"],
             "password": i['password'],
+            "status": i['status'],
             "created": i["created"]
 
         }
@@ -161,6 +172,33 @@ async def find_all_user(token: str = Depends(oauth_scheme)):
     ]
 
     return user_data
+
+@api.put("/api-update-user-status/{id}")
+async def api_update_user_status(id: str,
+                               item: UpdateUser,
+                               username: str = Depends(get_current_user)):
+    
+    try:
+        if username == 'joeysabusido' or username == 'Dy':
+
+            obj_id = ObjectId(id)
+
+            update_data = {
+              "status": item.status,
+            }
+
+            result = mydb.login.update_one({'_id': obj_id}, {'$set': update_data})
+
+            return ('Data has been Update')
+    
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not Authorized",
+            # headers={"WWW-Authenticate": "Basic"},
+            )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
   
 
 
