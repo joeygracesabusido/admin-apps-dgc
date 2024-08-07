@@ -146,18 +146,18 @@ async def find_all_job_order(username: str = Depends(get_current_user)):
                 {
                 "id": str(items['_id']),   
                 "company": items['company'],
-                "department": items['company'],
-                "employee_no": items['company'],
-                "first_name": items['company'],
-                "last_name": items['company'],
-                "designation": items['company'],
-                "salary_status": items['company'],
-                "rate": items['company'],
-                "salary_status": items['company'],
-                "employee_status": items['company'],
-                "user": items['company'],
-                "date_created": items['company'],
-                "date_updated": items['company'],
+                "department": items['department'],
+                "employee_no": items['employee_no'],
+                "first_name": items['first_name'],
+                "last_name": items['last_name'],
+                "designation": items['designation'],
+                "salary_status": items['salary_status'],
+                "rate": items['rate'],
+                "salary_status": items['salary_status'],
+                "employee_status": items['employee_status'],
+                "user": items['user'],
+                "date_created": items['date_created'],
+                "date_updated": items['date_updated'],
 
                 }
                 for items in result
@@ -174,36 +174,45 @@ async def find_all_job_order(username: str = Depends(get_current_user)):
 
 
 
-# @api_job_order.put("/api-update-job-order/{id}")
-# async def api_update_(id: str,
-#                                items: JobOrderUpdate,
-#                                username: str = Depends(get_current_user)):
+@api_payroll.put("/api-update-employee/{id}")
+async def api_update_(id: str,
+                               data: Employee,
+                               username: str = Depends(get_current_user)):
     
-#     try:
-#         if username == 'joeysabusido' or username == 'Dy':
+    try:
+        if username == 'joeysabusido' or username == 'Dy':
 
-#             obj_id = ObjectId(id)
+            obj_id = ObjectId(id)
 
-#             update_data = {
+            update_data = {
+
+                "company": data.company,
+                "department": data.department,
+                "employee_no": data.employee_no,
+                "first_name": data.first_name,
+                "last_name": data.last_name,
+                "designation": data.designation,
+                "salary_status": data.salary_status,
+                "rate": data.rate,
+                "salary_status": data.salary_status,
+                "employee_status": data.employee_status,
+                "user": username,
+                "date_updated": datetime.now().isoformat() if data.date_updated else None
                
-#                 "jo_status": items.jo_status,
-#                 "jo_turn_overtime": datetime.now(),
-#                 "jo_remarks": items.jo_remarks,
-#                 "user": username,
-#                 "date_updated": datetime.now()
-#             }
+                
+            }
 
-#             result = mydb.job_order.update_one({'_id': obj_id}, {'$set': update_data})
+            result = mydb.employee_list.update_one({'_id': obj_id}, {'$set': update_data})
 
-#             return ('Data has been Update')
+            return ('Data has been Update')
     
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Not Authorized",
-#             # headers={"WWW-Authenticate": "Basic"},
-#             )
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not Authorized",
+            # headers={"WWW-Authenticate": "Basic"},
+            )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 
