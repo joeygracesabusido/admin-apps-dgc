@@ -67,5 +67,7 @@ async def api_update_inventory_html(id: str, request: Request, username: str = D
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
+@api_payroll_temp.get("/api-payroll-computation/", response_class=HTMLResponse)
+async def api_payroll_comp(request: Request,username: str = Depends(get_current_user)):
+    return templates.TemplateResponse("payroll/payroll_comp.html", {"request": request})
 

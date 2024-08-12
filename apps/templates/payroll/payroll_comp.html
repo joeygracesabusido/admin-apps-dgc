@@ -1,0 +1,943 @@
+{% extends 'dashboard.html' %}
+
+{% block content %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="/static/style.css">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+<style>
+  .form-group.mx-sm-2.mb-3 {
+    width: 15%;
+    padding: 5px 10px;
+    display: flex;
+    flex-wrap: wrap;
+   
+}
+
+.form-group.mx-sm-2.mb-4 {
+    width: 15%;
+    padding: 5px 10px;
+    display: flex;
+    flex-wrap: wrap;
+   
+}
+
+#progress-bar {
+width: 100%;
+height: 20px;
+background-color: lightgray;
+margin-bottom: 20px;
+}
+
+#progress-bar .progress {
+height: 100%;
+background-color: green;
+width: 0;
+}
+
+.form-group {
+display: grid;
+grid-template-columns: max-content 1fr;
+grid-gap: 10px;
+align-items: center;
+}
+
+.container3 {
+
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column; /* Added to stack items vertically */
+margin-bottom: 10px;
+
+}
+
+.container4 {
+
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column; /* Added to stack items vertically */
+margin-bottom: 10px;
+
+
+
+}
+
+.container1 {
+display: flex;
+align-items: center;
+margin-bottom: 10px;
+}
+
+.container1 label {
+flex-basis: 100px;
+text-align: right;
+margin-right: 10px;
+}
+
+.container1 input {
+flex-grow: 1;
+width: 100%;
+}
+
+
+.container2 {
+display: flex;
+align-items: center;
+margin-bottom: 10px;
+
+}
+
+.container2 label {
+width: 100px;
+text-align: right;
+margin-right: 10px;
+}
+
+.container2 .left-input {
+margin-right: 10px;
+margin-bottom: 10px;
+padding: 6px 12px;
+font-size: 17px;
+line-height: 1.5;
+color: #555555;
+background-color: #ffffff;
+background-clip: padding-box;
+border: 1px solid #cccccc;
+border-radius: 4px;
+box-shadow: inset 0 1px 1px rgba(35, 7, 161, 0.075);
+transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+}
+
+.container2 .right-input {
+margin-left: 10px;
+margin-bottom: 10px;
+padding: 6px 12px;
+font-size: 17px;
+line-height: 1.5;
+color: #555555;
+background-color: #ffffff;
+background-clip: padding-box;
+border: 1px solid #cccccc;
+border-radius: 4px;
+box-shadow: inset 0 1px 1px rgba(35, 7, 161, 0.075);
+transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.container2 .right-label {
+text-align: left;
+margin-right: 10px;
+margin-left:  250px;
+}
+
+
+#nextPage {
+position: absolute;
+top: auto;
+left: 150px;
+}
+
+#nextPage2 {
+position: absolute;
+top: auto;
+left: 250px;
+}
+
+#previousPage {
+position: absolute;
+top: auto;
+right: 400px;
+
+}
+
+#previousPage2 {
+position: absolute;
+top: auto;
+left: 150px;
+
+}
+
+
+
+
+
+#Btn_Save_payroll {
+position: absolute;
+top: auto;
+right: 450px;
+/* display: block;
+float: right; */
+
+}
+
+
+.container5 {
+display: flex;
+align-items: center;
+justify-content: center;
+margin-bottom: 10px;
+}
+
+.container5 label {
+width: 100px;
+text-align: right;
+margin-right: 10px;
+}
+
+.container5 .left-input,
+.container5 .right-input {
+margin-bottom: 10px;
+padding: 6px 12px;
+font-size: 17px;
+line-height: 1.5;
+color: #555555;
+background-color: #ffffff;
+background-clip: padding-box;
+border: 1px solid #cccccc;
+border-radius: 4px;
+box-shadow: inset 0 1px 1px rgba(35, 7, 161, 0.075);
+transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.container5 .right-label {
+text-align: left;
+margin-right: 10px;
+margin-left: 250px;
+}
+</style>
+  <div id="container" class="container mt-4">
+
+        <h2>PAYROLL COMPUTATION</h2>
+
+        <div id="progress-bar">
+          <div class="progress"></div>
+      </div>
+
+          <div id="page1">
+         
+          
+                  <div class="container1">
+                      <label for="TransactionDate"  >Date</label>
+                      <input
+                          type="date"
+                          name="datefrom"
+                          id="datefrom"
+                          class="form-control"
+                          >
+                      </input>
+                  </div>
+                  <div class="container1">
+                      <label for="Employee ID" >Employee ID</label>
+                      <input
+                          type="text"
+                          name="employee_id"
+                          id="employee_id"
+                          class="form-control"
+                      >
+                      </input>
+                  </div>
+
+                  
+
+                  <div class="container1">
+                      <label for="LastName" >Name</label>
+                      <input
+                          type="text"
+                          name="name"
+                          id="name"
+                          class="form-control"
+                          >
+                      </input>
+                      
+                  </div>
+
+                  <div class="container1">
+                      <label for="Department" >Company</label>
+                              <input
+                                  type="text"
+                                  name="company"
+                                  id="company"
+                                  class="form-control"
+                                  >
+                              </input>
+                      
+                  </div>
+
+                 
+
+                  <div class="container1">
+                      <label for="Salary Rate" >Salary Rate</label>
+                          <input
+                              type="number"
+                              step="0.01"
+                              name="rate"
+                              id="rate"
+                              class="form-control"
+                              
+                              >
+                          </input>
+                      
+                  </div>
+
+                  <div class="container1">
+                    <label for="Salary Rate" >Salary Details</label>
+                        <input
+                            type="text"
+                            
+                            name="salary_details"
+                            id="salary_details"
+                            class="form-control"
+                            
+                            >
+                        </input>
+                    
+                </div>
+
+                  
+
+     
+              
+          <button type="button" id="nextPage" name="nextPage" class="btn btn-success" >Next</button>
+              
+          </div>
+      
+         
+              
+  </div>
+              
+             
+              
+         
+          
+            
+              
+
+                 
+
+                  
+
+<!--============================== This is start for computation fields============================== -->
+      <div id="page2" style="display: none;">
+              <div class="d-flex justify-content-center">
+                  <h1>
+                      This is for computation 
+                  </h1>
+              </div> 
+
+              <div class="container3">
+                  <div class="container2">
+                      <label for="REGDAY"
+                      >Regular day</label>
+                          <input
+                              type="number"
+                              step="0.01"
+                              name="regday"
+                              id="regday"
+                              style="text-align: right;"
+                              class="left-input"
+                              
+                              >
+                          </input>
+                      
+                  
+                      <label for="regdaycal" class="right-label"
+                      >Regday Cal</label>
+                          <input
+                              type="number"
+                              step="0.01"
+                              name="regday_cal"
+                              id="regday_cal"
+                              style="text-align: right;"
+                              class="right-input"
+                              >
+                          </input>
+  
+                  </div>
+                      <div class="container2">
+                          <label for="REGOT"
+                          >Regular OT</label>
+      
+                              <input
+                                  type="number"
+                                  step="0.01"
+                                  name="regday_ot"
+                                  id="regday_ot"
+                                  style="text-align: right;"
+                                  class="left-input"
+                                  
+                                  >
+                              </input>
+                      
+                  
+                          <label for="REGOT"class="right-label"
+                              >RegDay OT Calculation</label>
+                                  <input
+                                      type="number"
+                                      step="0.01"
+                                      name="regday_ot_cal"
+                                      id="regday_ot_cal"
+                                      style="text-align: right;"
+                                      class="right-input"
+                                      >
+                                  </input>
+  
+                      
+                      </div>
+                  
+                     
+                      
+                  
+  
+                  <div class="container2">
+  
+                      <label for="SUNDAY"
+                              >SUNDAY </label>
+                                  <input
+                                      type="number"
+                                      step="0.01"
+                                      name="sunday"
+                                      id="sunday"
+                                      style="text-align: right;
+                                          "
+                                      class="left-input"
+                                      >
+                                  </input>
+                          
+                      <label for="SUNDAY" class="right-label"
+                              >SUNDAY Calculation </label>
+  
+                              <input
+                                  type="number"
+                                  step="0.01"
+                                  name="sunday_cal"
+                                  id="sunday_cal"
+                                  style="text-align: right;
+                                      "
+                                 class="right-input"
+                                  >
+                              </input>
+                  </div>
+  
+                  <div class="container2">
+                      <label for="SundayOT"
+                             
+                      >Sunday OT</label>
+  
+                          <input
+                              type="number"
+                              step="0.01"
+                              name="sunday_ot"
+                              id="sunday_ot"
+                              style="text-align: right;"
+                              class="left-input"
+                              
+                              >
+                          </input>
+                      <label for="SundayOT" class="right-label"
+                      
+                      >Sunday OT Calculation</label>
+                          <input
+                              type="number"
+                              step="0.01"
+                              name="sunday_ot_cal"
+                              id="sunday_ot_cal"
+                              style="text-align: right;
+                                  "
+                              class="right-input"
+                              >
+                          </input>
+      
+  
+                  </div>
+                              
+  
+          
+                  <div class="container2">
+                      <label for="SPL"
+                          >SPL </label>
+                              <input
+                                  type="number"
+                                  step="0.01"
+                                  name="spl"
+                                  id="spl"
+                                  style="text-align: right;
+                                      "
+                                  class="left-input"
+                                  
+                                  >
+                              </input>
+                          <label for="SPL" class="right-label"
+                          >SPL Calculation </label>
+                       
+      
+                              <input
+                                  type="number"
+                                  step="0.01"
+                                  name="spl_cal"
+                                  id="spl_cal"
+                                  style="text-align: right;
+                                      "
+                                  class="right-input"
+                                  >
+                              </input>
+  
+                  </div>
+                  
+                  <div class="container2">
+                      <label for="SPLOT"
+                             
+                          >SPL OT</label>
+      
+                              <input
+                                  type="number"
+                                  step="0.01"
+                                  name="spl_ot"
+                                  id="spl_ot"
+                                  style="text-align: right;
+                                          "
+                                 class="left-input"
+                                  >
+                              </input>
+  
+                          <label for="SPLOT" class="right-label"
+                             
+                          >SPL OT Calculation</label>
+      
+                              <input
+                                  type="number"
+                                  step="0.01"
+                                  name="spl_ot_cal"
+                                  id="spl_ot_cal"
+                                  style="text-align: right;
+                                          "
+                                 class="right-input"
+                                  >
+                              </input>
+  
+                  </div>
+  
+                  <div class="container2">
+                      <label for="LGL2"
+                             
+                      >LGL2</label>
+  
+                          <input
+                              type="number"
+                              step="0.01"
+                              name="lgl2"
+                              id="lgl2"
+                              style="text-align: right;"
+                              class="left-input"
+                              >
+                          </input>
+  
+                      <label for="LGL2cAL" class="right-label"
+                         
+                      >LGL2 CAL</label>
+  
+                          <input
+                              type="number"
+                              step="0.01"
+                              name="lgl2_cal"
+                              id="lgl2_cal"
+                              style="text-align: right;"
+                              class="right-input"
+                              >
+                          </input>
+  
+                  </div>
+  
+                  <div class="container2">
+                      <label for="LGL2OT"
+                             
+                          >LGL2 OT</label>
+      
+                              <input
+                                  type="number"
+                                  step="0.01"
+                                  name="lgl2_ot"
+                                  id="lgl2_ot"
+                                  style="text-align: right;"
+                                  class="left-input"
+                                  >
+                              </input>
+  
+                          <label for="LGL2cAL" class="right-label"
+                             
+                          >LGL2 OT Calculation</label>
+      
+                              <input
+                                  type="number"
+                                  step="0.01"
+                                  name="lgl2_ot_cal"
+                                  id="lgl2_ot_cal"
+                                  style="text-align: right;"
+                                  class="right-input"
+                                  >
+                              </input>
+                      
+                  </div>
+                  
+                          
+  
+                  
+                  <div class="container2">
+                      <label for="LGL1"
+                             
+                      >LGL1</label>
+  
+                          <input
+                              type="number"
+                              step="0.01"
+                              name="lgl1"
+                              id="lgl1"
+                              style="text-align: right;"
+                              class="left-input"
+                              >
+                          </input>
+  
+                      <label for="LGL2cAL" class="right-label"
+                         
+                      >LGL1 CAL</label>
+  
+                          <input
+                              type="number"
+                              step="0.01"
+                              name="lgl1_cal"
+                              id="lgl1_cal"
+                              style="text-align: right;"
+                              class="right-input"
+                              >
+                          </input>
+  
+                  </div>
+  
+                      
+                  
+                  
+                  
+  
+          
+
+              </div>
+
+              <div class="conatiner mt-3">
+                  <button type="button" id="nextPage2" name="nextPage" class="btn btn-success" >Next</button>
+                  <button type="button"  id="previousPage" class="btn btn-success" ">Back</button> 
+
+              </div>
+
+          
+
+      </div> 
+  
+  <!--============================This is for Page 3 =================================  -->
+      <div id="page3" style="display: none;" >
+          <div class="d-flex justify-content-center">
+              <h1>
+                  This is for NighDiff Computation
+              </h1>
+              
+          </div> 
+
+
+          <div id="conatiner4">
+
+              <div class="container5">
+                  <label for="Night Diff"
+                  >Night Diff Regular</label>
+                      <input
+                          type="number"
+                          step="0.01"
+                          name="nightDiff"
+                          id="nightDiff"
+                          style="text-align: right;
+                              "
+                          class="left-input"
+                          
+                          >
+                      </input>
+                  <label for="Night" class="right-label"
+                  >Night Diff Cal Regday</label>
+               
+
+                      <input
+                          type="number"
+                          step="0.01"
+                          name="nightDiff_cal"
+                          id="nightDiff_cal"
+                          style="text-align: right;
+                              "
+                          class="right-input"
+                          >
+                      </input>
+
+              </div>   
+
+              <div class="container5">
+                  <label for="Night Diff"
+                  >Night Diff Regular-OT</label>
+                      <input
+                          type="number"
+                          step="0.01"
+                          name="nightDiff_regday_ot"
+                          id="nightDiff_regday_ot"
+                          style="text-align: right;
+                              "
+                          class="left-input"
+                          
+                          >
+                      </input>
+                  <label for="Night" class="right-label"
+                  >Night Diff Cal Regday-OT</label>
+               
+
+                      <input
+                          type="number"
+                          step="0.01"
+                          name="nightDiff_regdayOT_cal"
+                          id="nightDiff_regdayOT_cal"
+                          style="text-align: right;
+                              "
+                          class="right-input"
+                          >
+                      </input>
+
+              </div>   
+
+<!-- =========================This is for Calculation of Sunday and SPL Night Diff================ -->
+              <div class="container5">
+                  <label for="Night Diff"
+                  >Night Diff Restday/SPl</label>
+                      <input
+                          type="number"
+                          step="0.01"
+                          name="nightDiff_spl"
+                          id="nightDiff_spl"
+                          style="text-align: right;
+                              "
+                          class="left-input"
+                          
+                          >
+                      </input>
+                  <label for="Night" class="right-label"
+                  >Night Diff Cal Restday/SPl</label>
+               
+
+                      <input
+                          type="number"
+                          step="0.01"
+                          name="nightDiff_spl_cal"
+                          id="nightDiff_spl_cal"
+                          style="text-align: right;
+                              "
+                          class="right-input"
+                          >
+                      </input>
+
+              </div>   
+
+<!-- =========================This is for Calculation of SPL Holiday OTNight Diff================ -->
+              <div class="container5">
+                  <label for="Night Diff"
+                  >Night Diff SPL/RestDat OT</label>
+                      <input
+                          type="number"
+                          step="0.01"
+                          name="nightDiff_spl_ot"
+                          id="nightDiff_spl_ot"
+                          style="text-align: right;
+                              "
+                          class="left-input"
+                          
+                          >
+                      </input>
+                  <label for="Night" class="right-label"
+                  >Night Diff Cal SPL/RestDat OT</label>
+
+
+                      <input
+                          type="number"
+                          step="0.01"
+                          name="nightDiff_splOT_cal"
+                          id="nightDiff_splOT_cal"
+                          style="text-align: right;
+                              "
+                          class="right-input"
+                          >
+                      </input>
+
+              </div>   
+
+<!-- =========================This is for Calculation of Legal Holiday Night Diff================ -->
+              <div class="container5">
+                  <label for="Night Diff"
+                  >Night Diff Legal Hol</label>
+                      <input
+                          type="number"
+                          step="0.01"
+                          name="nightDiff_lgl2"
+                          id="nightDiff_lgl2"
+                          style="text-align: right;
+                              "
+                          class="left-input"
+                          
+                          >
+                      </input>
+                  <label for="Night" class="right-label"
+                  >Night Diff Cal Legal Hol</label>
+              
+
+                      <input
+                          type="number"
+                          step="0.01"
+                          name="nightDiff_lgl2_cal"
+                          id="nightDiff_lgl2_cal"
+                          style="text-align: right;
+                              "
+                          class="right-input"
+                          >
+                      </input>
+
+              </div>   
+
+
+<!-- =========================This is for Calculation of  OT Legal  Holiday Night Diff================ -->
+              <div class="container5">
+                  <label for="Night Diff"
+                  >Night Diff Legal Hol OT</label>
+                      <input
+                          type="number"
+                          step="0.01"
+                          name="nightDiff_lgl2_ot"
+                          id="nightDiff_lgl2_ot"
+                          style="text-align: right;
+                              "
+                          class="left-input"
+                          
+                          >
+                      </input>
+                  <label for="Night" class="right-label"
+                  >Night Diff Cal Legal Hol</label>
+
+
+                      <input
+                          type="number"
+                          step="0.01"
+                          name="nightDiff_lgl2OT_cal"
+                          id="nightDiff_lgl2OT_cal"
+                          style="text-align: right;
+                              "
+                          class="right-input"
+                          >
+                      </input>
+
+              </div>   
+          
+          
+              <div class="container5">
+                  <label for="Adjustment"
+                  >Adjustment</label>
+                      <input
+                          type="number"
+                          step="0.01"
+                          name="adjustment"
+                          id="adjustment"
+                          style="text-align: right;
+                              "
+                          class="left-input"
+                          
+                          >
+                      </input>
+
+                      <label for="Total Gross" class="right-label"
+                      >Total Gross</label>
+                          <input
+                              type="text"
+                              
+                              name="totalGross"
+                              id="totalGross"
+                              style="text-align: right;
+                                  background-color: darkorange;"
+                              class="right-input"
+                              
+                              >
+                          </input>
+
+                          <input
+                          type="number" hidden
+                          step="0.01"
+                          name="totalGross2"
+                          id="totalGross2"
+                          style="text-align: right;
+                          "
+                          class="right-input"
+                          
+                          >
+                      </input>
+
+                      
+                  
+
+              </div> 
+              <button type="button"  id="previousPage2" class="btn btn-success" ">Back</button>
+
+              <button type="button"  id="Btn_Save_payroll" class="btn btn-success" ">Save</button>
+
+          </div>
+
+          
+
+      </div>
+
+      <script>
+          
+      </script>
+
+            
+
+        
+
+</div>
+  
+     
+
+             
+                
+
+
+
+  
+   
+    
+
+<!-- Add Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+
+
+<script src="/static/payroll/payroll_comp.js"></script>
+
+
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+
+
+<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script> -->
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+
+
+
+{% endblock %}

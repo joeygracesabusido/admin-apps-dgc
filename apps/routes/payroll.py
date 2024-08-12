@@ -175,7 +175,7 @@ async def find_all_job_order(username: str = Depends(get_current_user)):
 
 
 @api_payroll.put("/api-update-employee/{id}")
-async def api_update_(id: str,
+async def api_update_employee(id: str,
                                data: Employee,
                                username: str = Depends(get_current_user)):
     
@@ -213,6 +213,41 @@ async def api_update_(id: str,
             )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@api_payroll.get("/api-autocomplete-employee/")
+def autocomplete_employee_list(term: Optional[str] = None, username: str = Depends(get_current_user)):
+    try:
+        # Retrieve all employee data from the collection
+        employee_data = mydb.employee_list.find()
+        
+        # Filter employees based on the search term
+        if term:
+            filtered_employee = [
+                item for item in employee_data
+                if term.lower() in item.get('last_name', '').lower() or term.lower() in item.get('first_name', '').lower()
+            ]
+        else:
+            filtered_employee = []
+
+        # Construct suggestions from filtered employees
+        suggestions = [
+            {
+                "value": f"{item['last_name']}, {item['first_name']}",
+                "id": str(item['_id']),
+                "employee_no": item.get('employee_no'),
+                "rate": item.get('rate'),
+                "company": item.get('company'),
+                "salary_status": item.get('salary_status')
+            }
+            for item in filtered_employee
+        ]
+
+        return suggestions
+
+    except Exception as e:
+        error_message = str(e)
+        return {"error": error_message}
+
 
 
 
