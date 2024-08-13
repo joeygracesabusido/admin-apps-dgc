@@ -125,3 +125,53 @@ document.getElementById('under_time_no').addEventListener('input', (e) => {
     document.getElementById('under_time_amount').value = late_amount.toFixed(2);
 });
 
+
+// ===================================this is for computation of Overtime =====================
+document.getElementById('normal_working_day_ot_no').addEventListener('input', (e) => {
+    let normal_working_day_ot_no = e.target.value.trim(); // Use trim() to remove any extra whitespace
+
+    let salDetails = document.getElementById('salary_status').value;
+    let salaryRate;
+    let normal_working_day_ot_amount = 0; // Default value
+
+    // Check if the absent_no field is empty
+    if (normal_working_day_ot_no === '') {
+        document.getElementById('normal_working_day_ot_amount').value = '0.00';
+        return; // Exit the function early
+    }
+
+    // Convert absent_no to a number
+    normal_working_day_ot_no = parseFloat(normal_working_day_ot_no);
+
+    if (salDetails === 'Monthly') {
+        salaryRate = document.getElementById('rate').value / 26;
+    } else {
+        salaryRate = document.getElementById('rate').value / 8 ;
+    }
+
+    normal_working_day_ot_amount = (salaryRate *1.25) * normal_working_day_ot_no;
+
+    // Update the absent_amount field with the calculated value
+    document.getElementById('normal_working_day_ot_amount').value = normal_working_day_ot_amount.toFixed(2);
+});
+
+
+// <!-- ====================================This is for computation of SPL ==================================== -->
+                                    
+                            $(document).ready(function() {
+                                $('#spl_30_no, #rate').on('input', function() {
+                                    calculatelgl1();
+                                });
+                                });
+
+                                function calculatelgl1() {
+                                let product
+                                var spl = $('#spl_30_no').val();
+                                var salaryRate = $('#rate').val();
+                                
+                                product = spl  * salaryRate * .30;
+                                product = product.toFixed(2)
+                                $('#spl_30_amount').val(product);
+                                
+                                }
+
