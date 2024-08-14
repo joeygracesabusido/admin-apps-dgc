@@ -42,7 +42,7 @@ $(document).ready(function() {
             success: function(data) {
                 var tableBody = $('#table_purchase_order_list');
                 tableBody.empty();  // Clear existing table rows
-                
+
                 // Iterate over each item in the data
                 data.forEach(function(item) {
                     // Create a new row
@@ -60,8 +60,9 @@ $(document).ready(function() {
                     newRow.append('<td><a href="/job-order/' + item.id + '"> \
                         <button type="button" class="btn btn-primary"> \
                         <i class="fas fa-database"></i> Edit</button></a></td>');
+
                     
-                    
+
                     // Append the new row to the table body
                     tableBody.append(newRow);
                 });
@@ -83,4 +84,91 @@ $(document).ready(function() {
     const initializeDataTable = () => {
         $('#table_purchase_order').DataTable();
     };
+
+    
 });
+
+
+// this is to print Purchase Order
+
+const generatePDF = async ()  => {
+    try {
+        const poNo = document.querySelector('#print_po_number')
+        const response = await fetch(`/api-get-purchase-orders-by-po-number/?po_no=${poNo}`);
+        const data = await response.json();
+
+        const docDefinition = {
+            pageSize: { width: 595.28, height: 396.85 },
+            pageOrientation: 'landscape', // Set landscape orientation
+            pageMargins: [20, 30, 20, 30],
+            content: [
+                
+                
+                // Two columns layout
+                {
+                    columns: [
+                        {
+                            width: '*', // Adjust width as needed
+                            stack: [
+                                { text: 'Purchase Order Details', style: 'header' },
+                                { text: `PO Number: ${data.po_no}`, style: 'subheader' },
+                                { text: `Company: ${data.company}`, style: 'body' },
+                                { text: `Date: ${data.date}`, style: 'body' },
+                                { text: `Supplier: ${data.supplier}`, style: 'body' },
+                                
+                                {
+                                    table: {
+                                        headerRows: 1,
+                                        widths: ['*', '*'], // Each column takes half of the page width
+                                        body: [
+                                            ['Quantity', 'Description'], // Table headers
+                                            [`${data.quantity}`, `${data.description}`] // Table content
+                                        ]
+                                    },
+                                    layout: 'lightHorizontalLines' // Adds horizontal lines to the table
+                                },
+                                { text: `User: ${data.user}`, style: 'body' },
+                               
+                            ]
+                        },
+                        {
+                            width: '*', // Adjust width as needed
+                            stack: [
+                                { text: 'Purchase Order Details', style: 'header' },
+                                { text: `PO Number: ${data.po_no}`, style: 'subheader' },
+                                { text: `Company: ${data.company}`, style: 'body' },
+                                { text: `Date: ${data.date}`, style: 'body' },
+                                { text: `Supplier: ${data.supplier}`, style: 'body' },
+                                {
+                                    table: {
+                                        headerRows: 1,
+                                        widths: ['*', '*'], // Each column takes half of the page width
+                                        body: [
+                                            ['Quantity', 'Description'], // Table headers
+                                            [`${data.quantity}`, `${data.description}`] // Table content
+                                        ]
+                                    },
+                                    layout: 'lightHorizontalLines' // Adds horizontal lines to the table
+                                },
+                                { text: `User: ${data.user}`, style: 'body' },
+                            ]
+                        }
+                    ]
+                }
+            ],
+            styles: {
+                header: { fontSize: 18, bold: true },
+                subheader: { fontSize: 14, margin: [0, 10, 0, 5] },
+                body: { fontSize: 12, margin: [0, 5, 0, 5] }
+            }
+        };
+
+        pdfMake.createPdf(docDefinition).download('Purchase_Order.pdf');
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+    }
+};
+
+// Attach the event listener to the button
+var Btn_print = document.querySelector('#btn_print_purchase_order');
+Btn_print.addEventListener("click", generatePDF);

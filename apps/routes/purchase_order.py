@@ -44,7 +44,18 @@ class PurchaseOrder(BaseModel):
     date_updated: Optional[datetime] = None
     date_created: Optional[datetime] = None
 
-
+class PurchaseOrderResponse(BaseModel):
+    id: str
+    date: Optional[str]
+    company: Optional[str]
+    po_no: Optional[str]
+    supplier: Optional[str]
+    quantity: Optional[int]
+    description: Optional[str]
+    user: Optional[str]
+    username: Optional[str]
+    date_created: Optional[str]
+    date_updated: Optional[str]
 
 
 
@@ -57,8 +68,8 @@ async def insert_purchase_order(data:PurchaseOrder, username: str = Depends(get_
         if username == 'joeysabusido' or username == 'Dy':
             dataInsert = dict()
             # Get the current year
-            # employee_collection = mydb['employee_list']
-            # employee_collection.create_index("employee_no", unique=True)
+            purchase_order = mydb['purchase_order']
+            purchase_order.create_index("po_no", unique=True)
 
              # Get the current year
             current_year = datetime.now().year
@@ -71,7 +82,7 @@ async def insert_purchase_order(data:PurchaseOrder, username: str = Depends(get_
 
             if latest_purchase_order:
                 # Extract the last number from the ticket number and increment it
-                last_ticket_no = latest_purchase_order['latest_purchase_order']
+                last_ticket_no = latest_purchase_order['po_no']
                 last_number = int(last_ticket_no.split('-')[-1])
                 new_ticket_no = f"{data.company}-P.O.No: {current_year}-{last_number + 1}"
             else:
@@ -114,6 +125,35 @@ async def get_purchase_orders(
 
         # Convert MongoDB cursor to list of dictionaries
         return purchase_orders
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@api_purchase_order.get('/api-get-purchase-orders-by-po-number/', response_model=PurchaseOrderResponse)
+async def get_purchase_orders_by_po_no(po_no: str ):
+    try:
+        # Fetch the purchase orders from the database
+        purchase_order = mydb.purchase_order.find_one({"po_no": {"$regex": po_no}})
+        
+        if not purchase_order:
+            raise HTTPException(status_code=404, detail="Purchase order not found")
+
+        # Prepare the response data
+        data_purchase_order = {
+            "id": str(purchase_order['_id']),
+            "date": purchase_order.get('date').strftime('%Y-%m-%d') if isinstance(purchase_order.get('date'), datetime) else None,
+            "company": purchase_order.get('company'),
+            "po_no": purchase_order.get('po_no'),
+            "supplier": purchase_order.get('supplier'),
+            "quantity": purchase_order.get('quantity'),
+            "description": purchase_order.get('description'),
+            "user": purchase_order.get('user'),
+            "username": purchase_order.get('username'),
+            "date_created": purchase_order.get('date_created'),
+            "date_updated": purchase_order.get('date_updated')
+        }
+
+        return data_purchase_order
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

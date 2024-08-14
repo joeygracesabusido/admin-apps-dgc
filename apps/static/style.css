@@ -84,6 +84,37 @@ body{
 }
 
 /* Purchase Order */
+.container1 label {
+    flex-basis: 100px;
+    text-align: right;
+    margin-right: 10px;
+    }
+
+    
+.container1 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    }
+
+
+.container1 input {
+    flex-grow: 1;
+    width: 30%;
+    height: 50px;
+    }
+
+.container1 select {
+    flex-grow: 1;
+    width: 30%;
+    height: 50px;
+    }
+
+.container1 textarea {
+    flex-grow: 1;
+    width: 30%;
+    height: 85px;
+    }
 
 
 
