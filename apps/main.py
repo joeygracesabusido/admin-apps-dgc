@@ -17,6 +17,9 @@ from apps.routes.graphql import graphql_app
 
 from apps.routes.inventory_temp import api_inventory
 
+from apps.routes.purchase_order_temp import api_purchase_ord_temp
+from apps.routes.purchase_order import api_purchase_order
+
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
@@ -41,6 +44,9 @@ app.include_router(api_jo_temp)
 app.include_router(api_job_order, tags=['Job Order'])
 app.include_router(api_payroll_temp)
 app.include_router(api_payroll, tags=['paryoll'])
+
+app.include_router(api_purchase_ord_temp)
+app.include_router(api_purchase_order, tags=['Purchase Order'])
 
 
 # Mount Strawberry's GraphQL app onto FastAPI
