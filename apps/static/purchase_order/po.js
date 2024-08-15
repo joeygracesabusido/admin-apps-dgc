@@ -109,6 +109,9 @@ const generatePDF = async ()  => {
         else if(data.company === 'DRDC'){
             company_name = 'DURAVILLE REALTY AND DEVELOPMENT CORP.';
         }
+        else if(data.company === 'LCSDC'){
+            company_name = 'LAND CRIS SOMERSET DEVELOPMENT CORP.';
+        }
 
         // console.log(company_name)
         const docDefinition = {
