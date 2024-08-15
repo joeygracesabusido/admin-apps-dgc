@@ -93,10 +93,24 @@ $(document).ready(function() {
 
 const generatePDF = async ()  => {
     try {
-        const poNo = document.querySelector('#print_po_number')
+        const poNoElement = document.getElementById('print_po_number');
+        const poNo =  poNoElement.value;
         const response = await fetch(`/api-get-purchase-orders-by-po-number/?po_no=${poNo}`);
         const data = await response.json();
 
+        console.log(poNo)
+        console.log(data.company)
+
+        let company_name;
+
+        if (data.company ==='AGUA FUENTE'){
+            company_name = 'AGUA FUENTE MANAGEMENT, INC.';
+        }
+        else if(data.company === 'DRDC'){
+            company_name = 'DURAVILLE REALTY AND DEVELOPMENT CORP.';
+        }
+
+        // console.log(company_name)
         const docDefinition = {
             pageSize: { width: 595.28, height: 396.85 },
             pageOrientation: 'landscape', // Set landscape orientation
@@ -110,57 +124,175 @@ const generatePDF = async ()  => {
                         {
                             width: '*', // Adjust width as needed
                             stack: [
-                                { text: 'Purchase Order Details', style: 'header' },
-                                { text: `PO Number: ${data.po_no}`, style: 'subheader' },
-                                { text: `Company: ${data.company}`, style: 'body' },
+                                { text: `Company: ${company_name}`, style: 'body' },
+                                { text: `${data.po_no}`, style: 'subheader' },
+                                
                                 { text: `Date: ${data.date}`, style: 'body' },
                                 { text: `Supplier: ${data.supplier}`, style: 'body' },
-                                
+                                { text: `PURCHASE ORDER`, style: 'header2' },
                                 {
                                     table: {
                                         headerRows: 1,
-                                        widths: ['*', '*'], // Each column takes half of the page width
+                                        widths: ['25%', '75%'], // Each column takes half of the page width
+                                        heights: function (rowIndex) { 
+                                            return rowIndex === 0 ? 10 : 85; // Set different heights for header and other rows
+                                        },
                                         body: [
-                                            ['Quantity', 'Description'], // Table headers
-                                            [`${data.quantity}`, `${data.description}`] // Table content
+                                            [
+                                                { text: 'Quantity', style: 'tableHeader' }, // Table header with style
+                                                { text: 'Description', style: 'tableHeader' } // Table header with style
+                                            ],
+                                            
+                                            [
+                                                { text: `${data.quantity}`, style: 'tableBody' }, // Table content with style
+                                                { text: `${data.description}`, style: 'tableBody' } // Table content with style
+                                            ]
                                         ]
                                     },
-                                    layout: 'lightHorizontalLines' // Adds horizontal lines to the table
+                                    // layout: 'lightHorizontalLines' // Adds horizontal lines to the table
+                                    layout: {
+                                        fillColor: function (rowIndex, node, columnIndex) {
+                                            return (rowIndex === 0) ? '#CCCCCC' : null; // Optional: Add background color to the header row
+                                        },
+                                        hLineWidth: function (i, node) {
+                                            return 1; // Horizontal line width
+                                        },
+                                        vLineWidth: function (i, node) {
+                                            return 1; // Vertical line width
+                                        },
+                                        hLineColor: function (i, node) {
+                                            return '#000000'; // Horizontal line color
+                                        },
+                                        vLineColor: function (i, node) {
+                                            return '#000000'; // Vertical line color
+                                        }
+                                    },
+                                
+                                
+                                
                                 },
-                                { text: `User: ${data.user}`, style: 'body' },
+
+                                
+                                
+                                {
+                                    margin: [0, 20, 0, 0],
+                                    stack: [
+                                        {
+                                            columns: [
+                                                {
+                                                    width: '*',
+                                                    stack: [
+                                                        { text: 'Prepared By:  ___________________________', style: 'signaturies' },
+                                                        { text: 'Milyn Makiramdam', style: 'body3' },
+                                                        { text: 'Jr. Admin Supervisor', style: 'body3' }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            margin: [0, 20, 0, 0], // Add some space between the two sections
+                                            stack: [
+                                                { text: 'Approved By:  ___________________________', style: 'signaturies', alignment: 'center' },
+                                                { text: 'Jeffrey S. Bongat', style: 'body3' },
+                                                { text: 'CFO', style: 'body3' }
+                                            ]
+                                        }
+                                    ]
+                                }
                                
                             ]
                         },
                         {
                             width: '*', // Adjust width as needed
                             stack: [
-                                { text: 'Purchase Order Details', style: 'header' },
-                                { text: `PO Number: ${data.po_no}`, style: 'subheader' },
-                                { text: `Company: ${data.company}`, style: 'body' },
+                                { text: `Company: ${company_name}`, style: 'body' },
+                                { text: `${data.po_no}`, style: 'subheader' },
+                                
                                 { text: `Date: ${data.date}`, style: 'body' },
                                 { text: `Supplier: ${data.supplier}`, style: 'body' },
+                                { text: `PURCHASE ORDER`, style: 'header2' },
                                 {
                                     table: {
                                         headerRows: 1,
-                                        widths: ['*', '*'], // Each column takes half of the page width
+                                        widths: ['25%', '75%'], // Each column takes half of the page width
+                                        heights: function (rowIndex) { 
+                                            return rowIndex === 0 ? 10 : 85; // Set different heights for header and other rows
+                                        },
                                         body: [
-                                            ['Quantity', 'Description'], // Table headers
-                                            [`${data.quantity}`, `${data.description}`] // Table content
+                                            
+                                            [
+                                                { text: 'Quantity', style: 'tableHeader' }, // Table header with style
+                                                { text: 'Description', style: 'tableHeader' } // Table header with style
+                                            ],
+                                            [
+                                                { text: `${data.quantity}`, style: 'tableBody' }, // Table content with style
+                                                { text: `${data.description}`, style: 'tableBody' } // Table content with style
+                                            ]
                                         ]
                                     },
-                                    layout: 'lightHorizontalLines' // Adds horizontal lines to the table
+                                    // layout: 'lightHorizontalLines' // Adds horizontal lines to the table
+                                    layout: {
+                                        fillColor: function (rowIndex, node, columnIndex) {
+                                            return (rowIndex === 0) ? '#CCCCCC' : null; // Optional: Add background color to the header row
+                                        },
+                                        hLineWidth: function (i, node) {
+                                            return 1; // Horizontal line width
+                                        },
+                                        vLineWidth: function (i, node) {
+                                            return 1; // Vertical line width
+                                        },
+                                        hLineColor: function (i, node) {
+                                            return '#000000'; // Horizontal line color
+                                        },
+                                        vLineColor: function (i, node) {
+                                            return '#000000'; // Vertical line color
+                                        }
+                                    },
+                                
+                                
                                 },
-                                { text: `User: ${data.user}`, style: 'body' },
+                                // this line is for Signatories
+                                {
+                                    margin: [0, 20, 0, 0],
+                                    stack: [
+                                        {
+                                            columns: [
+                                                {
+                                                    width: '*',
+                                                    stack: [
+                                                        { text: 'Prepared By:   ___________________________', style: 'signaturies' },
+                                                        { text: 'Milyn Makiramdam', style: 'body3' },
+                                                        { text: 'Jr. Admin Supervisor', style: 'body3' }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            margin: [0, 20, 0, 0], // Add some space between the two sections
+                                            stack: [
+                                                { text: 'Approved By:   ___________________________', style: 'signaturies', alignment: 'center' },
+                                                { text: 'Jeffrey S. Bongat', style: 'body3', },
+                                                { text: 'CFO', style: 'body3'}
+                                            ]
+                                        }
+                                    ]
+                                }
                             ]
                         }
                     ]
                 }
             ],
             styles: {
-                header: { fontSize: 18, bold: true },
-                subheader: { fontSize: 14, margin: [0, 10, 0, 5] },
-                body: { fontSize: 12, margin: [0, 5, 0, 5] }
-            }
+                header: { fontSize: 9, bold: true },
+                header2: { fontSize: 10, bold: true, alignment: 'center' }, // Centered text for header2
+                subheader: { fontSize: 9, margin: [0, 10, 0, 5] },
+                body: { fontSize: 8, margin: [0, 5, 0, 5] },
+                body3: { fontSize: 8, margin: [115, 5, 0, 5] },
+                body2: { fontSize: 8, margin: [0, 5, 0, 5],alignment: 'center' },
+                signaturies: { fontSize: 8, alignment: 'center' },
+                tableHeader: { fontSize: 10, bold: true, fillColor: '#f0f0f0' },
+                tableBody: { fontSize: 10, margin: [0, 5, 0, 5] } // Style for table body content
+            }  
         };
 
         pdfMake.createPdf(docDefinition).download('Purchase_Order.pdf');
