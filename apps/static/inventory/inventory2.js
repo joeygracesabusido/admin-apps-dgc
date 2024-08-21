@@ -121,7 +121,7 @@ $(document).ready(function() {
                     newRow.append('<td>' + item.inventory_user + '</td>');
                     newRow.append('<td>' + item.inventory_department + '</td>');
                     
-                    newRow.append('<td><a href="/job-order/' + item.id + '"> \
+                    newRow.append('<td><a href="/inventory-update/' + item.id + '"> \
                         <button type="button" class="btn btn-primary"> \
                         <i class="fas fa-database"></i> Edit</button></a></td>');
 
