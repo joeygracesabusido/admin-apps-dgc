@@ -21,6 +21,9 @@ services:
     # command: uvicorn apps.main:app --host 172.26.14.250 --port 7000 --reload
     ports:
       - "1000:1000"
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     volumes:
       - .:/code
     environment:
