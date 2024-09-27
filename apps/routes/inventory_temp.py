@@ -27,6 +27,13 @@ async def api_login(request: Request,username: str = Depends(get_current_user)):
 async def api_update_employee_html(request: Request,username: str = Depends(get_current_user)):
     return templates.TemplateResponse("inventory/update_employee.html", {"request": request})
 
+@api_inventory.get("/api-add-inventory/", response_class=HTMLResponse)
+async def api_update_employee_html(request: Request,username: str = Depends(get_current_user)):
+    return templates.TemplateResponse("inventory/inventory.html", {"request": request})
+
+
+
+
 @api_inventory.get("/inventory-list/", response_class=HTMLResponse)
 async def api_update_employee_html(request: Request,username: str = Depends(get_current_user)):
     return templates.TemplateResponse("inventory/inventory_list.html", {"request": request})

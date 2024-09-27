@@ -25,10 +25,10 @@
         
 <!-- =================================this is for modal update cash advance============================= -->
               <div class="modal" id="insert_invt_items_modal" tabindex="-1">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-xl">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title">Add Job Order</h5>
+                      <h5 class="modal-title">Add Inventory</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -93,15 +93,7 @@
                           </div>
                         </div>
 
-                        <div class="col-md">
-                          <div class="form-floating">
-                            <input type="number" class="form-control" id="inventory_quantity"  >
-                            <label for="floatingInputGrid" class="label-large">Quantity</label>
-            
-                          
-                          </div>
-                        </div>
-                        
+                       
                         
                       </div>
 
@@ -110,7 +102,17 @@
 
                       <div class="row g-2">
     
-                  
+
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="number" class="form-control" id="inventory_quantity"  >
+                            <label for="floatingInputGrid" class="label-large">Quantity</label>
+            
+                          
+                          </div>
+                       
+                        </div>
+                        
                         <div class="col-md">
                           <div class="form-floating">
                             <input type="text" class="form-control" id="inventory_brand"  >
@@ -181,8 +183,7 @@
                           </div>
                         </div>
 
-
-                        <div class="col-md">
+                      <div class="col-md">
                           <div class="form-floating">
                             <input type="text" class="form-control" id="inventory_description"  >
                             <label for="floatingInputGrid" class="label-large">Description</label>
@@ -193,9 +194,50 @@
 
                         
                       </div>
+                 
+
+                 <div class="container mt-3">
+                    <table class="table table-borderless">
+                        <thead class="border-bottom font-weight-bold">
+                            <tr>
+                                <td>Qty</td>
+                                <td>Brand</td>
+                                <td>Amount</td>
+                                <td>Serial No.</td>
+                                <td>User</td>
+                                <td>Department</td>
+                                
+                                
+                            
+                                <!-- <td>
+                                    <button type="button"  id="add_button" class="btn btn-primary"><i class="fas											 fa-database">
+                                    </i>Add</button>
+                                </td> -->
+
+                            
+                            </tr>
+                        </thead>
+                        <tbody id="addrow">
+                            
+                            
+                        </tbody>
+                    </table>
+
+
+
+									</div>
+
+
+
+
+
+                     
                       
                     </div>
                     <div class="modal-footer">
+										<button type="button"  id="add_button" class="btn btn-primary"><i class="fas fa-database">
+                    </i>Add line</button>
+ 
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                       <button type="button" class="btn btn-primary" id="btn_save_inventory">Save changes</button>
                     </div>
@@ -315,3 +357,7 @@
    
 
 {% endblock %}
+
+
+
+
