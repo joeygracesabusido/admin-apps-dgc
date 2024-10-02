@@ -185,8 +185,8 @@ $(document).ready(function () {
             <tr>
                 <td style="padding: 0; margin: 0;">
                     <input type="text" 
-                    name="quantity${x}" quantity
-                    id="quantity${x}"
+                    name="_inventory_quantity${x}"
+                    id="_inventory_quantity${x}"
                     
                     step="0.01"
                      />
@@ -196,33 +196,33 @@ $(document).ready(function () {
 
                 <td style="padding: 0; margin: 0;">
                     <input type="text" 
-                    name="brand${x}" 
-                    id="brand${x}"
+                    name="inventory_brand${x}" 
+                    id="inventory_brand${x}"
                     
                     step="0.01"
                      />
                 </td>
                 <td style="padding: 0; margin: 0;">
                     <input
-                        type="number"
-                        name="amount${x}"
-                        id="amount${x}"
+                        type="text"
+                        name="inventory_amount${x}"
+                        id="inventory_amount${x}"
                         
                     />
                 </td>
                 <td style="padding: 0; margin: 0;">
                     <input
                         type="text"
-                        name="serial_no${x}"
-                        id="serial_no${x}"
+                        name="inventory_serial_no${x}"
+                        id="inventory_serial_no${x}"
                         step="0.01"
                     />
                 </td>
                 <td style="padding: 0; margin: 0;">
                     <input
                         type="text"
-                        name="user_employee${x}"
-                        id="user_employee${x}"
+                        name="inventory_user${x}"
+                        id="inventory_user${x}"
                         
                         step="0.01"
                     />
@@ -231,14 +231,42 @@ $(document).ready(function () {
                  <td style="padding: 0; margin: 0;">
                     <input
                         type="text"
-                        name="department${x}"
-                        id="department${x}"
+                        name="inventory_department${x}"
+                        id="inventory_department${x}"
                         
                         step="0.01"
 
                         
                     />
                 </td>
+
+
+                <td style="padding: 0; margin: 0;">
+                    <input
+                        type="date"
+                        name="inventory_date_issue${x}"
+                        id="inventory_date_issue${x}"
+                        
+                        step="0.01"
+
+                        
+                    />
+                </td>
+
+                <td style="padding: 0; margin: 0;">
+                    <input
+                        type="date"
+                        name="inventory_description${x}"
+                        id="inventory_description"${x}"
+                        
+                        step="0.01"
+
+                        
+                    />
+                </td>
+
+
+                
                 
                 
                 <td style="padding: 0; margin: 0;">
