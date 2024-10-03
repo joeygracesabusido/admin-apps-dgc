@@ -5,40 +5,40 @@
 
 
 
-// this function is for inserting inventory list item
-$(document).ready(function() {
-    $('#btn_save_inventory').click(function() {
-        var inventoryData = {
-            inventory_company: $('#jo_offices').val(),
-            inventory_item: $('#inventory_item').val(),
-            inventory_purchase_date: $('#inventory_purchase_date').val(),
-            inventory_si_no: $('#inventory_si_no').val(),
-            inventory_quantity: $('#inventory_quantity').val(),
-            inventory_brand: $('#inventory_brand').val(),
-            inventory_amount: parseFloat($('#inventory_amount').val()),
-            inventory_serial_no: $('#inventory_serial_no').val(),
-            inventory_user: $('#inventory_user').val(),
-            inventory_department: $('#inventory_department').val(),
-            inventory_date_issue: $('#inventory_date_issue').val(),
-            inventory_description: $('#inventory_description').val()
-        };
+// // this function is for inserting inventory list item
+// $(document).ready(function() {
+//     $('#btn_save_inventory').click(function() {
+//         var inventoryData = {
+//             inventory_company: $('#jo_offices').val(),
+//             inventory_item: $('#inventory_item').val(),
+//             inventory_purchase_date: $('#inventory_purchase_date').val(),
+//             inventory_si_no: $('#inventory_si_no').val(),
+//             inventory_quantity: $('#inventory_quantity').val(),
+//             inventory_brand: $('#inventory_brand').val(),
+//             inventory_amount: parseFloat($('#inventory_amount').val()),
+//             inventory_serial_no: $('#inventory_serial_no').val(),
+//             inventory_user: $('#inventory_user').val(),
+//             inventory_department: $('#inventory_department').val(),
+//             inventory_date_issue: $('#inventory_date_issue').val(),
+//             inventory_description: $('#inventory_description').val()
+//         };
 
-        console.log(inventoryData)
-        $.ajax({
-            url: '/api-insert-inventory-item',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(inventoryData),
-            success: function(response) {
-                alert('Data has been saved');
-                window.location.href = "/inventory-list/"; // Redirect to the inventory list page
-            },
-            error: function(xhr, status, error) {
-                alert('Error: ' + error);
-            }
-        });
-    });
-});
+//         console.log(inventoryData)
+//         $.ajax({
+//             url: '/api-insert-inventory-item',
+//             type: 'POST',
+//             contentType: 'application/json',
+//             data: JSON.stringify(inventoryData),
+//             success: function(response) {
+//                 alert('Data has been saved');
+//                 window.location.href = "/inventory-list/"; // Redirect to the inventory list page
+//             },
+//             error: function(xhr, status, error) {
+//                 alert('Error: ' + error);
+//             }
+//         });
+//     });
+// });
 
 
 
@@ -120,7 +120,7 @@ $(document).ready(function() {
                     newRow.append('<td>' + item.inventory_date_issue + '</td>');
                     newRow.append('<td>' + item.inventory_user + '</td>');
                     newRow.append('<td>' + item.inventory_department + '</td>');
-                    
+                    newRow.append('<td>' + item.inventory_amount + '</td>');
                     newRow.append('<td><a href="/inventory-update/' + item.id + '"> \
                         <button type="button" class="btn btn-primary"> \
                         <i class="fas fa-database"></i> Edit</button></a></td>');
@@ -185,8 +185,8 @@ $(document).ready(function () {
             <tr>
                 <td style="padding: 0; margin: 0;">
                     <input type="text" 
-                    name="_inventory_quantity${x}"
-                    id="_inventory_quantity${x}"
+                    name="inventory_quantity${x}"
+                    id="inventory_quantity${x}"
                     
                     step="0.01"
                      />
@@ -229,15 +229,18 @@ $(document).ready(function () {
                 </td>
 
                  <td style="padding: 0; margin: 0;">
-                    <input
-                        type="text"
-                        name="inventory_department${x}"
-                        id="inventory_department${x}"
-                        
-                        step="0.01"
-
-                        
-                    />
+                    <select class="form-select" id="inventory_department${x}" name="inventory_department${x}" aria-label="Floating label select example">
+                            <option selected>----Select Menu----</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Accounting">Accounting</option>
+                            <option value="HR">HR</option>
+                            <option value="Engineering-Antipolo">Engineering-Antipolo</option>
+                            <option value="Engineering-Cavite">Engineering-Cavite</option>
+                            <option value="Legal">Legal</option>
+                            <option value="Permits">Permits</option>
+                            <option value="Sales & Docs">Sales & Docs</option>
+                            <option value
+                    </select>
                 </td>
 
 
@@ -255,7 +258,7 @@ $(document).ready(function () {
 
                 <td style="padding: 0; margin: 0;">
                     <input
-                        type="date"
+                        type="text"
                         name="inventory_description${x}"
                         id="inventory_description"${x}"
                         
@@ -316,4 +319,57 @@ $(document).ready(function () {
     
 });
 
+
+
+// this is to insert data
+
+$(document).ready(function() {
+    // Event listener for the "Save changes" button
+    $('#btn_save_inventory').click(function() {
+        // Initialize an array to hold the inventory items
+        let inventoryItems = [];
+
+        // Loop through each row in the table body (with ID `addrow`)
+        $('#addrow tr').each(function() {
+            // Collect data from each input field inside the current row
+            let inventoryItem = {
+                inventory_company: $('#jo_offices').val(),
+                inventory_item: $('#inventory_item').val(),
+                inventory_purchase_date: $('#inventory_purchase_date').val(),
+                inventory_si_no: $('#inventory_si_no').val(),
+                inventory_quantity: $(this).find('input[name^="inventory_quantity"]').val(),
+                inventory_brand: $(this).find('input[name^="inventory_brand"]').val(),
+                inventory_amount: $(this).find('input[name^="inventory_amount"]').val(),
+                inventory_serial_no: $(this).find('input[name^="inventory_serial_no"]').val(),
+                inventory_user: $(this).find('input[name^="inventory_user"]').val(),
+                inventory_department: $(this).find('select[name^="inventory_department"]').val(),
+                inventory_date_issue: $(this).find('input[name^="inventory_date_issue"]').val(),
+                inventory_description: $(this).find('input[name^="inventory_description"]').val()
+            };
+
+            // Add this item to the array
+            inventoryItems.push(inventoryItem);
+        });
+
+        // AJAX POST request to submit the data to the FastAPI backend
+        $.ajax({
+            url: '/api-insert-inventory-item',  // FastAPI endpoint
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(inventoryItems),  // Send the array of inventory items
+            success: function(response) {
+                // Success handling: Display a success message, close the modal, or refresh the table
+                alert(response.message);
+                $('#insert_invt_items_modal').modal('hide');
+                window.location.href = "/inventory-list/"; 
+                // Optionally, you can refresh the table or redirect
+            },
+            error: function(xhr, status, error) {
+                // Error handling: Display an error message
+                alert('Error: ' + error);
+            }
+        });
+    });
+
+})
 
