@@ -120,7 +120,7 @@ $(document).ready(function() {
                     newRow.append('<td>' + item.inventory_date_issue + '</td>');
                     newRow.append('<td>' + item.inventory_user + '</td>');
                     newRow.append('<td>' + item.inventory_department + '</td>');
-                    newRow.append('<td>' + item.inventory_amount + '</td>');
+                    newRow.append('<td>' + formatNumberWithSeparator(item.inventory_amount) + '</td>');
                     newRow.append('<td><a href="/inventory-update/' + item.id + '"> \
                         <button type="button" class="btn btn-primary"> \
                         <i class="fas fa-database"></i> Edit</button></a></td>');
@@ -151,11 +151,28 @@ $(document).ready(function() {
 
 
 const initializeDataTable = () => {
-    $('#table_inventory').DataTable();
+    $('#table_inventory').DataTable({
+
+        responsive: true,
+        scrollX: true,          // Enable horizontal scrolling if needed
+        autoWidth: false,       // Disable fixed width
+        scrollY: '350px',       // Set a specific height
+        scrollCollapse: true,   // Collapse height if fewer rowsi         
+     
+
+   });
 };
 
 // let table = new DataTable('#table_inventory_list');
  
+ // Function to format number with thousand separator
+    function formatNumberWithSeparator(value) {
+        return parseFloat(value).toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
 
 
 $(document).ready(function () {
@@ -288,25 +305,7 @@ $(document).ready(function () {
         $(wrapper).append(fieldHTML); // Add field HTML
     });
 
-    // Event delegation for input blur to handle formatting
-    $(document).on('blur', 'input[name^="amount"], input[name^="credit_amount"]', function () {
-        let input = $(this);
-        let inputValue = input.val().trim();
-        if (inputValue !== '' && !isNaN(inputValue)) {
-            input.val(formatNumberWithSeparator(parseFormattedNumber(inputValue)));
-        }
-        //myFunction2();
-    });
-
-    // Event delegation for input focus to handle formatting
-    $(document).on('focus', 'input[name^="amount"], input[name^="credit_amount"]', function () {
-        let input = $(this);
-        let inputValue = input.val().trim();
-        input.val(parseFormattedNumber(inputValue)); // Remove formatting for editing
-        //myFunction2();
-    });
-
-    // Once remove button is clicked
+      // Once remove button is clicked
     $(wrapper).on('click', '#remove_button', function (e) {
         e.preventDefault();
         $(this).closest('tr').remove(); // Remove field HTML 
