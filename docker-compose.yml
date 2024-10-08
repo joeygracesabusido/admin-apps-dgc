@@ -12,7 +12,7 @@
 #     volumes:
 #       - ./apps:/code/apps
 
-#version: '3'
+version: '3'
 services:
   web:
     build: .
