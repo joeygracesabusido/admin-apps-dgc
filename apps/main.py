@@ -20,6 +20,8 @@ from apps.routes.inventory_temp import api_inventory
 from apps.routes.purchase_order_temp import api_purchase_ord_temp
 from apps.routes.purchase_order import api_purchase_order
 
+from apps.routes.repair import api_repair
+
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
@@ -48,6 +50,8 @@ app.include_router(api_payroll, tags=['paryoll'])
 app.include_router(api_purchase_ord_temp)
 app.include_router(api_purchase_order, tags=['Purchase Order'])
 
+
+app.include_router(api_repair)
 
 # Mount Strawberry's GraphQL app onto FastAPI
 app.mount("/graphql", graphql_app)
