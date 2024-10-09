@@ -21,13 +21,14 @@ class RepairItem(BaseModel):
     company: str
     srs: Optional[str]
     repair_date: Optional[datetime] = None
-    brans: Optional[str] = None
+    brand: Optional[str] = None
     model: Optional[str] = None
     serial_number: Optional[str] = None
-    remarks: Optional[float] = None
+    remarks: Optional[str] = None
     repair_user: Optional[str] = None
     amount: Optional[float] = None
     department: Optional[str] = None
+    user: Optional[str] = None
     date_updated: Optional[datetime] = None
     date_created: Optional[datetime] = None
 
@@ -62,6 +63,37 @@ async def insert_inventory_item(items:RepairItem, username: str = Depends(get_cu
          "date_updated": items.date_updated.isoformat() if items.date_updated else None
          }
      mydb.repair.insert_one(dataInsert)
-     return {"message":"Data has been save"} 
+     return {"message":"Data has been save"}
+
+
+@api_repair.get('/api-get-repair-list/')
+async def find_all_repair(username: str = Depends(get_current_user)):
+    """This function is querying all repair data"""
+
+    result = mydb.repair.find().sort("repair_date", -1)
+    
+    repair_data = [
+        {
+        "id": str(items['_id']),   
+        "company": items['company'],
+        "repair_date": items['repair_date'],
+        "srs": items['srs'],
+        "brand": items['brand'],
+        "model": items['model'],
+        "serial_number": items['serial_number'],
+        "remarks": items['remarks'],
+        "repair_user":items['repair_user'],
+        "amount":items['amount'],
+        "department": items['department'],
+        "user": items['user'],
+        "date_created": items['date_created'],
+        "date_updated": items['date_updated']
+
+        }
+        for items in result
+    ]
+
+    return repair_data
+
 
 
