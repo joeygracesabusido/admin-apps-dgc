@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $("#btn_repair_btn").click(function(event) {
+    $("#update_repair_btn").click(function(event) {
         event.preventDefault();
 
         var id = $("#repair_id").val(); 
@@ -23,7 +23,7 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(updateData),
             success: function(response) {
-                alert("Job Order updated successfully!");
+                alert("Repair updated successfully!");
                 // Optionally, you can redirect or update the UI based on the response
                 window.location.href= "/api-repair/"; // Redirect to the inventory list page
             },

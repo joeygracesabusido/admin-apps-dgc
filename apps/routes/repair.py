@@ -137,29 +137,29 @@ async def api_update_inventory(id: str,
     
     
 
-        obj_id = ObjectId(id)
+    obj_id = ObjectId(id)
 
-        update_data = {
-            "company": items.company,
-                "srs": items.srs,
-                "repair_date": items.repair_date,
-                "brand": items.brand,
-                "model": items.model,
-                "serial_number": items.serial_number,
-                "remarks": items.remarks,
-                "repair_user":items.repair_user,
-                "amount":items.amount,
-                "department": items.department,
-                "user": username,
-                "date_updated": datetime.now().isoformat()
-         }
+    update_data = {
+        "company": items.company,
+            "srs": items.srs,
+            "repair_date": items.repair_date,
+            "brand": items.brand,
+            "model": items.model,
+            "serial_number": items.serial_number,
+            "remarks": items.remarks,
+            "repair_user":items.repair_user,
+            "amount":items.amount,
+            "department": items.department,
+            "user": username,
+            "date_updated": datetime.now().isoformat()
+        }
+    
+    
         
-     
-            
 
-        mydb.repair.update_one({'_id': obj_id}, {'$set': update_data})
+    mydb.repair.update_one({'_id': obj_id}, {'$set': update_data})
 
-        return ('Data has been Update')
+    return ('Data has been Update')
         
         
 

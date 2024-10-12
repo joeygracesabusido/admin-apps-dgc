@@ -95,7 +95,14 @@ $(document).ready(function() {
 
 
 const initializeDataTable = () => {
-    $('#table_repair').DataTable();
+    $('#table_repair').DataTable({
+        responsive: true,
+        scrollX: true,          // Enable horizontal scrolling if needed
+        autoWidth: false,       // Disable fixed width
+        scrollY: '350px',       // Set a specific height
+        scrollCollapse: true,   // Collapse height if fewer rowsi 
+    });
+    
 };
 
 
