@@ -25,7 +25,7 @@ $(document).ready(function() {
             data: JSON.stringify(repairData),
             success: function(response) {
                 alert('Data has been saved');
-                window.location.href = "/repair/"; // Redirect to the inventory list page
+                window.location.href = "/api-repair/"; // Redirect to the inventory list page
             },
             error: function(xhr, status, error) {
                 alert('Error: ' + error);
@@ -62,11 +62,11 @@ $(document).ready(function() {
                     newRow.append('<td>' + item.brand + '</td>');
                     newRow.append('<td>' + item.model + '</td>');
                     newRow.append('<td>' + item.serial_number + '</td>');
-                    newRow.append('<td>' + item.serial_number + '</td>');                  
+                    newRow.append('<td>' + item.remarks + '</td>');                  
                     newRow.append('<td>' + item.repair_user + '</td>');
                     newRow.append('<td>' + item.amount + '</td>');
                     newRow.append('<td>' + item.department + '</td>');
-                    newRow.append('<td><a href="/job-order/' + item.id + '"> \
+                    newRow.append('<td><a href="/api-update-repair/' + item.id + '"> \
                         <button type="button" class="btn btn-primary"> \
                         <i class="fas fa-database"></i> Edit</button></a></td>');
 

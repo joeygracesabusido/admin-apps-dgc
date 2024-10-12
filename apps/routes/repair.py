@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from  ..database.mongodb import create_mongo_client
 mydb = create_mongo_client()
 
-#from bson import ObjectId
+from bson import ObjectId
 
 from  ..authentication.authenticate_user import get_current_user
 
@@ -94,6 +94,76 @@ async def find_all_repair(username: str = Depends(get_current_user)):
     ]
 
     return repair_data
+
+@api_repair.get('/api-update-repair/{id}', response_class = HTMLResponse)
+async def update_repair_html(id: str,request: Request,username: str = Depends(get_current_user)):
+    """This function is for updating repair"""
+
+    obj_id =  ObjectId(id)
+    
+    item = mydb.repair.find_one({'_id': obj_id})
+
+    if item:
+
+        repair_data ={
+                "id": str(item['_id']),   
+                "company": item['company'],
+                "repair_date": item['repair_date'],
+                "srs": item['srs'],
+                "brand": item['brand'],
+                "model": item['model'],
+                "serial_number": item['serial_number'],
+                "remarks": item['remarks'],
+                "repair_user":item['repair_user'],
+                "amount":item['amount'],
+                "department": item['department'],
+                "user": item['user'],
+                "date_created": item['date_created'],
+                "date_updated": item['date_updated']
+
+        }
+
+        return templates.TemplateResponse("repair/update_repair.html", 
+                                       {"request": request, "repair_data": repair_data})
+    else:
+        # Handle case where item with given id is not found (optional)
+        return JSONResponse(status_code=404, content={"message": "Repair item not found"})
+    
+@api_repair.put("/repair-update/{id}")
+async def api_update_inventory(id: str,
+                               items:RepairItem ,
+                               username: str = Depends(get_current_user)):
+    
+    
+    
+
+        obj_id = ObjectId(id)
+
+        update_data = {
+            "company": items.company,
+                "srs": items.srs,
+                "repair_date": items.repair_date,
+                "brand": items.brand,
+                "model": items.model,
+                "serial_number": items.serial_number,
+                "remarks": items.remarks,
+                "repair_user":items.repair_user,
+                "amount":items.amount,
+                "department": items.department,
+                "user": username,
+                "date_updated": datetime.now().isoformat()
+         }
+        
+     
+            
+
+        mydb.repair.update_one({'_id': obj_id}, {'$set': update_data})
+
+        return ('Data has been Update')
+        
+        
+
+    
 
 
 
