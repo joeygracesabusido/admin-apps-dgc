@@ -252,24 +252,24 @@ function printCheckDetails() {
   }
 
   // Create a new window for printing
-  const printWindow = window.open('', '', 'height=400,width=600');
+  const printWindow = window.open('', '', 'height=200,width=600');
 
  // Write the content to the print window
- printWindow.document.write('<style>');
- printWindow.document.write('body { font-family: Arial, sans-serif; margin: 0; padding: 20px;font-size: 13px; }'); // Set body styles
- printWindow.document.write('.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }'); // Flexbox for header alignment
- printWindow.document.write('.details { display: flex; justify-content: space-between; align-items: center; }'); // Flexbox for details alignment
- printWindow.document.write('.right-align { margin-left: auto; margin-right: 60px; }'); // Right align with margin
- printWindow.document.write('.right-align2 { margin-left: auto; margin-right: 50px; }'); // Right align with margin
- printWindow.document.write('</style>');
+  printWindow.document.write('<style>');
+  printWindow.document.write('body { font-family: Arial, sans-serif; margin: 0; padding: 4px;font-size: 13px; }'); // Set body styles
+  printWindow.document.write('.date { position: absolute; \
+                                top: 0px; right: 65px; \
+                                display: flex; align-items: center; }');
+  printWindow.document.write('.date-digit { margin: 2px; display: inline-block; }'); // Styles for date digits
 
- // Print only the essential details
- printWindow.document.write(`<div class="header"><span class="right-align">${formatDate(selectedCheck.trans_date)}</span></div>`); // Date on right
- printWindow.document.write(`<div class="details"><span>${selectedCheck.payee}</span><span class="right-align2">${formatNumberWithSeparator(selectedCheck.amount)}</span></div>`); // Payee and amount in line
+  printWindow.document.write('</style>');
 
- printWindow.document.write(`<div class="payee-amount">${selectedCheck.amount_in_words}</div>`); // Amount in words
+  console.log(formatDate(selectedCheck.trans_date)); // Log the formatted date
 
-
+  // Print only the essential details
+  printWindow.document.write(`<div class="date"><span>${formatDate(selectedCheck.trans_date)}</span></div>`); // Date on right
+  
+ 
   // Close the document to apply styles and content
   printWindow.document.close();
   printWindow.focus();
@@ -278,16 +278,23 @@ function printCheckDetails() {
   printWindow.print();
 }
 
-// Helper function to format the date as MM DD YYYY
+
+
 function formatDate(dateString) {
   const date = new Date(dateString);
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
   const day = String(date.getDate()).padStart(2, '0');
-  const year = date.getFullYear();
+  const year = String(date.getFullYear());
 
-  return `${month} ${day} ${year}`; // Format as MM DD YYYY
+  
+  // Wrap each digit in a span for custom styling
+   const formattedMonth = month.split('').map(digit => `<span class="date-digit">${digit}</span>`).join(' ');
+   const formattedDay = day.split('').map(digit => `<span class="date-digit">${digit}</span>`).join(' ');
+   const formattedYear = year.split('').map(digit => `<span class="date-digit">${digit}</span>`).join(' ');
+
+   // Return formatted date with spans for styling
+  //  return `${formattedMonth}   ${formattedDay}   ${formattedYear}`;
+  return `${formattedMonth} &nbsp;&nbsp;&nbsp;&nbsp; ${formattedDay} &nbsp;&nbsp;&nbsp;&nbsp; ${formattedYear}`;
+
+
 }
-
-
- 
-
