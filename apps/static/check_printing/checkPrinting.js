@@ -255,12 +255,39 @@ function printCheckDetails() {
   const printWindow = window.open('', '', 'height=200,width=600');
 
  // Write the content to the print window
+
+ //bdo printing right: 48px;
   printWindow.document.write('<style>');
   printWindow.document.write('body { font-family: Arial, sans-serif; margin: 0; padding: 4px;font-size: 13px; }'); // Set body styles
   printWindow.document.write('.date { position: absolute; \
-                                top: 0px; right: 65px; \
+                                top: 5px; right: 56px; \
                                 display: flex; align-items: center; }');
   printWindow.document.write('.date-digit { margin: 2px; display: inline-block; }'); // Styles for date digits
+  
+
+  // Container for payee and amount
+  printWindow.document.write('.payee-amount-container { display: flex; align-items: center; \
+                              justify-content: space-between; width: 100%; \
+                               margin-top: 40px; }');
+
+  printWindow.document.write('.amount { position: absolute; \
+                                top: 40px; right: 115px; \
+                                display: flex; align-items: center; }');
+  
+  printWindow.document.write('.payee { position: absolute; \
+                                top: 40px; left: 70px; \
+                                display: flex; align-items: center; \
+                                font-size: 12px;}');
+
+  // Container for payee and amount
+  printWindow.document.write('.amount-in-words-container { display: flex; align-items: center; \
+                              justify-content: space-between; width: 100%; \
+                              margin-top: 62px; }');
+
+  printWindow.document.write('.amount_in_words { position: absolute; \
+                                top: 67px; left: 50px; \
+                                display: flex; align-items: center; \
+                                font-size: 13px;}');
 
   printWindow.document.write('</style>');
 
@@ -269,7 +296,19 @@ function printCheckDetails() {
   // Print only the essential details
   printWindow.document.write(`<div class="date"><span>${formatDate(selectedCheck.trans_date)}</span></div>`); // Date on right
   
- 
+  // Payee and amount on the same line
+  printWindow.document.write('<div class="payee-amount-container">');
+  printWindow.document.write(`<span class="payee">${selectedCheck.payee}</span>`);
+  printWindow.document.write(`<span class="amount">${formatNumberWithSeparator(selectedCheck.amount)}</span>`);
+  printWindow.document.write('</div>');
+
+   // Amount in words the same line
+   printWindow.document.write('<div amount-in-words-container">');
+   printWindow.document.write(`<span class="amount_in_words">${selectedCheck.amount_in_words}</span>`);
+   printWindow.document.write('</div>');
+
+
+   
   // Close the document to apply styles and content
   printWindow.document.close();
   printWindow.focus();
