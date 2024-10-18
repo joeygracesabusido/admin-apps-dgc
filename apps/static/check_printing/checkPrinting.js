@@ -259,12 +259,21 @@ function printCheckDetails() {
  //bdo printing right: 48px;
   printWindow.document.write('<style>');
   printWindow.document.write('body { font-family: Arial, sans-serif; margin: 0; padding: 4px;font-size: 13px; }'); // Set body styles
-  printWindow.document.write('.date { position: absolute; \
-                                top: 5px; right: 56px; \
-                                display: flex; align-items: center; }');
-  printWindow.document.write('.date-digit { margin: 2px; display: inline-block; }'); // Styles for date digits
+  // printWindow.document.write('.date { position: absolute; \
+  //                               top: 5px; right: 56px; \
+  //                               display: flex; align-items: center; }');
+
+  printWindow.document.write('.date-wrapper { position: relative; \
+                              top: 3px;  \
+                              width: 100%;}');
+
+  // printWindow.document.write('.date-digit { margin: 2px; display: inline-block; }'); // Styles for date digits
   
 
+  printWindow.document.write('.date-digit { \
+                                position: absolute; \
+                                font-size: 13px; \
+                              }');
   // Container for payee and amount
   printWindow.document.write('.payee-amount-container { display: flex; align-items: center; \
                               justify-content: space-between; width: 100%; \
@@ -319,21 +328,54 @@ function printCheckDetails() {
 
 
 
+// function formatDate(dateString) {
+//   const date = new Date(dateString);
+//   const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+//   const day = String(date.getDate()).padStart(2, '0');
+//   const year = String(date.getFullYear());
+
+  
+//   // Wrap each digit in a span for custom styling
+//    const formattedMonth = month.split('').map(digit => `<span class="date-digit">${digit}</span>`).join(' ');
+//    const formattedDay = day.split('').map(digit => `<span class="date-digit">${digit}</span>`).join(' ');
+//    const formattedYear = year.split('').map(digit => `<span class="date-digit">${digit}</span>`).join(' ');
+
+//    // Return formatted date with spans for styling
+//   //  return `${formattedMonth}   ${formattedDay}   ${formattedYear}`;
+//   return `${formattedMonth} &nbsp;&nbsp;&nbsp;&nbsp; ${formattedDay} &nbsp;&nbsp;&nbsp;&nbsp; ${formattedYear}`;
+
+
+// }
+
+// JavaScript function to format date with custom positioning
 function formatDate(dateString) {
   const date = new Date(dateString);
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
   const day = String(date.getDate()).padStart(2, '0');
   const year = String(date.getFullYear());
 
-  
-  // Wrap each digit in a span for custom styling
-   const formattedMonth = month.split('').map(digit => `<span class="date-digit">${digit}</span>`).join(' ');
-   const formattedDay = day.split('').map(digit => `<span class="date-digit">${digit}</span>`).join(' ');
-   const formattedYear = year.split('').map(digit => `<span class="date-digit">${digit}</span>`).join(' ');
+  // Calculate positions for month, day, and year
+  let monthStart = 152.5; // Start position for the first digit of the month in cm
+  let dayStart = 162.5;   // Start position for the first digit of the day
+  let yearStart = 172.5;  // Start position for the first digit of the year
 
-   // Return formatted date with spans for styling
-  //  return `${formattedMonth}   ${formattedDay}   ${formattedYear}`;
-  return `${formattedMonth} &nbsp;&nbsp;&nbsp;&nbsp; ${formattedDay} &nbsp;&nbsp;&nbsp;&nbsp; ${formattedYear}`;
+  // Convert cm to a unit the browser understands (e.g., 1cm ≈ 37.8px)
+  const cmToPx = 37.8;
 
+  // Wrap each digit in a span and position absolutely
+  const formattedMonth = month.split('').map((digit, i) => 
+    `<span class="date-digit" style="left: ${(monthStart + i * 5) * cmToPx}px;">${digit}</span>`
+  ).join('');
 
+  const formattedDay = day.split('').map((digit, i) => 
+    `<span class="date-digit" style="left: ${(dayStart + i * 5) * cmToPx}px;">${digit}</span>`
+  ).join('');
+
+  const formattedYear = year.split('').map((digit, i) => 
+    `<span class="date-digit" style="left: ${(yearStart + i * 5) * cmToPx}px;">${digit}</span>`
+  ).join('');
+
+  // Return the full formatted date
+  return `<div class="date-wrapper">${formattedMonth} ${formattedDay} ${formattedYear}</div>`;
 }
+
