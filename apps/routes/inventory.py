@@ -186,29 +186,11 @@ async def api_update_inventory(id: str,
         raise HTTPException(status_code=500, detail=str(e))
 
 
-
-
-
-
-@api_invt.get('/get-user')
-async def find_all_user(token: str = Depends(get_current_user)):
-    """This function is querying all user account"""
-    result = mydb.login.find()
-
-    user_data = [
-        {
-             "fullname": i["fullname"],
-            "username": i["username"],
-            "password": i['password'],
-            "created": i["created"]
-
-        }
-        for i in result
-    ]
-
-    return user_data
   
-
+@api_invt.get('/testing-api/')
+async def get_inventory_list(username: str = Depends(get_current_user)):
+    """This is for Testing Only"""
+    pass
 
 
 
