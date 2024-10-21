@@ -1,3 +1,4 @@
+from types import FunctionType
 import strawberry
 from typing import Optional,List
 
@@ -33,8 +34,6 @@ class EmployeeDetailsQuery:
 
 @strawberry.type
 class InventoryDetailQuery:
-
-
     _id: Optional[str] = None
     inventory_company: str
     inventory_item: str
@@ -48,10 +47,21 @@ class InventoryDetailQuery:
     inventory_department: Optional[str] = None
     inventory_date_issue: Optional[datetime] = None
     inventory_description: Optional[str] = None
+    user: Optional[str] = None
     date_updated: Optional[datetime] = None
     date_created: Optional[datetime] = None
 
+@strawberry.type
+class InventoryTest:
 
+    id: Optional[str] = None
+    inventory_company: str
+ 
+FRUITS = [
+	"Strawberry",
+	"Apple",
+	"Orange",
+]
 
 @strawberry.type
 class Query:
@@ -100,25 +110,48 @@ class Query:
         return [ 
             InventoryDetailQuery( 
                 _id = x.get('_id'),
-                inventory_company=x.get(' inventory_company'),
+                inventory_company=x.get('inventory_company'),
+                inventory_item= x.get('inventory_item'),
                 inventory_purchase_date=x.get('inventory_purchase_date'),
                 inventory_si_no=x.get(''),
                 inventory_quantity=x.get('inventory_quantiry'),
                 inventory_brand=x.get('inventory_brand'),
                 inventory_amount=x.get('inventory_amount'),     
                 inventory_serial_no=x.get('inventory_serial_no'),
-                 inventory_user=x.get('inventory_user'),
-                 inventory_department=x.get('inventory_department'),
-                 inventory_date_issue=x.get('inventory_date_issue'),
-                 inventory_description=x.get('inventory_description'),
-                 user=x.get('user'),
-                 date_created=x.get('date_created'),
-                 date_updated=x.get('date_updated'),
+                inventory_user=x.get('inventory_user'),
+                inventory_department=x.get('inventory_department'),
+                inventory_date_issue=x.get('inventory_date_issue'),
+                inventory_description=x.get('inventory_description'),
+                user=x.get('user'),
+                date_created=x.get('date_created'),
+                date_updated=x.get('date_updated'),
 
             ) for x in inventory
-            ]
+        ]
 
-    
 
-    
+    @strawberry.field
+    def fruit(self, startswith: str) -> str | None:
+        for fruit in FRUITS:
+            if fruit.startswith(startswith):
+                return fruit
+        return None
 
+
+
+    @strawberry.field
+    async def testing(self) -> List[InventoryTest]:
+        inventory_collection = mydb['inventory']
+        inventory = inventory_collection.find()
+
+        return [
+            InventoryTest(
+                id= str(doc['_id']),
+                inventory_company=doc['inventory_company']
+
+            ) for doc in inventory
+        ]
+
+
+ 			
+				

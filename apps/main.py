@@ -58,6 +58,6 @@ app.include_router(api_repair, tags=['Repair'])
 app.include_router(api_check_printing, tags=['Check Printing'])
 
 # Mount Strawberry's GraphQL app onto FastAPI
-app.mount("/graphql", graphql_app)
+app.mount("/mygraphql", graphql_app)
 
 
