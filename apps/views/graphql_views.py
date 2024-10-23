@@ -5,6 +5,9 @@ from typing import Optional,List
 from datetime import date, datetime
 
 
+import re
+
+
 from  ..database.mongodb import create_mongo_client
 mydb = create_mongo_client()
 
@@ -140,7 +143,7 @@ class Query:
 
 
     @strawberry.field
-    async def testing(self) -> List[InventoryTest]:
+    async def inventory_testing(self) -> List[InventoryTest]:
         inventory_collection = mydb['inventory']
         inventory = inventory_collection.find()
 
@@ -153,5 +156,65 @@ class Query:
         ]
 
 
- 			
+    @strawberry.field
+    async def inventory_list_test(self, startswith:str) -> str | None:
+        inventory_collection = mydb['inventory']
+        inventory = inventory_collection.find()
+
+        result = []
+        for doc in inventory:
+            
+            if doc['inventory_company'].lower().startswith(startswith.lower()):
+
+                # print(doc['inventory_company'])
+
+                return doc['inventory_company']
+        return None
+
+
+    @strawberry.field
+    async def inventory_list_regex(self, search_term:str) -> List[InventoryTest]:
+		
+
+
+		#Use regex for case-insensitive search in MongoDB
+        regex = re.compile(search_term, re.IGNORECASE)
+
+        inventory_collection = mydb['inventory']
+        inventory = inventory_collection.find({'inventory_company': {'$regex': regex}})
+
+        
+
+        return [InventoryTest(
+            id= str(i['_id']),
+            inventory_company = i['inventory_company']
+        ) for i in inventory 
+
+        ]
+		
+
+        
+        
+     @strawberry.field
+     async def inventory_list_regex(self, search_term:str) -> List[InventoryTest]:
+
+        #Use regex for case-insensitive search in MongoDB
+        regex = re.compile(search_term, re.IGNORECASE)
+
+        inventory_collection = mydb['inventory']
+        inventory = inventory_collection.find({'inventory_company': {'$regex': regex}})
+
+
+
+        return [InventoryTest(
+            id= str(i['_id']),
+            inventory_company = i['inventory_company']
+        ) for i in inventory 
+
+        ]
+
+
+
+     
+		
 				
