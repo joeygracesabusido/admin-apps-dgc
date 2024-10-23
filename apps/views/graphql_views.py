@@ -33,6 +33,22 @@ class EmployeeDetailsQuery:
     created: Optional[datetime] = None
     updated: Optional[str] = None
 
+@strawberry.type
+class EmployeeDetailsQueryTest:
+    id: Optional[str] = None
+    employee_no: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    company: Optional[str] = None
+    salary_status: Optional[str] = None
+    rate: Optional[str] = None
+    
+    # division: Optional[str] = None
+    # position: Optional[str] = None
+    # status: bool
+    # created: Optional[datetime] = None
+    # updated: Optional[str] = None
+
 
 
 @strawberry.type
@@ -195,21 +211,27 @@ class Query:
 
         
         
-     @strawberry.field
-     async def inventory_list_regex(self, search_term:str) -> List[InventoryTest]:
+    @strawberry.field
+    async def employe_regex(self, search_term:str) -> List[EmployeeDetailsQueryTest]:
 
         #Use regex for case-insensitive search in MongoDB
         regex = re.compile(search_term, re.IGNORECASE)
 
-        inventory_collection = mydb['inventory']
-        inventory = inventory_collection.find({'inventory_company': {'$regex': regex}})
+        employee_collection = mydb['employee_list']
+        employe_data = employee_collection.find({'last_name': {'$regex': regex}})
 
 
 
-        return [InventoryTest(
+        return [EmployeeDetailsQueryTest(
             id= str(i['_id']),
-            inventory_company = i['inventory_company']
-        ) for i in inventory 
+            employee_no = i['employee_no'],
+            first_name = i['first_name'],
+            last_name = i['last_name'],
+            company = i['company'],
+            salary_status = i['salary_status'],
+            rate = i['rate'],
+            
+        ) for i in employe_data 
 
         ]
 

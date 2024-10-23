@@ -1,39 +1,102 @@
+// $(document).ready(function() {
+//     $("#name").autocomplete({
+//         source: function(request, response) {
+//             $.ajax({
+//                 url: "/api-autocomplete-employee/",
+//                 data: { term: request.term },
+//                 dataType: "json",
+//                 success: function(data) {
+//                     response(data);
+//                 },
+//                 error: function(err) {
+//                     console.error("Error fetching autocomplete data:", err);
+//                     // Optionally, provide user feedback about the error
+//                 }
+//             });
+//         },
+//         minLength: 0,  // Minimum length of the input before triggering autocomplete
+//         select: function(event, ui) {
+//             $("#name").val(ui.item.value); 
+//             $("#employee_no").val(ui.item.employee_no);
+//             $("#company").val(ui.item.company);
+//             $("#salary_status").val(ui.item.salary_status);
+//             $("#rate").val(Number(ui.item.rate).toFixed(2));
+//             $("#salary").val((Number(ui.item.rate) * 6).toFixed(2));
+//             // $("#hdmf_loan").val(Number(ui.item.total_hdmf_loan_deduction).toFixed(2));
+//             // $("#general_loan").val(Number(ui.item.total_cash_advance).toFixed(2));
+
+//             // calculatetotalGross()
+//             // calculateAbsentAmount()
+//             calculatetotalGross()
+//             return false;
+//         }
+//     });
+
+  
+// });
+
+
+
 $(document).ready(function() {
     $("#name").autocomplete({
         source: function(request, response) {
             $.ajax({
-                url: "/api-autocomplete-employee/",
-                data: { term: request.term },
+                url: "/mygraphql",  // Your GraphQL endpoint
+                contentType: "application/json",
+                type: "POST",
+                data: JSON.stringify({
+                    query: `
+                      query ($term: String!) {
+                        employeRegex(searchTerm: $term) {
+                          id
+                          employeeNo
+                          lastName
+                          firstName
+                          company
+                          rate
+                          salaryStatus
+                        }
+                      }
+                    `,
+                    variables: {
+                        term: request.term
+                    }
+                }),
                 dataType: "json",
                 success: function(data) {
-                    response(data);
+                    // Map the GraphQL response to jQuery autocomplete format
+                    response($.map(data.data.employeRegex, function(item) {
+                        return {
+                            label: item.firstName + " " + item.lastName,  // Note the camelCase here
+                            value: item.lastName,  // What will be set in the input field
+                            employeeNo: item.employeeNo,
+                            company: item.company,
+                            salaryStatus: item.salaryStatus,
+                            rate: item.rate
+                        };
+                    }));
                 },
                 error: function(err) {
                     console.error("Error fetching autocomplete data:", err);
-                    // Optionally, provide user feedback about the error
                 }
             });
         },
         minLength: 0,  // Minimum length of the input before triggering autocomplete
         select: function(event, ui) {
-            $("#name").val(ui.item.value); 
-            $("#employee_no").val(ui.item.employee_no);
+            // Populate other fields with selected employee data
+            $("#name").val(ui.item.value);
+            $("#employee_no").val(ui.item.employeeNo);  // Updated to camelCase
             $("#company").val(ui.item.company);
-            $("#salary_status").val(ui.item.salary_status);
+            $("#salary_status").val(ui.item.salaryStatus);  // Updated to camelCase
             $("#rate").val(Number(ui.item.rate).toFixed(2));
-            $("#salary").val((Number(ui.item.rate) * 6).toFixed(2));
-            // $("#hdmf_loan").val(Number(ui.item.total_hdmf_loan_deduction).toFixed(2));
-            // $("#general_loan").val(Number(ui.item.total_cash_advance).toFixed(2));
-
-            // calculatetotalGross()
-            // calculateAbsentAmount()
-            calculatetotalGross()
+            $("#salary").val((Number(ui.item.rate) * 6).toFixed(2));  // Assuming the calculation logic stays the same
+            
+            calculatetotalGross();  // Update other calculations
             return false;
         }
     });
-
-  
 });
+
 
 
 
