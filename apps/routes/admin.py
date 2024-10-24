@@ -48,10 +48,12 @@ class SignUpModel(BaseModel):
     password: str
     created: Union[datetime, None] = None
     status: Optional[str] = None
+    role: Optional[str] = None
 
 
 class UpdateUser(BaseModel):
     status: str
+    role: Optional[str] = None
 
 
 
@@ -165,6 +167,7 @@ async def find_all_user(username: str = Depends(get_current_user)):
             "username": i["username"],
             "password": i['password'],
             "status": i['status'],
+            "role": i['role'],
             "created": i["created"]
 
         }
@@ -178,13 +181,15 @@ async def api_update_user_status(id: str,
                                item: UpdateUser,
                                username: str = Depends(get_current_user)):
     
+       
     try:
-        if username == 'joeysabusido' or username == 'Dy':
+        if username:
 
             obj_id = ObjectId(id)
 
             update_data = {
               "status": item.status,
+              "role": item.role,
             }
 
             result = mydb.login.update_one({'_id': obj_id}, {'$set': update_data})

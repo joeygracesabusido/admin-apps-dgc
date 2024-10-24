@@ -218,7 +218,12 @@ class Query:
         regex = re.compile(search_term, re.IGNORECASE)
 
         employee_collection = mydb['employee_list']
-        employe_data = employee_collection.find({'last_name': {'$regex': regex}})
+        employe_data = employee_collection.find({
+             '$or': [
+            {'last_name': {'$regex': regex}},
+            {'first_name': {'$regex': regex}}
+        ]
+        })
 
 
 

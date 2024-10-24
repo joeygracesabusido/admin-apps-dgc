@@ -24,6 +24,8 @@ from apps.routes.repair import api_repair
 
 from apps.routes.printing_check import api_check_printing
 
+from apps.routes.roles import api_roles
+
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
@@ -56,6 +58,8 @@ app.include_router(api_purchase_order, tags=['Purchase Order'])
 app.include_router(api_repair, tags=['Repair'])
 
 app.include_router(api_check_printing, tags=['Check Printing'])
+
+app.include_router(api_roles, tags=['Roles'])
 
 # Mount Strawberry's GraphQL app onto FastAPI
 app.mount("/mygraphql", graphql_app)

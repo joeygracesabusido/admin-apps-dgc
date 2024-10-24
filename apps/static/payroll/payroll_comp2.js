@@ -67,7 +67,7 @@ $(document).ready(function() {
                     // Map the GraphQL response to jQuery autocomplete format
                     response($.map(data.data.employeRegex, function(item) {
                         return {
-                            label: item.firstName + " " + item.lastName,  // Note the camelCase here
+                            label: item.lastName + ", " + item.firstName,  // Note the camelCase here
                             value: item.lastName,  // What will be set in the input field
                             employeeNo: item.employeeNo,
                             company: item.company,
@@ -84,7 +84,7 @@ $(document).ready(function() {
         minLength: 0,  // Minimum length of the input before triggering autocomplete
         select: function(event, ui) {
             // Populate other fields with selected employee data
-            $("#name").val(ui.item.value);
+            $("#name").val(ui.item.label);
             $("#employee_no").val(ui.item.employeeNo);  // Updated to camelCase
             $("#company").val(ui.item.company);
             $("#salary_status").val(ui.item.salaryStatus);  // Updated to camelCase
