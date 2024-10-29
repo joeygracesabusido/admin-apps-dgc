@@ -41,7 +41,7 @@ class AccountabilityItem(BaseModel):
 
 @api_accountability.get("/api-accountability/", response_class=HTMLResponse)
 async def accountability(request: Request,username: str = Depends(get_current_user)):
-    return templates.TemplateResponse("inventory/phone_accountability.html", {"request": request})
+    return templates.TemplateResponse("inventory/accountability.html", {"request": request})
 
 
 
@@ -70,14 +70,14 @@ async def insert_accountability_item(items:AccountabilityItem, username: str = D
 async def find_all_accountability(username: str = Depends(get_current_user)):
     """This function is querying all repair data"""
 
-    result = mydb.repair.find().sort("repair_date", -1)
+    result = mydb.accountability.find().sort("repair_date", -1)
     
     repair_data = [
         {
         "id": str(items['_id']),   
         "company": items['company'],
         "date": items['date'],
-        "name": items['date'],
+        "name": items['name'],
         "position": items['position'],
         "department": items['department'],
         "item": items['item'],
@@ -94,36 +94,36 @@ async def find_all_accountability(username: str = Depends(get_current_user)):
 
     return repair_data
 
-@api_accountability.get('/api-update-repair/{id}', response_class = HTMLResponse)
-async def update_accountability_html(id: str,request: Request,username: str = Depends(get_current_user)):
+@api_accountability.get('/api-update-accountability/{id}')
+async def update_accountability_html(id: str,username: str = Depends(get_current_user)):
     """This function is for updating repair"""
 
     obj_id =  ObjectId(id)
     
-    item = mydb.repair.find_one({'_id': obj_id})
+    items = mydb.accountability.find_one({'_id': obj_id})
 
-    if item:
+    if items:
 
-        repair_data ={
-                "id": str(item['_id']),   
-                "company": item['company'],
-                "repair_date": item['repair_date'],
-                "srs": item['srs'],
-                "brand": item['brand'],
-                "model": item['model'],
-                "serial_number": item['serial_number'],
-                "remarks": item['remarks'],
-                "repair_user":item['repair_user'],
-                "amount":item['amount'],
-                "department": item['department'],
-                "user": item['user'],
-                "date_created": item['date_created'],
-                "date_updated": item['date_updated']
+        accountability_data ={
+                "id": str(items['_id']),   
+                "company": items['company'],
+                "date": items['date'],
+                "name": items['name'],
+                "position": items['position'],
+                "department": items['department'],
+                "item": items['item'],
+                "item_description": items['item_description'],
+                "serial_no_model_no":items['serial_no_model_no'],
+                "remarks":items['remarks'],
+                "user": items['user'],
+                "date_updated": items['date_updated']
 
         }
 
-        return templates.TemplateResponse("repair/update_repair.html", 
-                                       {"request": request, "repair_data": repair_data})
+        return accountability_data
+
+        # return templates.TemplateResponse("repair/update_repair.html", 
+        #                                {"request": request, "repair_data": repair_data})
     else:
         # Handle case where item with given id is not found (optional)
         return JSONResponse(status_code=404, content={"message": "Repair item not found"})
@@ -148,8 +148,8 @@ async def api_update_accountability(id: str,
          "item_description": items.item_description,
          "serial_no_model_no":items.serial_no_model_no,
          "remarks":items.remarks,
-        "user": username,
-        "date_updated": datetime.now().isoformat()
+         "user": username,
+         "date_updated": datetime.now().isoformat()
         }
     
     

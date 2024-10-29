@@ -14,7 +14,7 @@ from bson import ObjectId
 
 from  ..authentication.authenticate_user import get_current_user
 
-api_repair= APIRouter(include_in_schema=False)
+api_repair= APIRouter()
 templates = Jinja2Templates(directory="apps/templates")
 
 class RepairItem(BaseModel):
