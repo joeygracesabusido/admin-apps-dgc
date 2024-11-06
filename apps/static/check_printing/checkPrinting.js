@@ -258,13 +258,13 @@ function printCheckDetails() {
 
  //bdo printing right: 48px;
   printWindow.document.write('<style>');
-  printWindow.document.write('body { font-family: Arial, sans-serif; margin: 0; padding: 4px;font-size: 13px; }'); // Set body styles
+  printWindow.document.write('body { font-family: Arial, sans-serif; margin: 0; padding: 7px;font-size: 13px; }'); // Set body styles
   // printWindow.document.write('.date { position: absolute; \
   //                               top: 5px; right: 56px; \
   //                               display: flex; align-items: center; }');
 
   printWindow.document.write('.date-wrapper { position: relative; \
-                              top: 3px;  \
+                              top: 4px;  \
                               width: 100%;}');
 
   // printWindow.document.write('.date-digit { margin: 2px; display: inline-block; }'); // Styles for date digits
@@ -277,21 +277,21 @@ function printCheckDetails() {
   // Container for payee and amount
   printWindow.document.write('.payee-amount-container { display: flex; align-items: center; \
                               justify-content: space-between; width: 100%; \
-                               margin-top: 40px; }');
+                               margin-top: 43px; }');
 
   printWindow.document.write('.amount { position: absolute; \
-                                top: 40px; right: 115px; \
+                                top: 43px; right: 115px; \
                                 display: flex; align-items: center; }');
   
   printWindow.document.write('.payee { position: absolute; \
-                                top: 40px; left: 70px; \
+                                top: 43px; left: 70px; \
                                 display: flex; align-items: center; \
                                 font-size: 12px;}');
 
   // Container for payee and amount
   printWindow.document.write('.amount-in-words-container { display: flex; align-items: center; \
                               justify-content: space-between; width: 100%; \
-                              margin-top: 62px; }');
+                              margin-top: 65px; }');
 
   printWindow.document.write('.amount_in_words { position: absolute; \
                                 top: 67px; left: 50px; \
@@ -362,9 +362,14 @@ function formatDate(dateString) {
   const year = String(date.getFullYear());
 
   // Calculate positions for month, day, and year
-  let monthStart = 13.73; // Start position for the first digit of the month in cm
-  let dayStart = 14.85;   // Start position for the first digit of the day
-  let yearStart = 16.27;  // Start position for the first digit of the year
+  // let monthStart = 13.73; // Start position for the first digit of the month in cm
+  // let dayStart = 14.85;   // Start position for the first digit of the day
+  // let yearStart = 16.27;  // Start position for the first digit of the year
+
+
+  let monthStart = 13.68; // Start position for the first digit of the month in cm
+  let dayStart = 14.80;   // Start position for the first digit of the day
+  let yearStart = 16.19;  // Start position for the first digit of the year set good 22
 
   // Convert cm to a unit the browser understands (e.g., 1cm ≈ 37.8px)
   const cmToPx = 37.8;
@@ -379,7 +384,7 @@ function formatDate(dateString) {
   ).join('');
 
   const formattedYear = year.split('').map((digit, i) => 
-    `<span class="date-digit" style="left: ${(yearStart + i * .55) * cmToPx}px;">${digit}</span>`
+    `<span class="date-digit" style="left: ${(yearStart + i * .52) * cmToPx}px;">${digit}</span>`
   ).join('');
 
   // Return the full formatted date
