@@ -251,6 +251,7 @@ $(document).ready(function () {
                             <option value="Admin">Admin</option>
                             <option value="Accounting">Accounting</option>
                             <option value="HR">HR</option>
+                            <option value="EMD">EMD</option>
                             <option value="Engineering-Antipolo">Engineering-Antipolo</option>
                             <option value="Engineering-Cavite">Engineering-Cavite</option>
                             <option value="Legal">Legal</option>
