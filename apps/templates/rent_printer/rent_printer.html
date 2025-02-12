@@ -1,0 +1,346 @@
+
+{% extends 'dashboard.html' %}
+
+{% block content %}
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script> -->
+
+<link href="https://cdn.datatables.net/v/dt/dt-2.0.7/b-3.0.2/b-html5-3.0.2/date-1.5.2/datatables.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.min.css" rel="stylesheet">
+
+<!-- Other CSS and JS files -->
+<link rel="stylesheet" type="text/css" href="/static/style.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+<style>
+	 table{
+      width: 100%;
+            border-collapse: collapse;
+        }
+        td {
+            padding: 10px;
+        }
+        input[type="text"] {
+            width: 100%; /* Full width within the table cell */
+            padding: 5px;
+            height:auto;
+            box-sizing: border-box;
+       
+         }
+         input[type="date"]{
+
+          width: 100%; /* Full width within the table cell */
+            padding: 5px;
+            height:auto;
+            box-sizing: border-box;
+
+         }
+
+</style>
+
+
+
+
+		
+
+
+<div id="container" class="container mt-4">
+
+    <h1>REPAIR TRANSACTION</h1>
+
+
+        
+<!-- =================================this is for modal update cash advance============================= -->
+              <div class="modal" id="insert_repair_modal" tabindex="-1">
+                <div class="modal-dialog modal-xl">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Add Printer Rent</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+    
+    
+                      <div class="row g-2">
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <select class="form-select" id="company" aria-label="Floating label select example">
+    
+                              <option selected>----Select Menu----</option>
+                              <option value="AFMI">AFMI</option>
+                              <option value="DBMC">DBMC</option>
+                              <option value="DCLSI">DCLSI</option>
+                              <option value="DRDC">DRDC</option>
+                              <option value="HFC">HFC</option>
+                              <option value="LPDC">LPDC</option>
+                              <option value="LRCC">LRCC</option>
+                              <option value="NLDC">NLDC</option>
+        
+                             
+                          </select>
+                          <label for="floatingInputGrid" class="label-large">Select Company</label>
+                          </div>
+                        </div>
+    
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="printer_model" >
+                            <label for="floatingInputGrid" class="label-large">Printer Model</label>
+              
+                          
+                          </div>
+                        </div>
+                        
+                        
+                       
+                        
+                        
+                      </div>
+
+                      <br>
+
+                      <div class="row g-3">
+
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="serial_number"  >
+                            <label for="floatingInputGrid" class="label-large">Serial Number</label>
+            
+                          
+                          </div>
+                        </div>
+    
+                  
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="brand"  >
+                            <label for="floatingInputGrid" class="label-large"></label>
+            
+                          
+                          </div>
+                        </div>
+
+                       
+                        
+                      </div>
+                      <br>
+
+                     <div class="row g-3">
+
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="model">
+                            <label for="floatingInputGrid" class="label-large">Model</label>
+            
+                          
+                          </div>
+                        </div>
+    
+                  
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="serial_number"  >
+                            <label for="floatingInputGrid" class="label-large">Serial Number</label>
+            
+                          
+                          </div>
+                        </div>
+
+                       
+                        
+                      </div>
+
+
+                      <br>
+
+                     <div class="row g-3">
+
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="remarks">
+                            <label for="floatingInputGrid" class="label-large">Remarks</label>
+            
+                          
+                          </div>
+                        </div>
+    
+                  
+                        <div class="col-md">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="repair_user"  >
+                            <label for="floatingInputGrid" class="label-large">User</label>
+            
+                          
+                          </div>
+                        </div>
+
+                       
+                        
+                      </div>
+
+
+                      <br>
+
+                     <div class="row g-3">
+
+                       <div class="col-md">
+                          <div class="form-floating">
+                            <input type="number" class="form-control" id="amount">
+                            <label for="floatingInputGrid" class="label-large">Amount</label>
+            
+                          
+                          </div>
+                        </div>
+    
+  
+
+
+
+                      <div class="col-md">
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="department">
+                            <label for="floatingInputGrid" class="label-large">Department</label>
+            
+                          
+                          </div>
+                        </div>
+    
+                  
+                                           
+                        
+                      </div>
+
+
+                      <br>
+
+
+
+     
+
+                                
+                      
+                    </div>
+                    <div class="modal-footer">
+									 
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" id="btn_save_repair">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    
+    
+
+    
+            <div class="card">
+                <div class="card-header">
+    
+                    REPAIR LIST
+                <!--ELECTRICITY DATA
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" id="btn_insert_electric_data"
+                    >
+                    Add Electricty Consumption
+                </button> -->
+        
+                <button type="button" class="btn btn-primary btn-right"  id="insert_repair_btn"
+                    data-bs-toggle="modal" data-bs-target="#insert_repair_modal" >
+                    Add Repair 
+                </button>
+                
+                       
+                </div>
+                <div class="card-body">
+                <div class="container">
+                    <div class="container mt-3">
+
+                        <table id="table_repair" class="table table-bordered"  style="text-align: center;">
+                            <thead class="table-dark">
+                                <tr>
+                                    
+                                    <td>Company</td>
+                                    <td>SRS</td>
+                                    <td>Date</td>
+                                    <td>Brand</td>
+                                    <td>Model</td>
+                                    <td>Serial No.</td>
+                                    <td>Remarks</td>
+                                    <td>User</td>
+                                    <td>Amount</td>
+                                    <td>Department</td>
+                                    <td>Action</td>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody id="table_repair_list">
+                            
+                                    
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        
+                                    </tr>
+                                
+                                
+                            </tbody>
+            
+                        
+            
+                        </table>
+        
+                    
+                    
+        
+                </div>
+        
+        
+                </div>
+                </div>
+            </div>
+      
+     
+      
+         
+    
+</div>                 
+                
+        
+    
+    <!-- Add Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    
+    
+    
+    <!-- <script src="/static/repair/repair.js"></script> -->
+    
+    
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/v/dt/dt-2.0.7/b-3.0.2/b-html5-3.0.2/date-1.5.2/datatables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.min.js"></script>
+
+
+    <script>
+      
+     
+    </script>
+    
+    
+   
+
+{% endblock %}
+
+
+
+
