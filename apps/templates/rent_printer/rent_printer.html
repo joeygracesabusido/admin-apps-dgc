@@ -116,8 +116,8 @@
                   
                         <div class="col-md">
                           <div class="form-floating">
-                            <input type="text" class="form-control" id="brand"  >
-                            <label for="floatingInputGrid" class="label-large"></label>
+                            <input type="text" class="form-control" id="location"  >
+                            <label for="floatingInputGrid" class="label-large">Location</label>
             
                           
                           </div>
@@ -132,8 +132,8 @@
 
                         <div class="col-md">
                           <div class="form-floating">
-                            <input type="text" class="form-control" id="model">
-                            <label for="floatingInputGrid" class="label-large">Model</label>
+                            <input type="text" class="form-control" id="validity_date">
+                            <label for="floatingInputGrid" class="label-large">Validity Date</label>
             
                           
                           </div>
@@ -142,8 +142,8 @@
                   
                         <div class="col-md">
                           <div class="form-floating">
-                            <input type="text" class="form-control" id="serial_number"  >
-                            <label for="floatingInputGrid" class="label-large">Serial Number</label>
+                            <input type="number" class="form-control" id="monthly_rent"  >
+                            <label for="floatingInputGrid" class="label-large">Monthly Rent</label>
             
                           
                           </div>
@@ -154,65 +154,7 @@
                       </div>
 
 
-                      <br>
-
-                     <div class="row g-3">
-
-                        <div class="col-md">
-                          <div class="form-floating">
-                            <input type="text" class="form-control" id="remarks">
-                            <label for="floatingInputGrid" class="label-large">Remarks</label>
-            
-                          
-                          </div>
-                        </div>
-    
-                  
-                        <div class="col-md">
-                          <div class="form-floating">
-                            <input type="text" class="form-control" id="repair_user"  >
-                            <label for="floatingInputGrid" class="label-large">User</label>
-            
-                          
-                          </div>
-                        </div>
-
-                       
-                        
-                      </div>
-
-
-                      <br>
-
-                     <div class="row g-3">
-
-                       <div class="col-md">
-                          <div class="form-floating">
-                            <input type="number" class="form-control" id="amount">
-                            <label for="floatingInputGrid" class="label-large">Amount</label>
-            
-                          
-                          </div>
-                        </div>
-    
-  
-
-
-
-                      <div class="col-md">
-                          <div class="form-floating">
-                            <input type="text" class="form-control" id="department">
-                            <label for="floatingInputGrid" class="label-large">Department</label>
-            
-                          
-                          </div>
-                        </div>
-    
-                  
-                                           
-                        
-                      </div>
-
+                    
 
                       <br>
 
@@ -226,7 +168,7 @@
                     <div class="modal-footer">
 									 
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary" id="btn_save_repair">Save changes</button>
+                      <button type="button" class="btn btn-primary" id="btn_save_printer_rental">Save</button>
                     </div>
                   </div>
                 </div>
@@ -238,7 +180,7 @@
             <div class="card">
                 <div class="card-header">
     
-                    REPAIR LIST
+                    Rental List
                 <!--ELECTRICITY DATA
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" id="btn_insert_electric_data"
                     >
@@ -247,7 +189,7 @@
         
                 <button type="button" class="btn btn-primary btn-right"  id="insert_repair_btn"
                     data-bs-toggle="modal" data-bs-target="#insert_repair_modal" >
-                    Add Repair 
+                    Add Printer Rental
                 </button>
                 
                        
@@ -256,25 +198,21 @@
                 <div class="container">
                     <div class="container mt-3">
 
-                        <table id="table_repair" class="table table-bordered"  style="text-align: center;">
+                        <table id="table_rental" class="table table-bordered"  style="text-align: center;">
                             <thead class="table-dark">
                                 <tr>
                                     
                                     <td>Company</td>
-                                    <td>SRS</td>
-                                    <td>Date</td>
-                                    <td>Brand</td>
                                     <td>Model</td>
                                     <td>Serial No.</td>
-                                    <td>Remarks</td>
-                                    <td>User</td>
-                                    <td>Amount</td>
-                                    <td>Department</td>
-                                    <td>Action</td>
+                                    <td>Location</td>
+                                    <td>Validity Date</td>
+                                    <td>Monthly Rent</td>
+                              
                                     
                                 </tr>
                             </thead>
-                            <tbody id="table_repair_list">
+                            <tbody id="table_rental_list">
                             
                                     
                                     <tr>
@@ -283,14 +221,7 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        
-                                    </tr>
+                                  </tr>
                                 
                                 
                             </tbody>
@@ -322,7 +253,7 @@
     
     
     
-    <!-- <script src="/static/repair/repair.js"></script> -->
+     <script src="/static/printer_rental/printer_rental.js"></script> 
     
     
     
