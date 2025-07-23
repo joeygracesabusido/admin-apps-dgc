@@ -7,6 +7,9 @@ from typing import Optional,List
 from ..database.mongodb import create_mongo_client
 mydb = create_mongo_client()
 
+import re
+
+
 
 @strawberry.type
 class InventoryItemsQuery:
@@ -48,3 +51,32 @@ class Query:
                 updated = item.get('updated')
 
         ) for item in supplies]
+
+
+    @strawberry.field
+    async def get_inventory_autocomplete(self, search_term: str) -> List[InventoryItemsQuery]:
+        
+        regex = re.compile(search_term, re.IGNORECASE)
+        supply = mydb['inventory_supply_item']
+        supplies = supply.find({
+            'name': {'$regex': regex}
+        })
+
+       
+        return [InventoryItemsQuery(
+                id = str(item['_id']),
+                item_code = item['item_code'],
+                name = item['name'],
+                category = item['category'],
+                description = item['description'],
+                quantity_in_stock = item['quantity_in_stock'],
+                unit = item['unit'],
+                reorder_level = item['reorder_level'],
+                price_per_unit = item['price_per_unit'],
+                supplier_id = item['supplier_id'],
+                created = item['created'],
+                updated = item['updated']
+
+        ) for item in supplies]
+
+
