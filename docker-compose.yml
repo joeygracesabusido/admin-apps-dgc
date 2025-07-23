@@ -12,37 +12,22 @@
 #     volumes:
 #       - ./apps:/code/apps
 
-#version: '3'
-# services:
-#   web:
-#     build: .
-#     container_name: admin_apps
-#     command: uvicorn apps.main:app --host 0.0.0.0 --port 1000 --reload
-#     # command: uvicorn apps.main:app --host 172.26.14.250 --port 7000 --reload
-#     ports:
-#       - "1000:1000"
-#     dns:
-#       - 8.8.8.8
-#       - 8.8.4.4
-#       - 1.1.1.1
-#     volumes:
-#       - .:/code
-#     environment:
-#       - PYTHONUNBUFFERED=1
-
+version: '3'
 services:
   web:
     build: .
     container_name: admin_apps
     command: uvicorn apps.main:app --host 0.0.0.0 --port 1000 --reload
+    # command: uvicorn apps.main:app --host 172.26.14.250 --port 7000 --reload
     ports:
       - "1000:1000"
-    dns:
-       - 8.8.8.8
-       - 8.8.4.4
-       - 1.1.1.1
+    # dns:
+    #   - 8.8.8.8
+    #   - 8.8.4.4
+    #   - 1.1.1.1
     volumes:
       - .:/code
     environment:
       - PYTHONUNBUFFERED=1
+
 
