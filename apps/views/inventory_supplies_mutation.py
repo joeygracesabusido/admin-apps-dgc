@@ -66,35 +66,35 @@ class Mutation:
 
             return f"Unexpected Error: {str(e)}"
 
-    @strawberry.mutation
-    async def insert_supplier_ivt_supply(self, int_supplier: supplierInput) -> str:
-
-        try:
-                
-            invt_supplier_collection = mydb['inventory_supplier']
-            invt_supplier_collection.create_index('name', unique=True)            
-                        # data = {
-            #
-            # **int_supplier.__dict__,
-            #
-            #     'created_at':int_supplier.created_at or datetime.utcnow(),
-            #     'updated_at': datetime.utcnow()
-            # 
-            # }
-            
-            data = asdict(int_supplier)
-            data['created_at'] = int_supplier.created_at or datetime.utcnow(),
-            data['update_at'] = datetime.utcnow()
-
-            invt_supplier_collection.insert_one(data)
-            return f"Items inserted"
-
-
-        except Exception as e:
-
-            return f"Unexpected Error: {str(e)}"
-
-
+    # @strawberry.mutation
+    # async def insert_supplier_ivt_supply(self, int_supplier: supplierInput) -> str:
+    #
+    #     try:
+    #
+    #         invt_supplier_collection = mydb['inventory_supplier']
+    #         invt_supplier_collection.create_index('name', unique=True)            
+    #                     # data = {
+    #         #
+    #         # **int_supplier.__dict__,
+    #         #
+    #         #     'created_at':int_supplier.created_at or datetime.utcnow(),
+    #         #     'updated_at': datetime.utcnow()
+    #         # 
+    #         # }
+    #
+    #         data = asdict(int_supplier)
+    #         data['created_at'] = int_supplier.created_at or datetime.utcnow(),
+    #         data['update_at'] = datetime.utcnow()
+    #
+    #         invt_supplier_collection.insert_one(data)
+    #         return f"Items inserted"
+    #
+    #
+    #     except Exception as e:
+    #
+    #         return f"Unexpected Error: {str(e)}"
+    #
+    #
 
     
 

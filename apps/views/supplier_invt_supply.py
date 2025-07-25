@@ -26,7 +26,7 @@ class supplierInput:
 
 
 @strawberry.type
-class Mutation:
+class insertSupplierInvt:
     @strawberry.mutation
     async def insert_supplier_ivt_supply(self, int_supplier: supplierInput) -> str:
 
