@@ -5,22 +5,14 @@ import strawberry
 
 from typing import Optional,List
 
+
+from apps.grapql_models.graphqlModel import SupplierInput
+
+
+
+
 from ..database.mongodb import create_mongo_client
 mydb = create_mongo_client()
-
-
-
-@strawberry.input
-class supplierInput:
-    name: str
-    contact_person: str
-    email: str
-    phone: str
-    address: str
-    user: Optional[str] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
-
 
 
 
@@ -28,7 +20,7 @@ class supplierInput:
 @strawberry.type
 class insertSupplierInvt:
     @strawberry.mutation
-    async def insert_supplier_ivt_supply(self, int_supplier: supplierInput) -> str:
+    async def insert_supplier_ivt_supply(self, int_supplier: SupplierInput) -> str:
 
         try:
                 

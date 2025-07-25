@@ -6,12 +6,13 @@ from apps.views.graphql_views import Query as BasicQuery
 
 
 from apps.views.get_inventory_query  import Query as GetInventory
-from apps.views.supplier_graphql_query import Query as getSupplier
+from apps.views.supplier_grapghql_query import Query as getSupplier
+
 #from apps.views.mutation import Mutation
 
  
 from apps.views.inventory_supplies_mutation import Mutation as InsertItems
-from apps.views.supplier_graphql_query import Query as getSupplier
+from ..views.supplier_invt_supply import insertSupplierInvt
 
 
 

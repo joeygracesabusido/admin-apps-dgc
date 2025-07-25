@@ -7,9 +7,10 @@ from typing import Optional,List
 
 
 
-
-@strawberry.input
-class supplierInput:
+#this is for query
+@strawberry.type
+class SupplierType:
+    id: Optional[str]
     name: str
     contact_person: str
     email: str
@@ -18,5 +19,19 @@ class supplierInput:
     user: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+
+#this is for mutation
+@strawberry.input
+class SupplierInput:
+    name: str
+    contact_person: str
+    email: str
+    phone: str
+    address: str
+    user: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
 
 

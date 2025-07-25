@@ -18,6 +18,7 @@ api_jo_temp= APIRouter(include_in_schema=False)
 templates = Jinja2Templates(directory="apps/templates")
 
 
+
 @api_jo_temp.get("/ticketing/", response_class=HTMLResponse)
 async def api_ticketing(request: Request,username: str = Depends(get_current_user)):
     return templates.TemplateResponse("job_order/ticketing.html", {"request": request})
