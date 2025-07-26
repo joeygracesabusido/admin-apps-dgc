@@ -88,10 +88,21 @@ $(document).ready(function() {
       $("#supplierModal").removeClass("hidden");
     });
 
+    // // Optional: Close modal when clicking "Cancel"
+    // $(".close-modal").click(function() {
+    //   $("#supplierModal").addClass("hidden");
+    // });
+  
+    // this is for Update function Modal insertBtn
+     $("#updateSupplierBtn").click(function() {
+      $("#supplierModalUpdating").removeClass("hidden");
+    });
+
     // Optional: Close modal when clicking "Cancel"
     $(".close-modal").click(function() {
-      $("#supplierModal").addClass("hidden");
+      $(".z-10").addClass("hidden");
     });
+
   });
 
 
