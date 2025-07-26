@@ -98,3 +98,61 @@ $(document).ready(function() {
 
 fetchSupplier()
 
+
+function insertSupplier() {
+  const name = $('#name').val();
+  const contactPerson = $('#contact_person').val();
+  const email = $('#email').val();
+  const phone = $('#phone').val();
+  const address = $('#address').val();
+
+  // Optional: Escape double quotes
+  const escape = (str) => str.replace(/"/g, '\\"');
+
+  const query = `
+    mutation {
+      insertSupplierIvtSupply(
+        intSupplier: {
+          name: "${escape(name)}",
+          contactPerson: "${escape(contactPerson)}",
+          email: "${escape(email)}",
+          phone: "${escape(phone)}",
+          address: "${escape(address)}"
+        }
+      )
+    }
+  `;
+
+  $.ajax({
+    url: '/mygraphql', // Update this to your actual GraphQL endpoint
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({ query: query }),
+    success: function (response) {
+      if (response.data && response.data.insertSupplierIvtSupply) {
+        alert('Supplier inserted successfully!');
+        $('#supplierModal').addClass('hidden');
+        // Optionally clear inputs
+        $('#name, #contact_person, #email, #phone, #address').val('');
+        // Optionally refresh the supplier table,
+				location.reload();
+      } else {
+        alert('Failed to insert supplier.');
+      }
+    },
+    error: function (xhr, status, error) {
+      alert('Error: ' + xhr.responseText);
+    }
+  });
+
+}
+
+
+
+
+//this is to triger the button
+
+$('#insertBtn').on('click', function () {
+	insertSupplier();
+});
+

@@ -21,7 +21,7 @@ class SupplierType:
     updated_at: Optional[datetime] = None
 
 
-#this is for mutation
+#this is for mutation insert
 @strawberry.input
 class SupplierInput:
     name: str
@@ -33,5 +33,18 @@ class SupplierInput:
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+
+#this is for mutation update record
+@strawberry.input
+class SupplierUpdateInput:
+    id: str
+    name: str
+    contact_person: str
+    email: str
+    phone: str
+    address: str
+    user: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 

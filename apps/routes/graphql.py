@@ -2,6 +2,14 @@ import strawberry
 from fastapi import FastAPI
 from strawberry.asgi import GraphQL
 
+
+from fastapi import FastAPI, Request
+
+from strawberry.fastapi import GraphQLRouter
+
+
+
+
 from apps.views.graphql_views import Query as BasicQuery
 
 
@@ -16,6 +24,12 @@ from ..views.supplier_invt_supply import insertSupplierInvt
 
 
 
+def get_context(request:Request):
+	return {'request': request }
+
+
+
+
 
 @strawberry.type
 class Query(BasicQuery, GetInventory, getSupplier):
@@ -25,10 +39,16 @@ class Query(BasicQuery, GetInventory, getSupplier):
 class Mutation(InsertItems, insertSupplierInvt):
     pass
 
-# Create a Strawberry schema
+# Create a Strawberry schema:w
 schema = strawberry.Schema(query=Query,mutation=Mutation)
  
 graphql_app = GraphQL(schema)
+
+#graphql_app = GraphQLRouter(schema, context_getter=get_context)
+
+
+
+
 
 
 

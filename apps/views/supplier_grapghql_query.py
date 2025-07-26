@@ -4,6 +4,9 @@ import strawberry
 
 from typing import Optional,List
 
+from strawberry.types import Info
+
+
 
 from apps.grapql_models.graphqlModel import SupplierType
 
@@ -14,27 +17,39 @@ mydb = create_mongo_client()
 import re
 
 
+from  ..authentication.authenticate_user import get_current_user
+
+
+
 
 @strawberry.type
 class Query:
     @strawberry.field
-    async def getSupplierList(self) -> List[SupplierType]:
-        supply = mydb['inventory_supplier']
-        supplies = supply.find()
+    async def getSupplierList(self, info:Info) -> List[SupplierType]:
+
+        request: Request = info.context["request"]
+        username = get_current_user(request)
+        
+        print(username)
+
+        if username:
+            
+            supply = mydb['inventory_supplier']
+            supplies = supply.find()
 
 
-        return [SupplierType(
-                id = item.get('_id'),
-                name = item.get('name'),
-                contact_person = item.get('contact_person'),
-                email = item.get('email'),
-                phone = item.get('phone'),
-                address = item.get('address'),
-                user = item.get('user'),
-                created_at = item.get('created_at'),
-                updated_at = item.get('updated_at')
+            return [SupplierType(
+                    id = item.get('_id'),
+                    name = item.get('name'),
+                    contact_person = item.get('contact_person'),
+                    email = item.get('email'),
+                    phone = item.get('phone'),
+                    address = item.get('address'),
+                    user = item.get('user'),
+                    created_at = item.get('created_at'),
+                    updated_at = item.get('updated_at')
 
-        ) for item in supplies]
+            ) for item in supplies]
 
 
 
