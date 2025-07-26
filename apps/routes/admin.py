@@ -167,7 +167,7 @@ async def find_all_user(username: str = Depends(get_current_user)):
             "username": i["username"],
             "password": i['password'],
             "status": i['status'],
-            "role": i['role'],
+           # "role": i['role'],
             "created": i["created"]
 
         }
