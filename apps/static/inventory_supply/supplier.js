@@ -95,6 +95,9 @@ $(document).ready(function() {
   
     // this is for Update function Modal insertBtn
      $("#updateSupplierBtn").click(function() {
+
+      setSupplierAutocomplete();
+      
       $("#supplierModalUpdating").removeClass("hidden");
     });
 
@@ -107,6 +110,12 @@ $(document).ready(function() {
 
     //
     });
+    
+     $("#updateBtn").click(function (e) {
+        e.preventDefault();
+        updateSupplier();
+      });
+
 
   });
 
@@ -206,7 +215,8 @@ $('#insertBtn').on('click', function () {
               customer_id: item.id,
               phone: item.phone,
               email: item.email,
-              contactPerson: item.contactPerson
+              contactPerson: item.contactPerson,
+              address: item.address
             }));
             response(suggestions);
           }
@@ -220,14 +230,57 @@ $('#insertBtn').on('click', function () {
     select: function(event, ui) {
       $("#nameUpdate").val(ui.item.value);
       $("#idUpdate").val(ui.item.customer_id);
-      $("#conctact_person_update").val(ui.item.contactPerson);
+      $("#contact_person_update").val(ui.item.contactPerson);
       $("#phone_update").val(ui.item.phone);
       $("#email_update").val(ui.item.email);
+      $("#address_update").val(ui.item.address);
       return false;
     }
   });
 }
 
 
-setSupplierAutocomplete();
+
+//this is for Updating Supplier in Inventory Supplies 
+
+function updateSupplier() {
+  const supplierData = {
+    id: $("#idUpdate").val(),
+    name: $("#nameUpdate").val(),
+    phone: $("#phone_update").val(),
+    email: $("#email_update").val(),
+    contactPerson: $("#contact_person_update").val(),
+    address: $("#address_update").val()
+  };
+
+  $.ajax({
+    url: "/mygraphql",
+    method: "POST",
+    contentType: "application/json",
+    dataType: "json",
+    data: JSON.stringify({
+      query: `
+        mutation UpdateSupplier($updatedData: SupplierUpdateInput!) {
+          updateSupplierIvtSupply(updatedData: $updatedData)
+        }
+      `,
+      variables: {
+        updatedData: supplierData
+      }
+    }),
+    success: function (res) {
+      if (res.data && res.data.updateSupplierIvtSupply) {
+        alert(res.data.updateSupplierIvtSupply);
+        location.reload();
+        // Optional: close modal or refresh list here
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    },
+    error: function (err) {
+      console.error("GraphQL Update Error:", err);
+      alert("Failed to update supplier.");
+    }
+  });
+}
 
