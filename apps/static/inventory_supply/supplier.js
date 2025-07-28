@@ -75,7 +75,7 @@ function initDataTable() {
             scrollX: true,
             scrollY: true,
             scrollCollapse: true,
-            autoWidth: false,
+            width: false,
             destroy: true
         });
 
@@ -100,7 +100,12 @@ $(document).ready(function() {
 
     // Optional: Close modal when clicking "Cancel"
     $(".close-modal").click(function() {
+      location.reload()
       $(".z-10").addClass("hidden");
+      
+         //$("#supplierModal").addClass("hidden");
+
+    //
     });
 
   });
@@ -166,4 +171,63 @@ function insertSupplier() {
 $('#insertBtn').on('click', function () {
 	insertSupplier();
 });
+
+
+ function setSupplierAutocomplete() {
+  $("#nameUpdate").autocomplete({
+    source: function(request, response) {
+      $.ajax({
+        url: "/mygraphql", // GraphQL endpoint
+        method: "POST",
+        contentType: "application/json",
+        dataType: "json",
+        data: JSON.stringify({
+          query: `
+            query getSupplierAutocomplete($searchTerm: String!) {
+              getSupplierAutocomplete(searchTerm: $searchTerm) {
+                id
+                name
+                phone
+                email
+                contactPerson
+                address
+              }
+            }
+          `,
+          variables: {
+            searchTerm: request.term
+          }
+        }),
+        success: function(res) {
+          if (res.data && res.data.getSupplierAutocomplete) {
+            let suggestions = res.data.getSupplierAutocomplete.map(item => ({
+              label: item.name,
+              value: item.name,
+              customer_id: item.id,
+              phone: item.phone,
+              email: item.email,
+              contactPerson: item.contactPerson
+            }));
+            response(suggestions);
+          }
+        },
+        error: function(err) {
+          console.error("GraphQL Autocomplete error:", err);
+        }
+      });
+    },
+    minLength: 0,
+    select: function(event, ui) {
+      $("#nameUpdate").val(ui.item.value);
+      $("#idUpdate").val(ui.item.customer_id);
+      $("#conctact_person_update").val(ui.item.contactPerson);
+      $("#phone_update").val(ui.item.phone);
+      $("#email_update").val(ui.item.email);
+      return false;
+    }
+  });
+}
+
+
+setSupplierAutocomplete();
 
