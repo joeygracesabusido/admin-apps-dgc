@@ -56,23 +56,25 @@ class Mutation:
     async def insert_inventory_supply_item(self,info: Info, inventory_items: InventoryItems) -> str:
         request: Request = info.context['request']
         username = get_current_user(request)
-        try:
-            data = {
 
-            **inventory_items.__dict__,
+        if username:
+            try:
+                data = {
 
-                'created':inventory_items.created or datetime.utcnow(),
-            'updated': datetime.utcnow(),
-            'user': username
-            
-            }
+                **inventory_items.__dict__,
+
+                    'created':inventory_items.created or datetime.utcnow(),
+                'updated': datetime.utcnow(),
+                'user': username
+                
+                }
 
 
-            inventory_item_collection.insert_one(data)
-            return f"Items inserted"
-        except Exception as e:
+                inventory_item_collection.insert_one(data)
+                return f"Items inserted"
+            except Exception as e:
 
-            return f"Unexpected Error: {str(e)}"
+                return f"Unexpected Error: {str(e)}"
 
     # @strawberry.mutation
     # async def insert_supplier_ivt_supply(self, int_supplier: supplierInput) -> str:

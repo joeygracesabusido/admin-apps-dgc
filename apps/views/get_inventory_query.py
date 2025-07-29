@@ -2,6 +2,8 @@ from datetime import datetime
 from enum import unique
 import strawberry
 
+from bson import ObjectId
+
 from typing import Optional,List
 
 from ..database.mongodb import create_mongo_client
@@ -22,7 +24,7 @@ class InventoryItemsQuery:
     unit: str
     reorder_level: int
     price_per_unit: float
-    supplier_id: str
+    supplier_id: Optional[str] = None
     user: Optional[str] = None
     created: Optional[datetime] = None
     updated: Optional[datetime] = None
@@ -89,25 +91,32 @@ class Query:
     async def get_inventory_with_supplier(self) -> List[InventoryItemsQuery]:
         pipeline = [
             {
+        "$addFields": {
+            "supplier_id_obj": { "$toObjectId": "$supplier_id" }
+        }
+    },
+
+            {
                 "$lookup": {
                     "from": "inventory_supplier",
-                    "localField": "supplier_id",
+                    "localField": "supplier_id_obj",
                     "foreignField": "_id",
                     "as": "supplier"
                 }
             },
-            { "$unwind": "$supplier" },
+            { "$unwind": { "path": "$supplier", "preserveNullAndEmptyArrays": True } },
             {
                 "$project": {
                     "item_code": 1,
                     "name": 1,
                     "category": 1,
+                    "description": 1,
                     "quantity_in_stock": 1,
                     "unit": 1,
                     "reorder_level": 1,
                     "price_per_unit": 1,
-                    "updated_at": 1,
-                    "supplier_name": "$supplier.name"
+                    "updated": 1,
+                    "supplier_id": "$supplier.name"
                 }
             }
         ]
@@ -121,12 +130,13 @@ class Query:
                 item_code=item.get('item_code'),
                 name=item.get('name'),
                 category=item.get('category'),
+                description=item.get('description'),
                 quantity_in_stock=item.get('quantity_in_stock', 0.0),
                 unit=item.get('unit'),
                 reorder_level=item.get('reorder_level'),
                 price_per_unit=item.get('price_per_unit'),
-                updated_at=item.get('updated_at'),
-                supplier_name=item.get('supplier_name')
+                updated=item.get('updated'),
+                supplier_id=item.get('supplier_id')
             )
             for item in results
         ]

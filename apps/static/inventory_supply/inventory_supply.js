@@ -1,4 +1,4 @@
-function fetchSupplier() {
+function fetchInventory() {
         $.ajax({
             url: '/mygraphql/',
             type: 'POST',
@@ -17,10 +17,9 @@ function fetchSupplier() {
                                 unit
                                 reorderLevel
                                 pricePerUnit
-                                supplierID
+                                supplierId
                                 user
-                                createdAt
-                                updatedAt
+                                
 
                          }
 
@@ -29,13 +28,15 @@ function fetchSupplier() {
                 `
             }),
             success: function (response) {
+
+                console.log(response);
                 let tableBody = $("#supplier_table tbody");
                 tableBody.empty();
 
-                let data = response.data.getSupplierList;
+                let data = response.data.getInventoryWithSupplier;
                 data.forEach(function (supp) {
                     let row = `
-                        <tr class="text-xs">
+                        <tr class="text-sm">
                             <td>${supp.itemCode}</td>
                             <td>${supp.name}</td>
                             <td>${supp.category || ''}</td>
@@ -45,7 +46,7 @@ function fetchSupplier() {
                             <td>${supp.reorderLevel || ''}</td>
                             <td>${supp.pricePerUnit || ''}</td>
 
-                            <td>${supp.user}</td>
+                            <td>${supp.supplierId}</td>
                         </tr>
                     `;
                     tableBody.append(row);
@@ -63,6 +64,8 @@ function fetchSupplier() {
 
       
     }
+
+fetchInventory();
 
 
 $(document).ready(function() {
