@@ -2,9 +2,14 @@ from datetime import datetime
 from enum import unique
 import strawberry
 
+from strawberry.types import Info
+
 from strawberry import asdict
 
 from typing import Optional,List
+
+from ..authentication.authenticate_user import get_current_user
+
 
 from ..database.mongodb import create_mongo_client
 mydb = create_mongo_client()
@@ -21,6 +26,7 @@ class InventoryItems:
     reorder_level: int
     price_per_unit: float
     supplier_id: str
+    user: Optional[str] = None
     created: Optional[datetime] = None
     updated: Optional[datetime] = None
 
@@ -34,28 +40,30 @@ class supplierInput:
     phone: str
     address: str
     user: Optional[str] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+    created: Optional[datetime] = None
+    updated: Optional[datetime] = None
 
+
+
+inventory_item_collection = mydb['inventory_supply_item']
+inventory_item_collection.create_index('item_code', unique=True)
+inventory_item_collection.create_index('name', unique=True)
 
 
 @strawberry.type
-
 class Mutation:
     @strawberry.mutation
-    async def insert_inventory_supply_item(self, inventory_items: InventoryItems) -> str:
-
+    async def insert_inventory_supply_item(self,info: Info, inventory_items: InventoryItems) -> str:
+        request: Request = info.context['request']
+        username = get_current_user(request)
         try:
-            inventory_item_collection = mydb['inventory_supply_item']
-            inventory_item_collection.create_index('item_code', unique=True)
-            inventory_item_collection.create_index('name', unique=True)
-
             data = {
 
             **inventory_items.__dict__,
 
                 'created':inventory_items.created or datetime.utcnow(),
-            'updated': datetime.utcnow()
+            'updated': datetime.utcnow(),
+            'user': username
             
             }
 

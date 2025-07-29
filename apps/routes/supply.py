@@ -22,4 +22,6 @@ templates = Jinja2Templates(directory="apps/templates")
 async def api_ticketing(request: Request,username: str = Depends(get_current_user)):
     return templates.TemplateResponse("inventory_supply/invt_supplier.html", {"request": request})
 
-
+@api_supplier_temp.get("/inventory-supply", response_class=HTMLResponse)
+async def api_inventory_supply(request: Request, username: str = Depends(get_current_user)):
+    return templates.TemplateResponse("inventory_supply/inventory_supply.html",{"request":request})

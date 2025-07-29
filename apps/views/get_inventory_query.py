@@ -23,6 +23,7 @@ class InventoryItemsQuery:
     reorder_level: int
     price_per_unit: float
     supplier_id: str
+    user: Optional[str] = None
     created: Optional[datetime] = None
     updated: Optional[datetime] = None
 
@@ -79,4 +80,54 @@ class Query:
 
         ) for item in supplies]
 
+
+
+
+
+
+    @strawberry.field
+    async def get_inventory_with_supplier(self) -> List[InventoryItemsQuery]:
+        pipeline = [
+            {
+                "$lookup": {
+                    "from": "inventory_supplier",
+                    "localField": "supplier_id",
+                    "foreignField": "_id",
+                    "as": "supplier"
+                }
+            },
+            { "$unwind": "$supplier" },
+            {
+                "$project": {
+                    "item_code": 1,
+                    "name": 1,
+                    "category": 1,
+                    "quantity_in_stock": 1,
+                    "unit": 1,
+                    "reorder_level": 1,
+                    "price_per_unit": 1,
+                    "updated_at": 1,
+                    "supplier_name": "$supplier.name"
+                }
+            }
+        ]
+
+        inventory_collection = mydb['inventory_supply_item']
+        results = inventory_collection.aggregate(pipeline)
+
+        return [
+            InventoryItemsQuery(
+                id=str(item.get('_id')),
+                item_code=item.get('item_code'),
+                name=item.get('name'),
+                category=item.get('category'),
+                quantity_in_stock=item.get('quantity_in_stock', 0.0),
+                unit=item.get('unit'),
+                reorder_level=item.get('reorder_level'),
+                price_per_unit=item.get('price_per_unit'),
+                updated_at=item.get('updated_at'),
+                supplier_name=item.get('supplier_name')
+            )
+            for item in results
+        ]
 
