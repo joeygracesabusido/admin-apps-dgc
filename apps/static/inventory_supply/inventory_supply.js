@@ -1,10 +1,12 @@
+
+
 function fetchInventory() {
         $.ajax({
             url: '/mygraphql/',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
-                query: `
+                query: `  
                     query {
                         
                       getInventoryWithSupplier {
@@ -36,7 +38,18 @@ function fetchInventory() {
                 let data = response.data.getInventoryWithSupplier;
                 data.forEach(function (supp) {
                     let row = `
-                        <tr class="text-sm">
+                        <tr class="text-sm clickable-row cursor-pointer hover:bg-gray-100"
+                            data-id="${supp.id}"
+                            data-item-code="${supp.itemCode}"
+                            data-name="${supp.name}"
+                            data-category="${supp.category || ''}"
+                            data-description="${supp.description || ''}"
+                            data-quantity="${supp.quantityInStock || ''}"
+                            data-unit="${supp.unit || ''}"
+                            data-reorder-level="${supp.reorderLevel || ''}"
+                            data-price="${supp.pricePerUnit || ''}"
+                            data-supplier="${supp.supplierId || ''}"
+                            data-user="${supp.user || ''}">
                             <td>${supp.itemCode}</td>
                             <td>${supp.name}</td>
                             <td>${supp.category || ''}</td>
@@ -45,12 +58,14 @@ function fetchInventory() {
                             <td>${supp.unit || ''}</td>
                             <td>${supp.reorderLevel || ''}</td>
                             <td>${supp.pricePerUnit || ''}</td>
-
                             <td>${supp.supplierId}</td>
                         </tr>
                     `;
                     tableBody.append(row);
-                }); 
+                });
+
+                // Add click handlers to table rows
+                addRowClickHandlers();
 
                 // Initialize DataTable after data load
                 initDataTable();
@@ -67,6 +82,91 @@ function fetchInventory() {
 
 fetchInventory();
 
+// Global variable to store selected row data
+let selectedRowData = null;
+
+// Function to add click handlers to table rows
+function addRowClickHandlers() {
+    $('.clickable-row').off('click').on('click', function() {
+        // Remove previous selection styling
+        $('.clickable-row').removeClass('bg-blue-100 selected-row');
+
+        // Add selection styling to clicked row
+        $(this).addClass('bg-blue-100 selected-row');
+
+        // Store the selected row data
+        selectedRowData = {
+            id: $(this).data('id'),
+            itemCode: $(this).data('item-code'),
+            name: $(this).data('name'),
+            category: $(this).data('category'),
+            description: $(this).data('description'),
+            quantity: $(this).data('quantity'),
+            unit: $(this).data('unit'),
+            reorderLevel: $(this).data('reorder-level'),
+            price: $(this).data('price'),
+            supplier: $(this).data('supplier'),
+            user: $(this).data('user')
+        };
+
+        console.log('Row selected:', selectedRowData);
+
+        // Enable the update button
+        $('#updateSupplierBtn').prop('disabled', false).removeClass('opacity-50');
+
+        // Show a visual indicator that row is selected
+        $('#updateSupplierBtn').html('<i class="fas fa-edit mr-2"></i>Update Selected Item');
+    });
+}
+
+// Function to populate the update form with selected row data
+function populateUpdateForm() {
+    if (!selectedRowData) {
+        alert('Please select a row from the table first!');
+        return false;
+    }
+
+    // Populate the update form fields
+    $('#idUpdate').val(selectedRowData.id);
+    $('#item_code_update').val(selectedRowData.itemCode);
+    $('#nameUpdate').val(selectedRowData.name);
+    $('#category_update').val(selectedRowData.category);
+    $('#description_update').val(selectedRowData.description);
+    $('#quantity_update').val(selectedRowData.quantity);
+    $('#unit_update').val(selectedRowData.unit);
+    $('#reorder_level_update').val(selectedRowData.reorderLevel);
+    $('#price_update').val(selectedRowData.price);
+    $('#supplier_update').val(selectedRowData.supplier);
+
+    console.log('Update form populated with:', selectedRowData);
+    return true;
+}
+
+
+function initDataTable() {
+        if (!$.fn.DataTable.isDataTable("#supplier_table")) {
+
+            new DataTable('#supplier_table', {
+            layout: { topStart: 'buttons' },
+            buttons: ['copy', {
+                extend: 'csv',
+                filename: 'Supplier',
+                title: 'Supplier'
+            }],
+            perPage: 10,
+            searchable: true,
+            sortable: true,
+            responsive: true,
+            scrollX: true,
+            scrollY: true,
+            scrollCollapse: true,
+            width: false,
+            destroy: true
+        });
+
+        }
+    }
+
 
 $(document).ready(function() {
     $("#addSupplierBtn").click(function() {
@@ -79,8 +179,11 @@ $(document).ready(function() {
         
   
     // this is for Update function Modal insertBtn
-     $("#updateSupplierBtn").click(function() {            
-      $("#supplierModalUpdating").removeClass("hidden");
+     $("#updateSupplierBtn").click(function() {
+        // Check if a row is selected and populate the form
+        if (populateUpdateForm()) {
+            $("#supplierModalUpdating").removeClass("hidden");
+        }
     });
 
     // Optional: Close modal when clicking "Cancel"
@@ -102,6 +205,8 @@ $(document).ready(function() {
   });
 
 
+
+setSupplierAutocomplete();
 // this function is for autocomplete of supplier_table
  function setSupplierAutocomplete() {
   $("#supplier_id").autocomplete({
