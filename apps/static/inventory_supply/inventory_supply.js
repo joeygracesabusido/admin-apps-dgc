@@ -65,7 +65,7 @@ function fetchInventory() {
                 });
 
                 // Add click handlers to table rows
-                addRowClickHandlers();
+                // addRowClickHandlers();
 
                 // Initialize DataTable after data load
                 initDataTable();
@@ -111,11 +111,20 @@ function addRowClickHandlers() {
 
         console.log('Row selected:', selectedRowData);
 
-        // Enable the update button
-        $('#updateSupplierBtn').prop('disabled', false).removeClass('opacity-50');
+        // Enable the update button (this might not be needed if modal opens directly)
+        $('#updateItemBtn').prop('disabled', false).removeClass('opacity-50');
 
-        // Show a visual indicator that row is selected
-        $('#updateSupplierBtn').html('<i class="fas fa-edit mr-2"></i>Update Selected Item');
+        // Show a visual indicator that row is selected (might not be needed)
+        $('#updateItemBtn').html('<i class="fas fa-edit mr-2"></i>Update Selected Item');
+
+        // Populate the update form and open the modal
+        if (populateUpdateForm()) {
+            const modalElement = document.getElementById("itemDetailsModal");
+            if (modalElement) {
+                modalElement.classList.remove("hidden");
+                modalElement.style.setProperty('display', 'flex', 'important'); // Use setProperty with !important
+            }
+        }
     });
 }
 
@@ -127,16 +136,16 @@ function populateUpdateForm() {
     }
 
     // Populate the update form fields
-    $('#idUpdate').val(selectedRowData.id);
-    $('#item_code_update').val(selectedRowData.itemCode);
-    $('#nameUpdate').val(selectedRowData.name);
-    $('#category_update').val(selectedRowData.category);
-    $('#description_update').val(selectedRowData.description);
-    $('#quantity_update').val(selectedRowData.quantity);
-    $('#unit_update').val(selectedRowData.unit);
-    $('#reorder_level_update').val(selectedRowData.reorderLevel);
-    $('#price_update').val(selectedRowData.price);
-    $('#supplier_update').val(selectedRowData.supplier);
+    $('#itemId').val(selectedRowData.id);
+    $('#itemCode').val(selectedRowData.itemCode);
+    $('#itemName').val(selectedRowData.name);
+    $('#itemCategory').val(selectedRowData.category);
+    $('#itemDescription').val(selectedRowData.description);
+    $('#itemQuantity').val(selectedRowData.quantity);
+    $('#itemUnit').val(selectedRowData.unit);
+    $('#itemReorderLevel').val(selectedRowData.reorderLevel);
+    $('#itemPrice').val(selectedRowData.price);
+    $('#itemSupplier').val(selectedRowData.supplier);
 
     console.log('Update form populated with:', selectedRowData);
     return true;
@@ -144,28 +153,31 @@ function populateUpdateForm() {
 
 
 function initDataTable() {
-        if (!$.fn.DataTable.isDataTable("#supplier_table")) {
-
-            new DataTable('#supplier_table', {
-            layout: { topStart: 'buttons' },
-            buttons: ['copy', {
-                extend: 'csv',
-                filename: 'Supplier',
-                title: 'Supplier'
-            }],
-            perPage: 10,
-            searchable: true,
-            sortable: true,
-            responsive: true,
-            scrollX: true,
-            scrollY: true,
-            scrollCollapse: true,
-            width: false,
-            destroy: true
-        });
-
-        }
+    if ($.fn.DataTable.isDataTable("#supplier_table")) {
+        $('#supplier_table').DataTable().destroy();
     }
+
+    new DataTable('#supplier_table', {
+        layout: { topStart: 'buttons' },
+        buttons: ['copy', {
+            extend: 'csv',
+            filename: 'Supplier',
+            title: 'Supplier'
+        }],
+        perPage: 10,
+        searchable: true,
+        sortable: true,
+        responsive: true,
+        scrollX: true,
+        scrollY: true,
+        scrollCollapse: true,
+        width: false,
+        initComplete: function() {
+            addRowClickHandlers();
+            console.log("DataTable initialized and click handlers re-attached.");
+        }
+    });
+}
 
 
 $(document).ready(function() {
@@ -179,21 +191,17 @@ $(document).ready(function() {
         
   
     // this is for Update function Modal insertBtn
-     $("#updateSupplierBtn").click(function() {
+     $("#updateItemBtn").click(function() {
         // Check if a row is selected and populate the form
         if (populateUpdateForm()) {
-            $("#supplierModalUpdating").removeClass("hidden");
+            $("#itemDetailsModal").removeClass("hidden");
         }
     });
 
     // Optional: Close modal when clicking "Cancel"
     $(".close-modal").click(function() {
-      location.reload()
       $(".z-10").addClass("hidden");
-      
-         //$("#supplierModal").addClass("hidden");
-
-    //
+      $(".z-10").css('display', 'none'); // Ensure it's hidden
     });
     
      // $("#updateBtn").click(function (e) {
@@ -278,9 +286,8 @@ function insertInventory() {
   const supplierId = $('#supplier_id').val();
  
 
-
   // Optional: Escape double quotes
-  const escape = (str) => (str || '').toString().replace(/"/g, '\\"');
+  const escape = (str) => (str || '').toString().replace(/"/g, '"');
 
   const query = `
     mutation {
@@ -326,5 +333,59 @@ function insertInventory() {
 
 }
 
+
+document.addEventListener('DOMContentLoaded', function() {
+    const updateItemCodeInput = document.getElementById('update_item_code');
+
+    if (updateItemCodeInput) {
+        updateItemCodeInput.addEventListener('input', function() {
+            const itemCode = this.value.trim();
+            if (itemCode) {
+                fetch(`/inventory_supply/item_code/${itemCode}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            if (response.status === 404) {
+                                console.log('Item not found for code:', itemCode);
+                                // Clear fields if item not found
+                                document.getElementById('update_item_name').value = '';
+                                document.getElementById('update_unit').value = '';
+                                document.getElementById('update_quantity').value = '';
+                                document.getElementById('update_price').value = '';
+                                document.getElementById('update_supplier').value = '';
+                                document.getElementById('update_date_stock_in').value = '';
+                                document.getElementById('update_expiration_date').value = '';
+                                return;
+                            }
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data) {
+                            document.getElementById('update_item_name').value = data.item_name || '';
+                            document.getElementById('update_unit').value = data.unit || '';
+                            document.getElementById('update_quantity').value = data.quantity || '';
+                            document.getElementById('update_price').value = data.price || '';
+                            document.getElementById('update_supplier').value = data.supplier || '';
+                            document.getElementById('update_date_stock_in').value = data.date_stock_in || '';
+                            document.getElementById('update_expiration_date').value = data.expiration_date || '';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching item details:', error);
+                    });
+            } else {
+                // Clear fields if item code is empty
+                document.getElementById('update_item_name').value = '';
+                document.getElementById('update_unit').value = '';
+                document.getElementById('update_quantity').value = '';
+                document.getElementById('update_price').value = '';
+                document.getElementById('update_supplier').value = '';
+                document.getElementById('update_date_stock_in').value = '';
+                document.getElementById('update_expiration_date').value = '';
+            }
+        });
+    }
+});
 
 

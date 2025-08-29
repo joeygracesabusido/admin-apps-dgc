@@ -29,3 +29,4 @@ async def api_inventory_supply(request: Request, username: str = Depends(get_cur
 @api_supplier_temp.get("/test-enhanced", response_class=HTMLResponse)
 async def test_enhanced_template(request: Request):
     return templates.TemplateResponse("inventory_supply/inventory_supply_clean.html",{"request":request})
+
