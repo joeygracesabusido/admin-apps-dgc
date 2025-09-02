@@ -271,6 +271,10 @@
               Update Inventory
             </button>
 
+            <button id="manageTransactionBtn" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded">
+              Manage Transaction
+            </button>
+
 
         </div>
 
@@ -310,6 +314,13 @@
 
  
  <script src="/static/inventory_supply/inventory_supply.js"></script> 
+ <script src="/static/inventory_supply/manage_transactions.js"></script> 
+
+<script>
+    document.getElementById('manageTransactionBtn').addEventListener('click', () => {
+        showManageTransactionModal();
+    });
+</script> 
         
 </div>       
     

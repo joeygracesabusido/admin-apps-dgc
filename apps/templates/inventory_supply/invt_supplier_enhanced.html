@@ -309,6 +309,7 @@
             <button id="updateSupplierBtn" class="btn-primary-custom text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 hover:shadow-lg">
               <i class="fas fa-edit mr-2"></i>Update Supplier
             </button>
+          
           </div>
 
           <!-- Search Section -->
@@ -378,5 +379,12 @@
 </div>
 
 <script src="/static/inventory_supply/supplier.js"></script>
+<!-- <script src="/static/inventory_supply/manage_transactions.js"></script> -->
+
+<script>
+    document.getElementById('manageTransactionBtn').addEventListener('click', () => {
+        showManageTransactionModal();
+    });
+</script>
 
 {% endblock %}

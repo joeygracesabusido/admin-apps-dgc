@@ -2,20 +2,6 @@
 
 {% block content %}
 
-<!-- TEST: Enhanced template is loading -->
-<div style="background: red; color: white; padding: 10px; margin: 10px; text-align: center; font-weight: bold;">
-  🎉 ENHANCED TEMPLATE IS LOADING! 🎉
-</div>
-
-<!-- TEST BUTTONS -->
-<div style="padding: 20px; text-align: center;">
-  <button id="testBtn" style="background: green; color: white; padding: 15px 30px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin: 5px;">
-    🧪 TEST BUTTON - Click Me!
-  </button>
-  <button id="testModalBtn" style="background: purple; color: white; padding: 15px 30px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin: 5px;">
-    🔧 TEST MODAL - Show Modal
-  </button>
-</div>
 
 <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -121,7 +107,7 @@
   <div class="flex items-center justify-between">
     <div>
       <h1 class="text-3xl font-bold mb-2">
-        <i class="fas fa-boxes mr-3"></i>Inventory Supply Management
+        <i class="fas fa-boxes mr-3"></i>Inventory Supply Managements
       </h1>
       <p class="text-blue-100">Manage your inventory items and supplies efficiently</p>
     </div>
@@ -378,6 +364,9 @@
             <button id="updateSupplierBtn" class="btn-primary-custom text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 hover:shadow-lg">
               <i class="fas fa-edit mr-2"></i>Update Item
             </button>
+            <button id="manageTransactionBtn" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 hover:shadow-lg">
+              <i class="fas fa-exchange-alt mr-2"></i>Manage Transaction
+            </button>
           </div>
 
           <!-- Search and Filter Section -->
@@ -462,6 +451,13 @@
 </div>
 
 <script src="/static/inventory_supply/inventory_supply.js"></script>
+<script src="/static/inventory_supply/manage_transactions.js"></script>
+
+<script>
+    document.getElementById('manageTransactionBtn').addEventListener('click', () => {
+        showManageTransactionModal();
+    });
+</script>
 
 <!-- Quick Modal Fix -->
 <script>
@@ -600,7 +596,7 @@ $(window).on('load', function() {
     });
 
     }, 500); // 500ms delay to ensure all scripts loaded
-});
+
 </script>
 
 {% endblock %}
