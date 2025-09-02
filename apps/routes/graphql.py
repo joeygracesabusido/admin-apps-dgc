@@ -19,6 +19,7 @@ from apps.views.supplier_grapghql_query import Query as getSupplier
 #from apps.views.mutation import Mutation
 
  
+from ..views.inventory_transaction_mutation import Mutation as InventoryTransactionMutation
 from apps.views.inventory_supplies_mutation import Mutation as InsertItems
 from ..views.supplier_invt_supply import insertSupplierInvt
 
@@ -36,7 +37,7 @@ class Query(BasicQuery, GetInventory, getSupplier):
     pass
 
 @strawberry.type
-class Mutation(InsertItems, insertSupplierInvt):
+class Mutation(InsertItems, insertSupplierInvt, InventoryTransactionMutation):
     pass
 
 # Create a Strawberry schema:w

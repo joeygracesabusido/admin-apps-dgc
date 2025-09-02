@@ -33,6 +33,16 @@ function showManageTransactionModal() {
                             <input type="date" id="transaction_date" name="transaction_date" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm">
                         </div>
 
+                        <div class="space-y-2 mb-4">
+                            <label for="departmen_management_transaction" class="block text-sm font-semibold text-gray-700">Department</label>
+                            <input type="text" id="departmen_management_transaction" name="transaction_date" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm">
+                        </div>
+
+                         <div class="space-y-2 mb-4">
+                            <label for="remarks_management_transaction" class="block text-sm font-semibold text-gray-700">Remarks</label>
+                            <input type="text" id="remarks_management_transaction" name="transaction_date" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm">
+                        </div>
+
                         <div id="inventory-items-container">
                             <!-- Dynamic content will be injected here -->
                         </div>
@@ -99,7 +109,7 @@ function showManageTransactionModal() {
                 <div class="space-y-2">
                     <label for="transaction_type_${itemIndex}" class="block text-sm font-semibold text-gray-700">Type</label>
                     <div class="flex items-center">
-                        <select id="transaction_type_${itemIndex}" name="transaction_type[]" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm h-12">
+                        <select id="transaction_type_${itemIndex}" name="transaction_type[]" class="form-input-modern w-full rounded-lg px-4 py-3 text-xs h-14">
                             <option value="in">IN</option>
                             <option value="out">OUT</option>
                         </select>
@@ -111,7 +121,68 @@ function showManageTransactionModal() {
             </div>
         `;
         inventoryItemsContainer.insertAdjacentHTML('beforeend', newItemRow);
+        setInventoryAutocomplete(`#inventory_name_${itemIndex}`);
     });
+
+    function setInventoryAutocomplete(selector) {
+        try {
+            $(selector).autocomplete({
+                source: function(request, response) {
+                    console.log("Autocomplete search triggered for:", request.term);
+                    $.ajax({
+                        url: "/mygraphql",
+                        method: "POST",
+                        contentType: "application/json",
+                        dataType: "json",
+                        data: JSON.stringify({
+                            query: `
+                                query getInventoryAutocomplete($searchTerm: String!) {
+                                    getInventoryAutocomplete(searchTerm: $searchTerm) {
+                                        id
+                                        name
+                                        itemCode
+                                    }
+                                }
+                            `,
+                            variables: {
+                                searchTerm: request.term
+                            }
+                        }),
+                        success: function(res) {
+                            if (res.data && res.data.getInventoryAutocomplete) {
+                                let suggestions = res.data.getInventoryAutocomplete.map(item => ({
+                                    label: item.name,
+                                    value: item.name,
+                                    itemCode: item.itemCode
+                                }));
+                                console.log("Suggestions:", suggestions);
+                                response(suggestions);
+                            } else {
+                                console.log("No suggestions found.");
+                                response([]);
+                            }
+                        },
+                        error: function(err) {
+                            console.error("GraphQL Autocomplete error:", err);
+                            response([]);
+                        }
+                    });
+                },
+                minLength: 0,
+                select: function(event, ui) {
+                    const itemIndex = $(this).attr('id').split('_').pop();
+                    $(`#inventory_name_${itemIndex}`).val(ui.item.value);
+                    $(`#int_item_code_${itemIndex}`).val(ui.item.itemCode);
+                    return false;
+                }
+            }).focus(function() {
+                console.log("Input focused, triggering search.");
+                $(this).autocomplete("search", "");
+            });
+        } catch (e) {
+            console.error("Error initializing autocomplete:", e);
+        }
+    }
 
     inventoryItemsContainer.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-item-btn') || e.target.closest('.remove-item-btn')) {
