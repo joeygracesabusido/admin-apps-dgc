@@ -197,12 +197,81 @@ function showManageTransactionModal() {
         }
     });
 
-    document.getElementById('save-transaction-btn').addEventListener('click', () => {
-        console.log("Save transaction button clicked.");
-        // Add logic to save the transaction
-        alert('Transaction saved!');
-        document.getElementById('manageTransactionModal')?.remove();
-    });
+    document.getElementById('save-transaction-btn').addEventListener('click', saveInventoryTransaction);
 
     addItemBtn.click();
+}
+
+async function saveInventoryTransaction() {
+    console.log("Attempting to save inventory transaction.");
+
+    const transactionDate = document.getElementById('transaction_date').value;
+    const department = document.getElementById('departmen_management_transaction').value;
+    const remarks = document.getElementById('remarks_management_transaction').value;
+
+    if (!transactionDate || !department) {
+        alert('Please fill in all required fields: Transaction Date and Department.');
+        return;
+    }
+
+    const transactionItems = [];
+    const itemRows = document.querySelectorAll('.inventory-item-row');
+
+    itemRows.forEach((row, index) => {
+        const itemName = row.querySelector(`#inventory_name_${index}`).value;
+        const itemCode = row.querySelector(`#int_item_code_${index}`).value;
+        const quantity = parseFloat(row.querySelector(`#quantity_${index}`).value);
+        const transactionType = row.querySelector(`#transaction_type_${index}`).value;
+
+        if (itemCode && !isNaN(quantity)) {
+            transactionItems.push({
+                itemCode: itemCode,
+                itemName: itemName,
+                quantity: quantity,
+                transactionType: transactionType,
+                transactionDate: transactionDate,
+                department: department,
+                remarks: remarks
+            });
+        }
+    });
+
+    if (transactionItems.length === 0) {
+        alert('No valid items to save.');
+        return;
+    }
+
+    const mutation = `
+        mutation ManageInventoryTransaction($transactionItems: [TransactionItemInput!]!) {
+            manageInventoryTransaction(transactionItems: $transactionItems)
+        }
+    `;
+
+    try {
+        const response = await fetch('/mygraphql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                query: mutation,
+                variables: { transactionItems }
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.errors) {
+            console.error('GraphQL Error:', result.errors);
+            alert('Error saving transaction: ' + result.errors.map(e => e.message).join('\n'));
+        } else {
+            console.log('GraphQL Success:', result);
+            alert('Transaction saved successfully!');
+            document.getElementById('manageTransactionModal')?.remove();
+        }
+    } catch (error) {
+        console.error('Network or other error:', error);
+        alert('An error occurred while saving the transaction.');
+    }
 }
