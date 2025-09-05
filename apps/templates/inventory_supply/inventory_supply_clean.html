@@ -142,6 +142,27 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  /* Ensure jQuery UI autocomplete appears above modal and looks correct */
+  .ui-autocomplete {
+    z-index: 100000 !important; /* higher than modal overlay */
+    max-height: 260px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #ffffff;
+    border: 1px solid #e5e7eb; /* gray-200 */
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    border-radius: 0.5rem;
+    pointer-events: auto;
+  }
+  .ui-front { z-index: 100000 !important; }
+  .ui-menu { z-index: 100000 !important; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 0.25rem 0; }
+  .ui-menu .ui-menu-item-wrapper { padding: 8px 12px; }
+  .ui-autocomplete .ui-menu-item-wrapper.ui-state-active {
+    background: #eff6ff; /* blue-50 */
+    color: #1f2937; /* gray-800 */
+    border: none;
+  }
 </style>
 
 <link rel="stylesheet" type="text/css" href="/static/style.css">

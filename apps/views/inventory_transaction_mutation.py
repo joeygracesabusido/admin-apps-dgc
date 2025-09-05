@@ -5,7 +5,6 @@ from ..database.mongodb import create_mongo_client
 from ..authentication.authenticate_user import get_current_user
 from strawberry.types import Info
 
-mydb = create_mongo_client()
 
 @strawberry.input
 class TransactionItemInput:
@@ -23,6 +22,7 @@ class Mutation:
     async def manage_inventory_transaction(self,info: Info, transaction_items: List[TransactionItemInput]) -> str:
         request = info.context['request']
         username = get_current_user(request)
+        mydb = create_mongo_client()
 
         if username:
             try:

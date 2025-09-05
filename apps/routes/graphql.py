@@ -45,7 +45,7 @@ schema = strawberry.Schema(query=Query,mutation=Mutation)
  
 graphql_app = GraphQL(schema)
 
-#graphql_app = GraphQLRouter(schema, context_getter=get_context)
+# graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 
 

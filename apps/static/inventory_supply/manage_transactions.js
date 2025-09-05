@@ -169,6 +169,16 @@ function showManageTransactionModal() {
                     });
                 },
                 minLength: 0,
+                delay: 0,
+                appendTo: 'body',
+                position: { my: 'left top+2', at: 'left bottom', collision: 'fit' },
+                open: function() {
+                    const $widget = $(this).autocomplete('widget');
+                    $widget.css({
+                        'z-index': 100000,
+                        'min-width': $(this).outerWidth() + 'px'
+                    });
+                },
                 select: function(event, ui) {
                     const itemIndex = $(this).attr('id').split('_').pop();
                     $(`#inventory_name_${itemIndex}`).val(ui.item.value);
@@ -225,11 +235,11 @@ async function saveInventoryTransaction() {
 
         if (itemCode && !isNaN(quantity)) {
             transactionItems.push({
-                itemCode: itemCode,
-                itemName: itemName,
+                item_code: itemCode,
+                item_name: itemName,
                 quantity: quantity,
-                transactionType: transactionType,
-                transactionDate: transactionDate,
+                transaction_type: transactionType,
+                transaction_date: transactionDate,
                 department: department,
                 remarks: remarks
             });
