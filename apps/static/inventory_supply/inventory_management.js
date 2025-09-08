@@ -279,6 +279,13 @@ async function saveInventoryTransaction() {
             console.log('GraphQL Success:', result);
             alert('Transaction saved successfully!');
             document.getElementById('manageTransactionModal')?.remove();
+
+            window.location.reload();
+
+            // Instead of reloading, re-fetch table data
+            // loadInventoryTransactions(); // <- your function to refresh the DataTable
+
+            
         }
     } catch (error) {
         console.error('Network or other error:', error);
@@ -339,6 +346,7 @@ function initializeTransactionTable() {
     .catch(error => {
         console.error('Network or other error:', error);
         alert('An error occurred while fetching transactions.');
+        
     });
 }
 

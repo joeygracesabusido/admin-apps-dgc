@@ -25,7 +25,7 @@ from ..views.inventory_management_graphql import Mutation as manage_inventory_tr
 
 from apps.views.inventory_supplies_mutation import Mutation as InsertItems
 from ..views.supplier_invt_supply import insertSupplierInvt
-
+from ..views.supplier_mutation import SupplierMutation
 
 
 def get_context(request:Request):
@@ -40,7 +40,7 @@ class Query(BasicQuery, GetInventory, getSupplier, get_inventory_transactions) :
     pass
 
 @strawberry.type
-class Mutation(InsertItems, insertSupplierInvt, manage_inventory_transaction):
+class Mutation(InsertItems, insertSupplierInvt, manage_inventory_transaction, SupplierMutation):
     pass
 
 # Create a Strawberry schema:w

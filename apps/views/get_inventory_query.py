@@ -29,6 +29,17 @@ class InventoryItemsQuery:
     created: Optional[datetime] = None
     updated: Optional[datetime] = None
 
+@strawberry.type
+class InventoryBalance:
+    item_code: str
+    item_name: str
+    balance: float
+    category: Optional[str] = None
+    description: Optional[str] = None
+    unit: Optional[str] = None
+    reorder_level: Optional[int] = None
+    price_per_unit: Optional[float] = None
+    supplier_name: Optional[str] = None
 
 
 @strawberry.type
@@ -138,6 +149,99 @@ class Query:
                 price_per_unit=item.get('price_per_unit'),
                 updated=item.get('updated'),
                 supplier_id=item.get('supplier_id')
+            )
+            for item in results
+        ]
+
+    @strawberry.field
+    async def get_inventory_balance(self) -> List[InventoryBalance]:
+        pipeline = [
+            {
+                "$group": {
+                    "_id": {
+                        "item_code": "$item_code",
+                        "item_name": "$item_name"
+                    },
+                    "in_quantity": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$transaction_type", "in"]}, "$quantity", 0]
+                        }
+                    },
+                    "out_quantity": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$transaction_type", "out"]}, "$quantity", 0]
+                        }
+                    }
+                }
+            },
+            {
+                "$project": {
+                    "item_code": "$_id.item_code",
+                    "item_name": "$_id.item_name",
+                    "balance": {"$subtract": ["$in_quantity", "$out_quantity"]},
+                    "_id": 0
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "inventory_supply_item",
+                    "localField": "item_code",
+                    "foreignField": "item_code",
+                    "as": "item_details"
+                }
+            },
+            {
+                "$unwind": {
+                    "path": "$item_details",
+                    "preserveNullAndEmptyArrays": True
+                }
+            },
+            {
+                "$addFields": {
+                    "supplier_id_obj": { "$toObjectId": "$item_details.supplier_id" }
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "inventory_supplier",
+                    "localField": "supplier_id_obj",
+                    "foreignField": "_id",
+                    "as": "supplier_details"
+                }
+            },
+            {
+                "$unwind": {
+                    "path": "$supplier_details",
+                    "preserveNullAndEmptyArrays": True
+                }
+            },
+            {
+                "$project": {
+                    "item_code": 1,
+                    "item_name": 1,
+                    "balance": 1,
+                    "category": "$item_details.category",
+                    "description": "$item_details.description",
+                    "unit": "$item_details.unit",
+                    "reorder_level": "$item_details.reorder_level",
+                    "price_per_unit": "$item_details.price_per_unit",
+                    "supplier_name": "$supplier_details.name"
+                }
+            }
+        ]
+        transaction_collection = mydb['inventory_transactions']
+        results = transaction_collection.aggregate(pipeline)
+        return [
+            InventoryBalance(
+                item_code=item.get('item_code'),
+                item_name=item.get('item_name'),
+                balance=item.get('balance'),
+                category=item.get('category'),
+                description=item.get('description'),
+                unit=item.get('unit'),
+                reorder_level=item.get('reorder_level'),
+                price_per_unit=item.get('price_per_unit'),
+                supplier_name=item.get('supplier_name')
             )
             for item in results
         ]
