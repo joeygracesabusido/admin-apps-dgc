@@ -57,13 +57,14 @@ class Query:
 
 
     @strawberry.field
-    async def get_inventory_autocomplete(self, search_term: str) -> List[InventoryItemsQuery]:
+    async def get_inventory_autocomplete(self, search_term: str,
+                                         limit: int = 10 ) -> List[InventoryItemsQuery]:
         
         regex = re.compile(search_term, re.IGNORECASE)
         supply = mydb['inventory_supply_item']
         supplies = supply.find({
             'name': {'$regex': regex}
-        })
+        }).limit(limit)
 
        
         return [InventoryItemsQuery(
