@@ -34,6 +34,19 @@ function showManageTransactionModal() {
                         </div>
 
                         <div class="space-y-2 mb-4">
+                            <label for="company_management_transaction" class="block text-sm font-semibold text-gray-700">Company</label>
+                            <select id="company_management_transaction" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm">
+                                <option value="">Select Company</option>
+                                <option value="DRDC">DRDC</option>
+                                <option value="HFC">HFC</option>
+                                <option value="AFCMI">AFCMI</option>
+                                <option value="LCSDC">LCSDC</option>
+                                <option value="DCLSI">DCLSI</option>
+                                <option value="NTH">NTH</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-2 mb-4">
                             <label for="departmen_management_transaction" class="block text-sm font-semibold text-gray-700">Department</label>
                             <input type="text" id="departmen_management_transaction" name="transaction_date" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm">
                         </div>
@@ -216,6 +229,7 @@ async function saveInventoryTransaction() {
     console.log("Attempting to save inventory transaction.");
 
     const transactionDate = document.getElementById('transaction_date').value;
+    const company = document.getElementById('company_management_transaction').value;
     const department = document.getElementById('departmen_management_transaction').value;
     const remarks = document.getElementById('remarks_management_transaction').value;
 
@@ -235,13 +249,14 @@ async function saveInventoryTransaction() {
 
         if (itemCode && !isNaN(quantity)) {
             transactionItems.push({
-                item_code: itemCode,
-                item_name: itemName,
+                itemCode: itemCode,
+                itemName: itemName,
                 quantity: quantity,
-                transaction_type: transactionType,
-                transaction_date: transactionDate,
+                transactionType: transactionType,
+                transactionDate: transactionDate,
                 department: department,
-                remarks: remarks
+                remarks: remarks,
+                company: company
             });
         }
     });

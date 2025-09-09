@@ -528,14 +528,27 @@
 
 <script src="/static/inventory_supply/inventory_supply.js"></script>
 <script src="/static/inventory_supply/manage_transactions.js"></script>
+<script src="/static/inventory_supply/inventory_management.js"></script>
 
 <script>
     document.getElementById('manageTransactionBtn').addEventListener('click', () => {
         console.log("Manage Transaction button clicked!");
         showManageTransactionModal();
     });
+    // Bind Add Inventory Items button to new modal function
+    try { $(document).off('click.addSupplier'); } catch (e) {}
+    document.getElementById('addSupplierBtn')?.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof showAddInventoryItemModal === 'function') {
+            showAddInventoryItemModal();
+        }
+    });
 </script>
 
+
+
+manageTransactionBtn
 <!-- Clean Enhanced Modal Script -->
 
 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Body, HTTPException, Depends, Request, Response, status
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from typing import Union, List, Optional
 
 
@@ -148,4 +148,9 @@ async def api_login(request: Request):
 
 
 
-    
+@login_router.get("/logout/", include_in_schema=False)
+async def logout():
+    response = RedirectResponse(url="/")
+    # Remove the auth cookie so protected routes require re-login
+    response.delete_cookie(key="access_token", path="/")
+    return response

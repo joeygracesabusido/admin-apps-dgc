@@ -3,11 +3,11 @@ $(document).ready(function() {
 });
 
 let selectedSupplier = null;
+let supplierData = [];
 
 function initializeSupplierPage() {
     fetchAndDisplaySuppliers();
     setupEventListeners();
-    $('#updateSupplierBtn').prop('disabled', true);
 }
 
 function fetchAndDisplaySuppliers() {
@@ -26,7 +26,7 @@ function fetchAndDisplaySuppliers() {
     `;
 
     $.ajax({
-        url: '/mygraphql/',
+        url: '/mygraphql',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ query }),
@@ -36,7 +36,8 @@ function fetchAndDisplaySuppliers() {
                 alert('Error fetching suppliers: ' + response.errors.map(e => e.message).join('\n'));
                 return;
             }
-            populateSupplierTable(response.data.getSupplierList);
+            supplierData = response.data.getSupplierList;
+            populateSupplierTable(supplierData);
         },
         error: function (xhr) {
             console.error("❌ Error fetching GraphQL data:", xhr);
@@ -67,45 +68,51 @@ function populateSupplierTable(data) {
 }
 
 function initDataTable() {
-    if ($.fn.DataTable.isDataTable("#supplier_table")) {
-        $('#supplier_table').DataTable().destroy();
+    // Keep a single DataTable instance to avoid reinitialization warnings
+    window.__supplierListDT = window.__supplierListDT || null;
+    if (window.__supplierListDT && typeof window.__supplierListDT.destroy === 'function') {
+        try { window.__supplierListDT.destroy(); } catch (e) {}
+        window.__supplierListDT = null;
     }
 
-    const table = new DataTable('#supplier_table', {
-        layout: { topStart: 'buttons' },
-        buttons: ['copy', {
-            extend: 'csv',
-            filename: 'Supplier',
-            title: 'Supplier'
-        }],
-        perPage: 10,
-        searchable: true,
-        sortable: true,
-        responsive: true,
-        scrollX: true,
-        scrollY: true,
-        scrollCollapse: true,
-        width: false,
-    });
+    // Initialize DataTables v2 if available
+    if (window.DataTable) {
+        window.__supplierListDT = new DataTable('#supplier_table', {
+            layout: { topStart: 'buttons' },
+            buttons: ['copy', {
+                extend: 'csv',
+                filename: 'Supplier',
+                title: 'Supplier'
+            }],
+            perPage: 10,
+            searchable: true,
+            sortable: true,
+            responsive: true,
+            scrollX: true,
+            scrollY: true,
+            scrollCollapse: true,
+            width: false,
+        });
+    }
 
-    $('#supplier_table tbody').on('click', 'tr', function () {
+    // Row click selection independent of DataTables API
+    $('#supplier_table tbody').off('click', 'tr').on('click', 'tr', function () {
         const row = $(this);
         if (row.hasClass('selected')) {
             row.removeClass('selected');
             selectedSupplier = null;
-            $('#updateSupplierBtn').prop('disabled', true);
         } else {
-            table.$('tr.selected').removeClass('selected');
+            $('#supplier_table tbody tr.selected').removeClass('selected');
             row.addClass('selected');
-            selectedSupplier = table.row(this).data();
-            selectedSupplier.id = row.data('supplier-id');
-            $('#updateSupplierBtn').prop('disabled', false);
+            const supplierId = row.data('supplier-id');
+            selectedSupplier = supplierData.find(supplier => supplier.id === supplierId);
         }
     });
 }
 
 function setupEventListeners() {
     $("#addSupplierBtn").click(function() {
+        clearAddModal()
         $("#supplierModal").removeClass("hidden");
     });
 
@@ -128,12 +135,21 @@ function setupEventListeners() {
 
 function populateUpdateModal(data) {
     $('#idUpdate').val(data.id);
-    $('#nameUpdate').val(data[0]);
-    $('#contact_person_update').val(data[1]);
-    $('#email_update').val(data[2]);
-    $('#phone_update').val(data[3]);
-    $('#address_update').val(data[4]);
+    $('#nameUpdate').val(data.name);
+    $('#contact_person_update').val(data.contactPerson);
+    $('#email_update').val(data.email);
+    $('#phone_update').val(data.phone);
+    $('#address_update').val(data.address);
 }
+
+function clearAddModal() {
+    $('#name').val("");
+    $('#contact_person').val("");
+    $('#email').val("");
+    $('#phone').val("");
+    $('#address').val("");
+}
+
 
 function insertSupplier() {
     const supplierData = {
@@ -151,7 +167,7 @@ function insertSupplier() {
     `;
 
     $.ajax({
-        url: '/mygraphql/',
+        url: '/mygraphql',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ 

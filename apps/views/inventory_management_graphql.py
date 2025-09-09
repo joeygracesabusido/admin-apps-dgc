@@ -15,7 +15,8 @@ class Transaction:
     transaction_type: str
     transaction_date: datetime
     remarks: str
-    department: str
+    department: Optional[str] = None
+    company: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
@@ -27,7 +28,8 @@ class TransactionItemInput:
     transactionType: str
     transactionDate: datetime
     remarks: str
-    department: str
+    department: Optional[str] = None
+    company: Optional[str] = None
 
 @strawberry.input
 class UpdateTransactionInput:
@@ -38,6 +40,7 @@ class UpdateTransactionInput:
     transactionDate: Optional[datetime] = None
     remarks: Optional[str] = None
     department: Optional[str] = None
+    company: Optional[str] = None
 
 @strawberry.type
 class Query:
@@ -53,6 +56,7 @@ class Query:
             quantity=transaction.get('quantity'),
             transaction_type=transaction.get('transaction_type'),
             transaction_date=transaction.get('transaction_date'),
+            company=transaction.get('company'),
             remarks=transaction.get('remarks'),
             department=transaction.get('department'),
             created_at=transaction.get('created_at'),
@@ -80,6 +84,7 @@ class Mutation:
                         'quantity': item.quantity,
                         'transaction_type': item.transactionType,
                         'transaction_date': item.transactionDate,
+                        'company': item.company,
                         'department': item.department,
                         'remarks': item.remarks,
                         'username': username,

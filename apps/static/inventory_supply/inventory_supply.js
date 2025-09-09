@@ -2,9 +2,21 @@ $(document).ready(function() {
     initializePage();
 });
 
+// Keep a single DataTable instance to avoid reinitialization warnings
+window.__inventorySupplyDT = window.__inventorySupplyDT || null;
+
 function initializePage() {
     fetchAndDisplayInventoryBalance();
     setupEventListeners();
+}
+
+function openModal(selector) {
+    const $modal = $(selector);
+    if ($modal.length === 0) {
+        console.warn('Modal not found:', selector);
+        return;
+    }
+    $modal.removeClass('hidden').css({ display: 'flex', visibility: 'visible', opacity: 1, 'z-index': 100000 });
 }
 
 function fetchAndDisplayInventoryBalance() {
@@ -25,7 +37,7 @@ function fetchAndDisplayInventoryBalance() {
     `;
 
     $.ajax({
-        url: '/mygraphql/',
+        url: '/mygraphql',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ query }),
@@ -81,11 +93,14 @@ function populateTable(data) {
 
 
 function initDataTable() {
-    if ($.fn.DataTable.isDataTable("#supplier_table")) {
-        $('#supplier_table').DataTable().destroy();
+    // Destroy existing instance (DataTables v2) if present
+    if (window.__inventorySupplyDT && typeof window.__inventorySupplyDT.destroy === 'function') {
+        try { window.__inventorySupplyDT.destroy(); } catch (e) {}
+        window.__inventorySupplyDT = null;
     }
 
-    const table = new DataTable('#supplier_table', {
+    // Initialize a fresh instance
+    window.__inventorySupplyDT = new DataTable('#supplier_table', {
         layout: { topStart: 'buttons' },
         buttons: ['copy', {
             extend: 'csv',
@@ -103,18 +118,21 @@ function initDataTable() {
     });
 
     // Event delegation for double-click
-    $('#supplier_table tbody').on('dblclick', 'tr', function () {
-        const rowData = table.row(this).data();
-        // Assuming you have a modal function to show item details
-        // showItemDetailsModal(rowData);
-        console.log("Row double-clicked:", rowData);
+    $('#supplier_table tbody').off('dblclick.row').on('dblclick.row', 'tr', function () {
+        // Optional: access row data via DOM if needed
+        const cells = $(this).find('td').map(function(){ return $(this).text(); }).get();
+        console.log('Row double-clicked:', cells);
     });
 }
 
 function setupEventListeners() {
-    $("#addSupplierBtn").click(function() {
-        $("#supplierModal").removeClass("hidden");
-        setSupplierAutocomplete();
+    // Use delegated handler to ensure it binds even if DOM changes
+    $(document).off('click.addSupplier').on('click.addSupplier', '#addSupplierBtn', function (e) {
+        e.preventDefault();
+        openModal('#supplierModal');
+        if (typeof setSupplierAutocomplete === 'function') {
+            try { setSupplierAutocomplete(); } catch (_) {}
+        }
     });
 
     $("#updateItemBtn").click(function() {
@@ -123,8 +141,11 @@ function setupEventListeners() {
         }
     });
 
-    $(".close-modal").click(function() {
-        $(this).closest(".z-10").addClass("hidden");
+    $(document).off('click.closeModal').on('click.closeModal', '.close-modal', function() {
+        const $dlg = $(this).closest('[role="dialog"]');
+        $dlg.fadeOut(150, function(){
+            $dlg.addClass('hidden').css('display','none');
+        });
     });
 
     $(document).on('click', '#insertBtn', insertInventory);

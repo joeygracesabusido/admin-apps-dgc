@@ -61,5 +61,3 @@ graphql_app = GraphQL(schema)
 
 
 
-
-

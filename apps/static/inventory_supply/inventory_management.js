@@ -33,6 +33,19 @@ function showManageTransactionModal() {
                             <input type="date" id="transaction_date" name="transaction_date" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm">
                         </div>
 
+                        <div class="space-y-2 mb-4"> 
+                                <label for="company" class="block text-sm font-semibold text-gray-700">Company</label>
+                                <select id="company" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm">
+                                    <option value="">Select Company</option>
+                                    <option value="DRDC">DRDC</option>
+                                    <option value="HFC">HFC</option>
+                                    <option value="AFCMI">AFCMI</option>
+                                    <option value="LCSDC">LCSDC</option>
+                                    <option value="DCLSI">DCLSI</option>
+                                    <option value="NTH">NTH</option>
+                                </select>
+                        </div>
+
                         <div class="space-y-2 mb-4">
                             <label for="departmen_management_transaction" class="block text-sm font-semibold text-gray-700">Department</label>
                             <input type="text" id="departmen_management_transaction" name="transaction_date" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm">
@@ -218,6 +231,7 @@ async function saveInventoryTransaction() {
     const transactionDate = document.getElementById('transaction_date').value;
     const department = document.getElementById('departmen_management_transaction').value;
     const remarks = document.getElementById('remarks_management_transaction').value;
+    const company = document.getElementById('company').value;
 
     if (!transactionDate || !department) {
         alert('Please fill in all required fields: Transaction Date and Department.');
@@ -241,6 +255,7 @@ async function saveInventoryTransaction() {
                 transactionType: transactionType,
                 transactionDate: transactionDate,
                 department: department,
+                company: company,
                 remarks: remarks
             });
         }
@@ -297,6 +312,8 @@ function initializeTransactionTable() {
     const query = `
         query {
             getInventoryTransactions {
+                transactionDate
+                company
                 id
                 itemCode
                 itemName
@@ -326,6 +343,8 @@ function initializeTransactionTable() {
             const table = $('#supplier_table').DataTable({
                 data: transactions,
                 columns: [
+                    { data: 'transactionDate' },
+                    { data: 'company' },
                     { data: 'itemCode' },
                     { data: 'itemName' },
                     { data: 'quantity' },
@@ -397,6 +416,18 @@ function showUpdateTransactionModal(data) {
                                 <input type="text" id="update_department" class="form-input-modern w-full rounded-lg" value="${data.department}">
                             </div>
                             <div>
+                                <label for="update_company" class="block text-sm font-semibold text-gray-700">Company</label>
+                                <select id="update_company" class="form-input-modern w-full rounded-lg">
+                                    <option value="">Select Company</option>
+                                    <option value="DRDC">DRDC</option>
+                                    <option value="HFC">HFC</option>
+                                    <option value="AFCMI">AFCMI</option>
+                                    <option value="LCSDC">LCSDC</option>
+                                    <option value="DCLSI">DCLSI</option>
+                                    <option value="NTH">NTH</option>
+                                </select>
+                            </div>
+                            <div>
                                 <label for="update_remarks" class="block text-sm font-semibold text-gray-700">Remarks</label>
                                 <input type="text" id="update_remarks" class="form-input-modern w-full rounded-lg" value="${data.remarks}">
                             </div>
@@ -443,6 +474,7 @@ async function updateInventoryTransaction(transactionId) {
         quantity: parseFloat(document.getElementById('update_quantity').value),
         transactionType: document.getElementById('update_transaction_type').value,
         department: document.getElementById('update_department').value,
+        company: document.getElementById('update_company').value,
         remarks: document.getElementById('update_remarks').value
     };
 
@@ -484,5 +516,224 @@ async function updateInventoryTransaction(transactionId) {
 }
 
 $(document).ready(function() {
-    initializeTransactionTable();
+    // Only initialize the transactions table on the inventory-management page
+    if (location.pathname.indexOf('inventory-management') !== -1) {
+        initializeTransactionTable();
+    }
+    // Bind add inventory items button if present on current page
+    $(document).off('click.addInvItem').on('click.addInvItem', '#addSupplierBtn', function(e) {
+        e.preventDefault();
+        if (typeof showAddInventoryItemModal === 'function') {
+            showAddInventoryItemModal();
+        }
+    });
 });
+
+// Show modal to add Inventory Item (re-usable across pages)
+function showAddInventoryItemModal() {
+    const modalId = 'addInventoryItemModal';
+    document.getElementById(modalId)?.remove();
+
+    const modal = document.createElement('div');
+    modal.id = modalId;
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.className = 'relative z-50 modal-modern';
+
+    modal.innerHTML = `
+        <div aria-hidden="true" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"></div>
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4">
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all w-full max-w-2xl card-shadow">
+                    <div class="gradient-bg px-6 py-4">
+                        <h3 class="text-xl font-bold text-white">Add Inventory Item</h3>
+                    </div>
+                    <div class="px-6 py-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700" for="add_item_code">Item Code</label>
+                                <input id="add_item_code" type="text" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700" for="add_name">Name</label>
+                                <input id="add_name" type="text" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700" for="add_category">Category</label>
+                                <input id="add_category" type="text" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700" for="add_quantity_in_stock">Quantity In Stock</label>
+                                <input id="add_quantity_in_stock" type="number" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700" for="add_unit">Unit</label>
+                                <input id="add_unit" type="text" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700" for="add_reorder_level">Reorder Level</label>
+                                <input id="add_reorder_level" type="number" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700" for="add_price_per_unit">Price Per Unit</label>
+                                <input id="add_price_per_unit" type="number" step="0.01" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700" for="add_supplier_id">Supplier ID</label>
+                                <input id="add_supplier_id" type="text" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm" />
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold text-gray-700" for="add_description">Description</label>
+                                <textarea id="add_description" rows="3" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+                        <button type="button" class="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all duration-300 close-modal">Cancel</button>
+                        <button id="save-new-item-btn" type="button" class="px-6 py-3 btn-success-custom text-white font-semibold rounded-lg">Save Item</button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
+    modal.style.visibility = 'visible';
+    modal.style.opacity = '1';
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100vw';
+    modal.style.height = '100vh';
+    modal.style.zIndex = '100000';
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+
+    modal.querySelector('.close-modal').addEventListener('click', function() {
+        modal.remove();
+    });
+
+    document.getElementById('save-new-item-btn').addEventListener('click', saveNewInventoryItem);
+    // Attach supplier autocomplete for the Supplier ID input
+    try { setAddSupplierAutocomplete(); } catch (e) { console.error('Autocomplete init error:', e); }
+}
+
+async function saveNewInventoryItem() {
+    const itemCode = document.getElementById('add_item_code').value.trim();
+    const name = document.getElementById('add_name').value.trim();
+    const category = document.getElementById('add_category').value.trim();
+    const description = document.getElementById('add_description').value.trim();
+    const quantityInStock = parseFloat(document.getElementById('add_quantity_in_stock').value) || 0;
+    const unit = document.getElementById('add_unit').value.trim();
+    const reorderLevel = parseInt(document.getElementById('add_reorder_level').value) || 0;
+    const pricePerUnit = parseFloat(document.getElementById('add_price_per_unit').value) || 0;
+    const supplierId = document.getElementById('add_supplier_id').value.trim();
+
+    if (!itemCode || !name) {
+        alert('Item Code and Name are required.');
+        return;
+    }
+
+    const mutation = `
+        mutation InsertItem($inventoryItems: InventoryItems!) {
+            insertInventorySupplyItem(inventoryItems: $inventoryItems)
+        }
+    `;
+
+    const variables = {
+        inventoryItems: {
+            itemCode,
+            name,
+            category,
+            description,
+            quantityInStock,
+            unit,
+            reorderLevel,
+            pricePerUnit,
+            supplierId
+        }
+    };
+
+    try {
+        const resp = await fetch('/mygraphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept':'application/json' },
+            body: JSON.stringify({ query: mutation, variables })
+        });
+        const result = await resp.json();
+        if (result.errors) {
+            console.error('GraphQL Error:', result.errors);
+            alert('Error saving item: ' + result.errors.map(e => e.message).join('\n'));
+            return;
+        }
+        alert('Inventory item saved.');
+        document.getElementById('addInventoryItemModal')?.remove();
+        // Refresh the list if the table exists on this page
+        if (typeof fetchAndDisplayInventoryBalance === 'function') {
+            try { fetchAndDisplayInventoryBalance(); } catch (_) {}
+        } else {
+            window.location.reload();
+        }
+    } catch (e) {
+        console.error('Network error:', e);
+        alert('Network error saving item.');
+    }
+}
+
+// Autocomplete for supplier input in the Add Inventory Item modal
+function setAddSupplierAutocomplete() {
+    const selector = '#add_supplier_id';
+    if (!$(selector).length) return;
+
+    $(selector).autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: "/mygraphql",
+                method: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
+                    query: `
+                        query getSupplierAutocomplete($searchTerm: String!) {
+                            getSupplierAutocomplete(searchTerm: $searchTerm) {
+                                id
+                                name
+                            }
+                        }
+                    `,
+                    variables: { searchTerm: request.term }
+                }),
+                success: function(res) {
+                    if (res.data && res.data.getSupplierAutocomplete) {
+                        const suggestions = res.data.getSupplierAutocomplete.map(item => ({
+                            label: item.name,
+                            value: item.id
+                        }));
+                        response(suggestions);
+                    } else {
+                        response([]);
+                    }
+                },
+                error: function(err) {
+                    console.error("Supplier Autocomplete error:", err);
+                    response([]);
+                }
+            });
+        },
+        minLength: 0,
+        delay: 0,
+        appendTo: 'body',
+        position: { my: 'left top+2', at: 'left bottom', collision: 'fit' },
+        open: function() {
+            const $widget = $(this).autocomplete('widget');
+            $widget.css({ 'z-index': 100000, 'min-width': $(this).outerWidth() + 'px' });
+        }
+    }).focus(function() {
+        $(this).autocomplete("search", $(this).val() || "");
+    });
+}
+
+
+// expose for inline hooks if needed
+window.showAddInventoryItemModal = showAddInventoryItemModal;

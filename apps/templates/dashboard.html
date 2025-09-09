@@ -1,206 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
-
-    <link rel="stylesheet" type="text/css" href="/static/style.css">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    
-    
-    <title>DashBoard</title>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="/static/style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root { --qb-green: #2ca01c; --qb-dark: #0b1120; --qb-muted: #6b7280; --qb-border: #e5e7eb; --qb-bg: #f3f4f6; }
+    body { background: var(--qb-bg); }
+    .layout { display: flex; min-height: 100vh; }
+    .qb-sidebar { width: 240px; background: #fff; border-right: 1px solid var(--qb-border); display: flex; flex-direction: column; }
+    .qb-logo { display: flex; align-items: center; gap: 10px; padding: 18px 16px; font-weight: 700; color: var(--qb-dark); border-bottom: 1px solid var(--qb-border); }
+    .qb-logo .dot { width: 10px; height: 10px; background: var(--qb-green); border-radius: 50%; }
+    .qb-nav { padding: 12px; flex: 1; overflow-y: auto; }
+    .qb-nav a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin: 4px 0; color: #111827; text-decoration: none; border-radius: 8px; font-size: 14px; }
+    .qb-nav a .fa { width: 18px; text-align: center; color: var(--qb-muted); }
+    .qb-nav a:hover { background: #f0fdf4; color: #065f46; }
+    .qb-nav a.active { background: #ecfdf5; color: #065f46; border-left: 4px solid var(--qb-green); }
+    .qb-footer { padding: 12px; border-top: 1px solid var(--qb-border); }
+    .qb-footer a { display: block; text-decoration: none; color: #ef4444; font-weight: 600; }
+    .qb-main { flex: 1; display: flex; flex-direction: column; }
+    .qb-topbar { height: 56px; background: #fff; border-bottom: 1px solid var(--qb-border); display: flex; align-items: center; justify-content: flex-end; padding: 0 16px; }
+    .qb-content { padding: 16px; }
+  </style>
 </head>
-
-<style>
-
-</style>
-
-
-
-
 <body>
+  <div class="layout">
+    <aside class="qb-sidebar">
+      <div class="qb-logo"><span class="dot"></span> Admin Apps</div>
+      <nav class="qb-nav">
+        <a href="/employee-list/"><i class="fa fa-users"></i> Employee</a>
+        <a href="/inventory-list/"><i class="fa fa-box"></i> Inventory</a>
+        <a href="/api-accountability/"><i class="fa fa-clipboard-check"></i> Accountability</a>
+        <a href="/supplier/"><i class="fa fa-truck"></i> Supplier</a>
+        <a href="/inventory-supply/"><i class="fa fa-cubes"></i> Inventory Supply</a>
+        <a href="/inventory-management/"><i class="fa fa-warehouse"></i> Inventory Management</a>
+        <a href="/api-purchase-order-temp/"><i class="fa fa-file-invoice"></i> Purchase Order</a>
+        <a href="/ticketing/"><i class="fa fa-ticket"></i> Job Order</a>
+        <a href="/api-repair/"><i class="fa fa-tools"></i> Repair</a>
+        <a href="/rental-printer/"><i class="fa fa-print"></i> Rental Printer</a>
+        <a href="/check-printing/"><i class="fa fa-money-check-alt"></i> Check Printing</a>
+        <!-- <a href="/api-payroll-temp/"><i class="fa fa-user-plus"></i> Payroll Add Employee</a> -->
+        <!-- <a href="/api-payroll-computation/"><i class="fa fa-calculator"></i> Payroll Computation</a> -->
+        <!-- <a href="/api-payroll-comp2/"><i class="fa fa-calculator"></i> Payroll Computation 2</a>  -->
+        <a href="/logs/"><i class="fa fa-stream"></i> Logs</a>
+      </nav>
+      <div class="qb-footer">
+        <a href="/logout/">Sign out</a>
+      </div>
+    </aside>
 
-    <!-- <div class="container-fluid">
-        <a class="navbar-brand" href="#">Dashboard</a>
-        <button class="btn btn-outline-light" onclick="window.location.href='/profile/'">Profile</button>
-        <button class="btn btn-outline-light" onclick="window.location.href='/settings/'">Settings</button>
-        <a class="btn btn-outline-light" href="/">Logout</a>
-    </div> -->
-    <nav class="navbar navbar-dark bg-primary" >
-        
-        <span class="open-slide">
-            <a href="#" onclick="openSlideMenu()">
-                <svg width="25" height="50">
-                    <path d="M0,5 30,5" stroke="#000" stroke-width="8"/>
-                    <path d="M0,14 30,14" stroke="#000" stroke-width="8"/>
-                    <path d="M0,23 30,23" stroke="#000" stroke-width="8"/>
-
-                </svg>
-                
-                <!-- <a class="navbar-brand" href="/inventory-list/">Inventory</a> -->
-
-            </a>
-
-        </span>
-        <!-- <a class="navbar-brand" href="/employee-list/">Employee</a>
-        <a class="navbar-brand" href="/inventory-list/">Inventory</a> -->
-        <a class="navbar-brand" href="/">Logout</a>
-       
-
-        
-
-        
-    </nav>
-    <div id="side-menu" class="side-nav">
-        <a href="#" class="btn-close" onclick="closeSideMune()">&times;</a>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="avatar"></div>
-            </div>
-            
-        </div>
-        
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle">Employee</a>
-            <ul class="dropdown-menu">
-              <li><a href="/employee-list/">Employee List</a></li>
-             
-            </ul>
-        </li>
-
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle">Inventory</a>
-            <ul class="dropdown-menu">
-              <li><a href="/inventory-list/">Inventory List</a></li>
-              <li><a href="/api-accountability/">Accountability</a></li>
-             
-
-            </ul>
-        </li>
-
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle">Inventory Supply</a>
-            <ul class="dropdown-menu">
-              <li><a href="/supplier/">Supplier</a></li>
-              <li><a href="/inventory-supply/">Inventory</a></li>
-              <li><a href="/inventory-management/">Inventory Management</a></li>
-             
-
-            </ul>
-        </li>
-
-
-
-
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle">Purchase Order</a>
-            <ul class="dropdown-menu">
-              <li><a href="/api-purchase-order-temp/">Purchase Order</a></li>
-             
-            </ul>
-        </li>
-
-
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle">Job Order</a>
-            <ul class="dropdown-menu">
-              <li><a href="/ticketing/">Job Ticketing</a></li>
-             
-            </ul>
-        </li>
-
-
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle">Repair on Service</a>
-            <ul class="dropdown-menu">
-              <li><a href="/api-repair/">Printer Repair</a></li>
-             
-            </ul>
-        </li>
-
-
-      <li class="dropdown">
-            <a href="#" class="dropdown-toggle">Rental Printer</a>
-             <ul class="dropdown-menu">
-              <li><a href="/rental-printer/">Rental</a></li>
-             
-            </ul>
-      </li>
-
-
-
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle">Check Printing</a>
-            <ul class="dropdown-menu">
-              <li><a href="/check-printing/">BDO/MBTC/CHB</a></li>
-             
-            </ul>
-        </li>
-        
-        
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle">Payroll</a>
-            <ul class="dropdown-menu">
-                <li><a href="/api-payroll-temp/">Add Employee</a></li>
-                <li><a href="/api-payroll-computation/">Payroll Computation</a></li>
-                <li><a href="/api-payroll-comp2/">Payroll Computation 2</a></li>
-            </ul>
-        </li>
-
-        
-
-
-        <a href="/logs/">Logs</a>
+    <div class="qb-main">
+      <header class="qb-topbar"></header>
+      <main id="main" class="qb-content">
+        {% block content %}{% endblock %}
+      </main>
     </div>
-    <div id="main">
-        <!-- <h1>DashBoard</h1> -->
-       
-    </div>
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <script>
-        function openSlideMenu(){
-            document.getElementById('side-menu').style.width = '220px';
-            document.getElementById('main').style.marginLeft = '150px';
-            document.querySelectorAll('.side-nav a').forEach(function(element) {
-                element.style.fontSize = '18px'; // Adjust the font size for sidebar links when opened
-            });
-        
-            
-        }
-
-        function closeSideMune(){
-            document.getElementById('side-menu').style.width = '0';
-            document.getElementById('main').style.marginLeft = '0';
-            window.location.assign("/dashboard/")
-
-        }
-    </script>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    <script>
-    $(document).ready(function() {
-        $('.dropdown-toggle').click(function() {
-        $(this).next('.dropdown-menu').slideToggle(100);
-        });
-    });
-    </script>
-
-    
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Highlight active link based on current path
+    (function() {
+      var path = location.pathname;
+      document.querySelectorAll('.qb-nav a').forEach(function(a){
+        if (a.getAttribute('href') === path) { a.classList.add('active'); }
+      });
+    })();
+  </script>
 </body>
-
-
 </html>
-
-
-{% block content %}
-
-{% endblock %}

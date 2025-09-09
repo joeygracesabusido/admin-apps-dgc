@@ -5,6 +5,7 @@ import strawberry
 from typing import Optional,List
 
 from strawberry.types import Info
+from starlette.requests import Request
 
 
 
@@ -82,7 +83,6 @@ class Query:
                     updated_at = item.get('updated_at')
 
             ) for item in supplies]
-
 
 
 
