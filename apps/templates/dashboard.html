@@ -23,6 +23,7 @@
     .qb-nav a .fa { width: 18px; text-align: center; color: var(--qb-muted); }
     .qb-nav a:hover { background: #f0fdf4; color: #065f46; }
     .qb-nav a.active { background: #ecfdf5; color: #065f46; border-left: 4px solid var(--qb-green); }
+    .qb-nav .dropdown-menu { background: #fff; border: 1px solid var(--qb-border); }
     .qb-footer { padding: 12px; border-top: 1px solid var(--qb-border); }
     .qb-footer a { display: block; text-decoration: none; color: #ef4444; font-weight: 600; }
     .qb-main { flex: 1; display: flex; flex-direction: column; }
@@ -38,9 +39,18 @@
         <a href="/employee-list/"><i class="fa fa-users"></i> Employee</a>
         <a href="/inventory-list/"><i class="fa fa-box"></i> Inventory</a>
         <a href="/api-accountability/"><i class="fa fa-clipboard-check"></i> Accountability</a>
-        <a href="/supplier/"><i class="fa fa-truck"></i> Supplier</a>
-        <a href="/inventory-supply/"><i class="fa fa-cubes"></i> Inventory Supply</a>
-        <a href="/inventory-management/"><i class="fa fa-warehouse"></i> Inventory Management</a>
+        <div class="dropdown">
+          <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa fa-user-shield"></i> Inventory-Admin
+          </a>
+
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <li><a class="dropdown-item" href="/supplier/">Supplier</a></li>
+            <li><a class="dropdown-item" href="/inventory-supply/">Inventory Supply</a></li>
+            <li><a class="dropdown-item" href="/inventory-management/">Inventory Management</a></li>
+            <li><a class="dropdown-item" href="/management-transactions/">Inventory Costing</a></li>
+          </ul>
+        </div>
         <a href="/api-purchase-order-temp/"><i class="fa fa-file-invoice"></i> Purchase Order</a>
         <a href="/ticketing/"><i class="fa fa-ticket"></i> Job Order</a>
         <a href="/api-repair/"><i class="fa fa-tools"></i> Repair</a>

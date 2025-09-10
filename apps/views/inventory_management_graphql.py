@@ -5,6 +5,18 @@ from ..database.mongodb import create_mongo_client
 from ..authentication.authenticate_user import get_current_user
 from strawberry.types import Info
 from bson import ObjectId
+import re
+
+def to_snake_case(s):
+    return re.sub(r'(?<!^)(?=[A-Z])', '_', s).lower()
+
+@strawberry.type
+class ManagementTransaction:
+    transactionDate: str
+    company: str
+    itemName: str
+    quantity: float
+    price: float
 
 @strawberry.type
 class Transaction:
@@ -63,6 +75,36 @@ class Query:
             updated_at=transaction.get('updated_at')
         ) for transaction in transactions]
 
+    @strawberry.field
+    async def getManagementTransactions(self, company: Optional[str] = None, dateFrom: Optional[str] = None, dateTo: Optional[str] = None, transactionType: Optional[str] = None) -> List[ManagementTransaction]:
+        mydb = create_mongo_client()
+        transaction_collection = mydb['inventory_transactions']
+        
+        query = {}
+        if company:
+            query['company'] = company
+        if dateFrom and dateTo:
+            query['transaction_date'] = {
+                '$gte': datetime.strptime(dateFrom, '%Y-%m-%d'),
+                '$lte': datetime.strptime(dateTo, '%Y-%m-%d')
+            }
+        if transactionType:
+            query['transaction_type'] = transactionType
+
+        transactions = transaction_collection.find(query)
+        
+        # This is a placeholder for price. You need to fetch the price from somewhere.
+        # For now, I'll use a dummy price.
+        dummy_price = 10.0
+
+        return [ManagementTransaction(
+            transactionDate=transaction.get('transaction_date').strftime('%Y-%m-%d'),
+            company=transaction.get('company'),
+            itemName=transaction.get('item_name'),
+            quantity=transaction.get('quantity'),
+            price=dummy_price
+        ) for transaction in transactions]
+
 @strawberry.type
 class Mutation:
     @strawberry.mutation
@@ -116,7 +158,7 @@ class Mutation:
             try:
                 transaction_collection = mydb['inventory_transactions']
                 
-                update_fields = {k: v for k, v in update_data.__dict__.items() if v is not None}
+                update_fields = {to_snake_case(k): v for k, v in update_data.__dict__.items() if v is not None}
                 if not update_fields:
                     return "No update data provided."
 

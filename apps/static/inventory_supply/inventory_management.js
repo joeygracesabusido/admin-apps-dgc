@@ -343,7 +343,12 @@ function initializeTransactionTable() {
             const table = $('#supplier_table').DataTable({
                 data: transactions,
                 columns: [
-                    { data: 'transactionDate' },
+                    { data: 'transactionDate', render: function(data, type, row) {
+                        if (type === 'display' && data) {
+                            return data.split('T')[0];
+                        }
+                        return data;
+                    }},
                     { data: 'company' },
                     { data: 'itemCode' },
                     { data: 'itemName' },
@@ -443,6 +448,7 @@ function showUpdateTransactionModal(data) {
     `;
 
     document.body.appendChild(modalElement);
+    document.getElementById('update_company').value = data.company;
     modalElement.style.display = 'flex';
     modalElement.style.visibility = 'visible';
     modalElement.style.opacity = '1';
@@ -477,6 +483,8 @@ async function updateInventoryTransaction(transactionId) {
         company: document.getElementById('update_company').value,
         remarks: document.getElementById('update_remarks').value
     };
+
+    console.log("Update data:", updateData);
 
     const mutation = `
         mutation UpdateInventoryTransaction($transactionId: String!, $updateData: UpdateTransactionInput!) {

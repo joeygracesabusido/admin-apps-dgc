@@ -38,7 +38,8 @@ class InventoryUpdateInput:
     reorder_level: Optional[int] = None
     price_per_unit: Optional[float] = None
     supplier_id: Optional[str] = None
-
+    user: Optional[str] = None
+    updated: Optional[datetime] = None
 
 
 
@@ -106,6 +107,7 @@ class Mutation:
                 update_fields['price_per_unit'] = updated_data.price_per_unit
             if updated_data.supplier_id is not None:
                 update_fields['supplier_id'] = updated_data.supplier_id
+            
 
             # Always update these fields
             update_fields['updated'] = datetime.utcnow()
