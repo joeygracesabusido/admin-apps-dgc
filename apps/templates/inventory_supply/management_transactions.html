@@ -1,78 +1,109 @@
 {% extends 'dashboard.html' %}
 
 {% block content %}
+<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.1.4/b-3.1.1/b-html5-3.1.1/datatables.min.css" rel="stylesheet">
 <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.1.4/b-3.1.1/b-html5-3.1.1/datatables.min.js"></script>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Inventory Cost Per Company</h3>
+
+<!-- Custom CSS for enhanced styling -->
+<style>
+  .gradient-bg {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  .card-shadow {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  .table-modern {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .table-modern thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  .form-input-modern {
+    transition: all 0.3s ease;
+    border: 2px solid #e2e8f0;
+  }
+  
+  .form-input-modern:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .page-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    color: white;
+  }
+</style>
+
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div class="page-header">
+        <h1 class="text-3xl font-bold mb-2">Inventory Cost Per Company</h1>
+        <p class="text-blue-100">Filter and view inventory transaction costs</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden card-shadow">
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div>
+                    <label for="company_filter" class="block text-sm font-semibold text-gray-700 mb-2">Company</label>
+                    <select id="company_filter" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm">
+                        <option value="">All Companies</option>
+                        <option value="DRDC">DRDC</option>
+                        <option value="HFC">HFC</option>
+                        <option value="AFCMI">AFCMI</option>
+                        <option value="LCSDC">LCSDC</option>
+                        <option value="DCLSI">DCLSI</option>
+                        <option value="NTH">NTH</option>
+                    </select>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="company_filter">Company</label>
-                                <select id="company_filter" class="form-control">
-                                    <option value="">All Companies</option>
-                                    <option value="DRDC">DRDC</option>
-                                    <option value="HFC">HFC</option>
-                                    <option value="AFCMI">AFCMI</option>
-                                    <option value="LCSDC">LCSDC</option>
-                                    <option value="DCLSI">DCLSI</option>
-                                    <option value="NTH">NTH</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="date_from">Date From</label>
-                                <input type="date" id="date_from" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="date_to">Date To</label>
-                                <input type="date" id="date_to" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="transaction_type_filter">Transaction Type</label>
-                                <select id="transaction_type_filter" class="form-control">
-                                    <option value="in">IN</option>
-                                    <option value="out">OUT</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12">
-                            <table id="management_transactions_table" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Company</th>
-                                        <th>Item</th>
-                                        <th>Quantity</th>
-                                        <th>Price</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="5" style="text-align:right">Total Amount:</th>
-                                        <th id="total_amount"></th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
+                <div>
+                    <label for="date_from" class="block text-sm font-semibold text-gray-700 mb-2">Date From</label>
+                    <input type="date" id="date_from" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm">
                 </div>
+                <div>
+                    <label for="date_to" class="block text-sm font-semibold text-gray-700 mb-2">Date To</label>
+                    <input type="date" id="date_to" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm">
+                </div>
+                <div>
+                    <label for="transaction_type_filter" class="block text-sm font-semibold text-gray-700 mb-2">Transaction Type</label>
+                    <select id="transaction_type_filter" class="form-input-modern w-full rounded-lg px-4 py-3 text-sm">
+                        <option value="in">IN</option>
+                        <option value="out">OUT</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table id="management_transactions_table" class="table-modern w-full">
+                    <thead class="gradient-bg text-white">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Date</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Company</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Item</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Quantity</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Price</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                    </tbody>
+                    <tfoot class="bg-gray-50">
+                        <tr>
+                            <th colspan="5" class="px-6 py-4 text-right text-sm font-semibold text-gray-700">Total Amount:</th>
+                            <th id="total_amount" class="px-6 py-4 text-left text-sm font-semibold text-gray-900"></th>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
     </div>

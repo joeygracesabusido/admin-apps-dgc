@@ -21,16 +21,16 @@ class ManagementTransaction:
 @strawberry.type
 class Transaction:
     id: Optional[str]
-    item_code: str
-    item_name: str
-    quantity: float
-    transaction_type: str
-    transaction_date: datetime
-    remarks: str
-    department: Optional[str] = None
-    company: Optional[str] = None
-    created_at: datetime
-    updated_at: datetime
+    item_code: Optional[str]
+    item_name: Optional[str]
+    quantity: Optional[float]
+    transaction_type: Optional[str]
+    transaction_date: Optional[datetime]
+    remarks: Optional[str]
+    department: Optional[str]
+    company: Optional[str]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
 @strawberry.input
 class TransactionItemInput:

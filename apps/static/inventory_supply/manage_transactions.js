@@ -225,6 +225,9 @@ function showManageTransactionModal() {
     addItemBtn.click();
 }
 
+
+
+// this it
 async function saveInventoryTransaction() {
     console.log("Attempting to save inventory transaction.");
 
@@ -300,3 +303,10 @@ async function saveInventoryTransaction() {
         alert('An error occurred while saving the transaction.');
     }
 }
+
+
+
+function showAddInventoryModal() { console.log("showManageTransactionModal function called."); }
+
+
+
