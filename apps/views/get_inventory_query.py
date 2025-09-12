@@ -51,7 +51,7 @@ class Query:
 
 
         return [InventoryItemsQuery(
-                id = item.get('_id'),
+                id = str(item.get('_id')),
                 item_code = item.get('item_code'),
                 name = item.get('name'),
                 category = item.get('category'),
@@ -157,19 +157,39 @@ class Query:
     async def get_inventory_balance(self) -> List[InventoryBalance]:
         pipeline = [
             {
+                "$lookup": {
+                    "from": "inventory_transactions",
+                    "localField": "item_code",
+                    "foreignField": "item_code",
+                    "as": "transactions"
+                }
+            },
+            {
+                "$unwind": {
+                    "path": "$transactions",
+                    "preserveNullAndEmptyArrays": True
+                }
+            },
+            {
                 "$group": {
                     "_id": {
                         "item_code": "$item_code",
-                        "item_name": "$item_name"
+                        "item_name": "$name",
+                        "category": "$category",
+                        "description": "$description",
+                        "unit": "$unit",
+                        "reorder_level": "$reorder_level",
+                        "price_per_unit": "$price_per_unit",
+                        "supplier_id": "$supplier_id"
                     },
                     "in_quantity": {
                         "$sum": {
-                            "$cond": [{"$eq": ["$transaction_type", "in"]}, "$quantity", 0]
+                            "$cond": [{"$eq": ["$transactions.transaction_type", "in"]}, "$transactions.quantity", 0]
                         }
                     },
                     "out_quantity": {
                         "$sum": {
-                            "$cond": [{"$eq": ["$transaction_type", "out"]}, "$quantity", 0]
+                            "$cond": [{"$eq": ["$transactions.transaction_type", "out"]}, "$transactions.quantity", 0]
                         }
                     }
                 }
@@ -178,27 +198,27 @@ class Query:
                 "$project": {
                     "item_code": "$_id.item_code",
                     "item_name": "$_id.item_name",
+                    "category": "$_id.category",
+                    "description": "$_id.description",
+                    "unit": "$_id.unit",
+                    "reorder_level": "$_id.reorder_level",
+                    "price_per_unit": "$_id.price_per_unit",
+                    "supplier_id": "$_id.supplier_id",
                     "balance": {"$subtract": ["$in_quantity", "$out_quantity"]},
                     "_id": 0
                 }
             },
             {
-                "$lookup": {
-                    "from": "inventory_supply_item",
-                    "localField": "item_code",
-                    "foreignField": "item_code",
-                    "as": "item_details"
-                }
-            },
-            {
-                "$unwind": {
-                    "path": "$item_details",
-                    "preserveNullAndEmptyArrays": True
-                }
-            },
-            {
                 "$addFields": {
-                    "supplier_id_obj": { "$toObjectId": "$item_details.supplier_id" }
+                    # Safely convert supplier_id to ObjectId; null on error/empty
+                    "supplier_id_obj": {
+                        "$convert": {
+                            "input": "$supplier_id",
+                            "to": "objectId",
+                            "onError": None,
+                            "onNull": None
+                        }
+                    }
                 }
             },
             {
@@ -220,17 +240,17 @@ class Query:
                     "item_code": 1,
                     "item_name": 1,
                     "balance": 1,
-                    "category": "$item_details.category",
-                    "description": "$item_details.description",
-                    "unit": "$item_details.unit",
-                    "reorder_level": "$item_details.reorder_level",
-                    "price_per_unit": "$item_details.price_per_unit",
+                    "category": 1,
+                    "description": 1,
+                    "unit": 1,
+                    "reorder_level": 1,
+                    "price_per_unit": 1,
                     "supplier_name": "$supplier_details.name"
                 }
             }
         ]
-        transaction_collection = mydb['inventory_transactions']
-        results = transaction_collection.aggregate(pipeline)
+        inventory_collection = mydb['inventory_supply_item']
+        results = inventory_collection.aggregate(pipeline)
         return [
             InventoryBalance(
                 item_code=item.get('item_code'),
@@ -245,4 +265,3 @@ class Query:
             )
             for item in results
         ]
-

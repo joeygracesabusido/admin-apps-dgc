@@ -148,6 +148,7 @@ function showManageTransactionModal() {
                         contentType: "application/json",
                         dataType: "json",
                         data: JSON.stringify({
+                            // Strawberry exposes camelCase names
                             query: `
                                 query getInventoryAutocomplete($searchTerm: String!) {
                                     getInventoryAutocomplete(searchTerm: $searchTerm) {
@@ -307,6 +308,4 @@ async function saveInventoryTransaction() {
 
 
 function showAddInventoryModal() { console.log("showManageTransactionModal function called."); }
-
-
 
