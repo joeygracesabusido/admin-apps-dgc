@@ -82,9 +82,8 @@ app.include_router(api_supplier_temp)
 app.include_router(router, tags=['Inventory Management'])
 # app.include_router(inventory_management_router)
 # Mount Strawberry's GraphQL app onto FastAPI
-app.mount("/mygraphql", graphql_app)
+app.include_router(graphql_app, prefix="/mygraphql")
 
 
 # mount("/mygraphql", graphql_app)
-
 

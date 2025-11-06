@@ -108,6 +108,136 @@ window.__invMasterIndex = window.__invMasterIndex || {};
 
 function normalizeKey(v) { return (v == null ? '' : String(v)).trim().toLowerCase(); }
 
+function applySupplierSelection($input, label, id) {
+    if (!$input || !$input.length) return;
+    const text = label == null ? '' : String(label);
+    $input.val(text);
+    if (id) {
+        $input.data('selected-id', id);
+        $input.attr('data-selected-id', id);
+    } else {
+        $input.removeData('selected-id');
+        $input.removeAttr('data-selected-id');
+    }
+
+    const targetSelector = $input.attr('data-id-target');
+    if (targetSelector) {
+        try { $(targetSelector).val(id || ''); } catch (_) {}
+    }
+}
+
+function readSupplierId($input) {
+    if (!$input || !$input.length) return '';
+    const stored = $input.data('selected-id') || $input.attr('data-selected-id');
+    if (stored) return String(stored);
+    const targetSelector = $input.attr('data-id-target');
+    if (targetSelector) {
+        try {
+            const val = $(targetSelector).val();
+            if (val) return String(val);
+        } catch (_) {}
+    }
+    return '';
+}
+
+window.__supplierOptions = window.__supplierOptions || null;
+window.__inventoryOptions = window.__inventoryOptions || null;
+
+function ensureSupplierOptions() {
+    return new Promise(function(resolve, reject) {
+        if (Array.isArray(window.__supplierOptions)) {
+            resolve(window.__supplierOptions);
+            return;
+        }
+
+        const query = "" +
+            "query {\n" +
+            "  getSupplierList {\n" +
+            "    id\n" +
+            "    name\n" +
+            "  }\n" +
+            "}";
+
+        $.ajax({
+            url: '/mygraphql',
+            method: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify({ query }),
+            success: function(res) {
+                try {
+                    const raw = (res && res.data && res.data.getSupplierList) ? res.data.getSupplierList : [];
+                    const options = raw.map(item => ({
+                        label: item.name || '',
+                        value: item.id ? String(item.id) : '',
+                    })).filter(opt => opt.label && opt.value);
+                    window.__supplierOptions = options;
+                    resolve(options);
+                } catch (err) {
+                    reject(err);
+                }
+            },
+            error: function(xhr) {
+                reject(xhr);
+            }
+        });
+    });
+}
+
+function ensureInventoryOptions() {
+    return new Promise(function(resolve, reject) {
+        if (Array.isArray(window.__inventoryOptions)) {
+            resolve(window.__inventoryOptions);
+            return;
+        }
+
+        const query = "" +
+            "query {\n" +
+            "  getInventorySupplyItem {\n" +
+            "    id\n" +
+            "    name\n" +
+            "    itemCode\n" +
+            "    category\n" +
+            "    unit\n" +
+            "    pricePerUnit\n" +
+            "    supplierId\n" +
+            "  }\n" +
+            "}";
+
+        $.ajax({
+            url: '/mygraphql',
+            method: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify({ query }),
+            success: function(res) {
+                try {
+                    const raw = (res && res.data && res.data.getInventorySupplyItem) ? res.data.getInventorySupplyItem : [];
+                    const options = raw.map(item => ({
+                        id: item.id ? String(item.id) : '',
+                        label: item.name || '',
+                        name: item.name || '',
+                        itemCode: item.itemCode || '',
+                        category: item.category || '',
+                        description: item.description || '',
+                        unit: item.unit || '',
+                        reorderLevel: item.reorderLevel || 0,
+                        pricePerUnit: item.pricePerUnit || 0,
+                        supplierId: item.supplierId || ''
+                    })).filter(opt => opt.label);
+                    window.__inventoryOptions = options;
+                    resolve(options);
+                } catch (err) {
+                    reject(err);
+                }
+            },
+            error: function(xhr) {
+                reject(xhr);
+            }
+        });
+    });
+}
+
 async function preloadMasterIndex() {
     try {
         const query = "" +
@@ -555,7 +685,10 @@ function fillUpdateInventoryForm(data){
             setValIn(modalNew, '#unit', data.unit);
             setValIn(modalNew, '#reorder_level', data.reorderLevel);
             setValIn(modalNew, '#price_per_unit', data.pricePerUnit);
-            setValIn(modalNew, '#supplier_id', data.supplierId || '');
+            try {
+                const $supplierNew = $(modalNew).find('#supplier_id');
+                applySupplierSelection($supplierNew, data.supplierName || data.supplierId || '', data.supplierId || '');
+            } catch (_) {}
         }
 
         // Fill the legacy update modal fields if present
@@ -630,39 +763,13 @@ function setSupplierAutocomplete(target) {
 
     $input.autocomplete({
         source: function(request, response) {
-            $.ajax({
-                url: "/mygraphql",
-                method: "POST",
-                contentType: "application/json",
-                dataType: "json",
-                data: JSON.stringify({
-                    // Use camelCase field/arg names exposed by Strawberry
-                    query: "" +
-                        "query getSupplierAutocomplete($searchTerm: String!) {\n" +
-                        "    getSupplierAutocomplete(searchTerm: $searchTerm) {\n" +
-                        "        id\n" +
-                        "        name\n" +
-                        "    }\n" +
-                        "}",
-                variables: {
-                    searchTerm: request.term
-                }
-                }),
-                success: function(res) {
-                    if (res.data && res.data.getSupplierAutocomplete) {
-                        let suggestions = res.data.getSupplierAutocomplete.map(item => ({
-                            label: item.name,
-                            value: item.id,
-                        }));
-                        response(suggestions);
-                    } else {
-                        response([]);
-                    }
-                },
-                error: function(err) {
-                    console.error("GraphQL Autocomplete error:", err);
-                    response([]);
-                }
+            ensureSupplierOptions().then(function(options) {
+                const term = (request.term || '').toLowerCase();
+                const filtered = options.filter(opt => !term || opt.label.toLowerCase().includes(term)).slice(0, 15);
+                response(filtered);
+            }).catch(function(err){
+                console.error('Supplier lookup failed', err);
+                response([]);
             });
         },
         minLength: 0,
@@ -676,8 +783,73 @@ function setSupplierAutocomplete(target) {
             } catch (_) {}
         },
         select: function(event, ui) {
-            // Set value on the specific input that triggered autocomplete
-            try { $(this).val(ui.item.value); } catch (_) {}
+            try {
+                const $self = $(this);
+                $self.data('suppress-supplier-clear', true);
+                applySupplierSelection($self, ui.item.label || ui.item.value || '', ui.item.value);
+                setTimeout(() => { $self.removeData('suppress-supplier-clear'); }, 0);
+            } catch (_) {}
+            return false;
+        }
+    }).focus(function() {
+        try { $(this).autocomplete("search", ""); } catch (_) {}
+    }).on('input', function() {
+        const $self = $(this);
+        if ($self.data('suppress-supplier-clear')) return;
+        $self.removeData('selected-id');
+        $self.removeAttr('data-selected-id');
+    });
+}
+
+function setInventoryMasterAutocomplete(target) {
+    const $input = $(target);
+    if ($input.length === 0) { return; }
+    if ($input.data('autocomplete-bound')) return;
+    $input.data('autocomplete-bound', true);
+
+    $input.autocomplete({
+        source: function(request, response) {
+            ensureInventoryOptions().then(function(options){
+                const term = (request.term || '').toLowerCase();
+                const filtered = options.filter(opt => !term || opt.label.toLowerCase().includes(term)).slice(0, 15);
+                response(filtered.map(opt => ({
+                    label: opt.label,
+                    value: opt.label,
+                    payload: opt
+                })));
+            }).catch(function(err){
+                console.error('Inventory lookup failed', err);
+                response([]);
+            });
+        },
+        minLength: 0,
+        delay: 0,
+        appendTo: 'body',
+        position: { my: 'left top+2', at: 'left bottom', collision: 'fit' },
+        open: function() {
+            try {
+                const $widget = $(this).autocomplete('widget');
+                $widget.css({ 'z-index': 100000, 'min-width': $(this).outerWidth() + 'px' });
+            } catch (_) {}
+        },
+        select: function(event, ui) {
+            try {
+                const data = ui.item.payload || {};
+                const $ctx = $(this).closest('[role="dialog"], dialog');
+                const q = (sel) => $ctx && $ctx.length ? $ctx.find(sel) : $(sel);
+                q('#name').val(data.name || ui.item.value || '');
+                if (data.itemCode) q('#item_code').val(data.itemCode);
+                if (data.category) q('#category').val(data.category);
+                if (data.description) q('#description').val(data.description);
+                if (data.unit) q('#unit').val(data.unit);
+                if (data.reorderLevel != null) q('#reorder_level').val(data.reorderLevel);
+                if (data.pricePerUnit != null) q('#price_per_unit').val(data.pricePerUnit);
+                if (data.supplierId) {
+                    applySupplierSelection(q('#supplier_id'), '', data.supplierId);
+                }
+            } catch (err) {
+                console.error('Inventory select apply failed', err);
+            }
             return false;
         }
     }).focus(function() {
@@ -687,15 +859,28 @@ function setSupplierAutocomplete(target) {
 
 function hookAddItemModalOpen() {
     // Initialize when the field is focused (works irrespective of modal lib)
-    $(document).on('focus', '#supplier_id, #supplierID_update', function() {
+    $(document).on('focus', '#supplier_id, #supplier_id_update, #supplierID_update', function() {
+        ensureSupplierOptions().catch(function(err){ console.error('Supplier preload failed', err); });
         try { setSupplierAutocomplete(this); } catch (_) {}
+    });
+
+    $(document).on('focus', '#name, #item_code, #category, #description, #unit', function() {
+        ensureInventoryOptions().catch(function(err){ console.error('Inventory preload failed', err); });
+        try { setInventoryMasterAutocomplete($('#name')); } catch (_) {}
     });
 
     // Initialize after clicking the Tailwind Elements modal open trigger
     $(document).on('click', 'button[command="show-modal"][commandfor="dialog"]', function() {
         setTimeout(function(){
             try {
-                $("#supplier_id, #supplierID_update").each(function(){ setSupplierAutocomplete(this); });
+                $("#supplier_id, #supplier_id_update, #supplierID_update").each(function(){
+                    setSupplierAutocomplete(this);
+                    if (this.id === 'supplier_id') {
+                        applySupplierSelection($(this), '', '');
+                    }
+                });
+                ensureInventoryOptions().catch(function(err){ console.error('Inventory preload failed', err); });
+                setInventoryMasterAutocomplete($('#name'));
             } catch (_) {}
         }, 120);
     });
@@ -707,8 +892,15 @@ function insertInventory(e) {
     try {
         if (e && e.currentTarget) {
             $ctx = $(e.currentTarget).closest('[role="dialog"]');
+            if (!$ctx || !$ctx.length) {
+                $ctx = $(e.currentTarget).closest('dialog');
+            }
         }
     } catch (_) {}
+
+    if (!$ctx || !$ctx.length) {
+        $ctx = $('#dialog');
+    }
 
     const q = (sel) => $ctx && $ctx.length ? $ctx.find(sel) : $(sel);
 
@@ -720,7 +912,18 @@ function insertInventory(e) {
     const unit = q('#unit').val();
     const reorderLevel = parseFloat(q('#reorder_level').val()) || 0;
     const pricePerUnit = parseFloat(q('#price_per_unit').val()) || 0;
-    const supplierId = q('#supplier_id').val();
+    const $supplierInput = q('#supplier_id');
+    const supplierId = readSupplierId($supplierInput);
+
+    if (!itemCode || !name) {
+        alert('Item Code and Item Name are required.');
+        return;
+    }
+
+    if (!supplierId) {
+        alert('Please select a supplier from the dropdown.');
+        return;
+    }
 
     const escape = (str) => (str || '').toString().replace(/"/g, '"');
 
@@ -889,6 +1092,15 @@ function updateInventory() {
 
     // Helper to read value scoped to container
     const valIn = ($root, sel) => $root && $root.length ? $root.find(sel).val() : undefined;
+    let supplierIdNew;
+    if ($modalNew && $modalNew.length) {
+        const $supInput = $modalNew.find('#supplier_id');
+        supplierIdNew = readSupplierId($supInput) || ($supInput.length ? $supInput.val() : undefined);
+    }
+
+    const supplierIdOld = valIn($modalOld, '#supplierID_update');
+    const supplierIdFinal = supplierIdOld || supplierIdNew || undefined;
+
     const updatedData = {
         id: id,
         itemCode: valIn($modalOld, '#item_code_update') || valIn($modalNew, '#item_code') || '',
@@ -899,7 +1111,7 @@ function updateInventory() {
         unit: valIn($modalOld, '#unit_update') || valIn($modalNew, '#unit') || '',
         reorderLevel: parseFloat(valIn($modalOld, '#reorder_level_update') || valIn($modalNew, '#reorder_level')) || 0,
         pricePerUnit: parseFloat(valIn($modalOld, '#price_update') || valIn($modalNew, '#price_per_unit')) || 0,
-        supplierId: valIn($modalOld, '#supplierID_update') || valIn($modalNew, '#supplier_id') || undefined
+        supplierId: supplierIdFinal
     };
 
     const mutation = "" +

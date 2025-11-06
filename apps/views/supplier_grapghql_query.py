@@ -40,7 +40,7 @@ class Query:
 
 
             return [SupplierType(
-                    id = item.get('_id'),
+                    id = str(item.get('_id')) if item.get('_id') else None,
                     name = item.get('name'),
                     contact_person = item.get('contact_person'),
                     email = item.get('email'),
@@ -72,7 +72,7 @@ class Query:
         
             
             return [SupplierType(
-                    id = item.get('_id'),
+                    id = str(item.get('_id')) if item.get('_id') else None,
                     name = item.get('name'),
                     contact_person = item.get('contact_person'),
                     email = item.get('email'),
@@ -83,7 +83,6 @@ class Query:
                     updated_at = item.get('updated_at')
 
             ) for item in supplies]
-
 
 
 

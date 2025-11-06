@@ -3,6 +3,7 @@ $(document).ready(function() {
         columns: [
             { data: 'transactionDate' },
             { data: 'company' },
+            { data: 'department' },
             { data: 'itemName' },
             { data: 'quantity' },
             { data: 'price' },
@@ -21,6 +22,7 @@ $(document).ready(function() {
 
             $('#total_amount').text(totalAmount.toFixed(2));
         }
+
     });
 
     function fetchData() {
@@ -34,6 +36,7 @@ $(document).ready(function() {
                 getManagementTransactions(company: $company, dateFrom: $dateFrom, dateTo: $dateTo, transactionType: $transactionType) {
                     transactionDate
                     company
+                    department
                     itemName
                     quantity
                     price

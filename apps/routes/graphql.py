@@ -1,10 +1,5 @@
 import strawberry
-from fastapi import FastAPI
-from strawberry.asgi import GraphQL
-
-
 from fastapi import FastAPI, Request
-
 from strawberry.fastapi import GraphQLRouter
 
 
@@ -28,7 +23,8 @@ from ..views.supplier_invt_supply import insertSupplierInvt
 from ..views.supplier_mutation import SupplierMutation
 
 
-def get_context(request:Request):
+async def get_context(request: Request):
+	"""Attach the FastAPI request to the Strawberry context."""
 	return {'request': request }
 
 
@@ -46,18 +42,13 @@ class Mutation(InsertItems, insertSupplierInvt, manage_inventory_transaction, Su
 # Create a Strawberry schema:w
 schema = strawberry.Schema(query=Query,mutation=Mutation)
  
-graphql_app = GraphQL(schema)
-
-# graphql_app = GraphQLRouter(schema, context_getter=get_context)
+graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 
 
 
 
 # graphql_app = GraphQLRouter(schema, context_getter=get_context)
-
-
-
 
 
 

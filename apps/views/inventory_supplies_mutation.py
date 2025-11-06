@@ -51,7 +51,11 @@ inventory_item_collection.create_index('name', unique=True)
 class Mutation:
     @strawberry.mutation
     async def insert_inventory_supply_item(self, info: Info, inventory_items: InventoryItems) -> str:
-        request = info.context['request']
+        try:
+            request = info.context['request']
+        except (TypeError, KeyError):
+            return "Request context not available"
+
         username = get_current_user(request)
 
         if username:

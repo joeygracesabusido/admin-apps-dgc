@@ -14,6 +14,7 @@ def to_snake_case(s):
 class ManagementTransaction:
     transactionDate: str
     company: str
+    department: Optional[str]
     itemName: str
     quantity: float
     price: float
@@ -91,18 +92,44 @@ class Query:
         if transactionType:
             query['transaction_type'] = transactionType
 
-        transactions = transaction_collection.find(query)
-        
-        # This is a placeholder for price. You need to fetch the price from somewhere.
-        # For now, I'll use a dummy price.
-        dummy_price = 10.0
+        pipeline = [
+            {'$match': query},
+            {
+                '$lookup': {
+                    'from': 'inventory_supply_item',
+                    'localField': 'item_name',
+                    'foreignField': 'name',
+                    'as': 'item_details'
+                }
+            },
+            {
+                '$unwind': {
+                    'path': '$item_details',
+                    'preserveNullAndEmptyArrays': True
+                }
+            },
+            {
+                '$project': {
+                    'transactionDate': {'$dateToString': {'format': '%Y-%m-%d', 'date': '$transaction_date'}},
+                    'company': '$company',
+                    'department': {'$ifNull': ['$department', '']},
+                    'itemName': '$item_name',
+                    'quantity': '$quantity',
+                    'department': '$department',
+                    'price': {'$ifNull': ['$item_details.price_per_unit', 0]}
+                }
+            }
+        ]
+
+        transactions = transaction_collection.aggregate(pipeline)
 
         return [ManagementTransaction(
-            transactionDate=transaction.get('transaction_date').strftime('%Y-%m-%d'),
+            transactionDate=transaction.get('transactionDate'),
             company=transaction.get('company'),
-            itemName=transaction.get('item_name'),
+            department=transaction.get('department'),
+            itemName=transaction.get('itemName'),
             quantity=transaction.get('quantity'),
-            price=dummy_price
+            price=transaction.get('price')
         ) for transaction in transactions]
 
 @strawberry.type
