@@ -42,29 +42,23 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-password1 = ""
 def authenticate_user(username, password):
-    
-    user = mydb.login.find({
+    user_data = mydb.login.find_one({
         '$and':
             [{"username":username},{'status':'true'}]})
     
+    if not user_data:
+        return None
 
-    for i in user:
-       
-        username = i['username']
-        password1 = i['password']
-        
-   
-        if user:
-            
-            password_check = pwd_context.verify(password,password1)
-            
-            return password_check
+    hashed_password = user_data.get('password')
 
-            
-        else :
-            False
+    if not hashed_password:
+        return False
+    
+    try:
+        return pwd_context.verify(password, hashed_password)
+    except Exception:
+        return False
 
 
 
